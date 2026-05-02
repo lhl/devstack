@@ -73,9 +73,24 @@ Follow the schema in `README.md`:
 - **Query**: read `wiki/index.md` → read relevant pages → synthesize → optionally file answer as new wiki page
 - **Lint**: check for orphans, stale claims, missing pages, contradictions, broken cross-references
 
+### Research and Claim Hygiene
+
+When ingesting research sources or writing wiki pages that reference external work:
+
+- Separate **author claims** from **our verification**. If we haven't reproduced or validated something, say so explicitly.
+- Don't invent implementation details. Prefer "unknown/TBD" with links to upstream evidence over plausible-sounding guesses.
+- When quoting benchmarks or metrics, include context: hardware, dataset, date, methodology — whatever is needed to interpret the number.
+- Contradictions are valuable. When a new source contradicts an existing wiki page, flag both sides rather than silently overwriting.
+
 ### Software Development
 
-For work in `projects/` and `tools/`, use normal development workflow — no wiki operations required.
+Software in `projects/` uses git submodules. Normal development workflow — no wiki operations required.
+
+**Submodule convention** (for `projects/`):
+- Prefer submodules over vendored snapshots — keeps the repo lean
+- Record provenance: source URL, reviewed commit/tag, review date, short note on why it's here
+- Do not keep `.git/` directories in snapshots; remove generated artifacts
+- Research notes about a project belong in `wiki/`, not inside the submodule
 
 ### Before Claiming Done
 
@@ -136,6 +151,16 @@ How to commit:
 5. No AI attribution or bylines
 
 Keep wiki commits separate from software commits when both happen in the same session. Leave unrelated local changes untouched.
+
+## Writing Discipline
+
+Wiki pages and docs are meant to be read by someone who hasn't seen the source material. Follow these conventions:
+
+- Use each project/tool's own terminology — don't rename concepts for consistency if it loses precision.
+- Expand acronyms on first use, even project-specific ones.
+- One item per bullet. Don't collapse distinct mechanisms, findings, or tools into comma-separated run-on lists.
+- All claims should be traceable to a source in `sources/` or an external link. If a claim isn't sourced, mark it as such.
+- Keep line items scannable — a reader should understand each bullet independently.
 
 ## Coordination Hygiene
 
