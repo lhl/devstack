@@ -9,6 +9,7 @@ links:
   - https://github.com/qualisero/awesome-pi-agent
   - https://github.com/ifiokjr/oh-pi
   - https://github.com/ArtemisAI/pi-loop
+  - https://github.com/tintinweb/pi-schedule-prompt
 ---
 
 # Pi Coding Agent
@@ -309,21 +310,31 @@ Part of the tmustier/pi-extensions package. Long-running agent loops for iterati
 
 ## Scheduling Extensions
 
+Two options for cron/scheduled prompts:
+
+### pi-schedule-prompt (Recommended)
+
+**Repo:** [tintinweb/pi-schedule-prompt](https://github.com/tintinweb/pi-schedule-prompt)
+**Stars:** 43
+
+"Pi's Heartbeat" — natural language prompt scheduling.
+
+**Features:**
+- Natural language: "schedule X in 5 minutes", "every hour do Y"
+- Multiple formats: Cron, intervals, ISO timestamps, relative time
+- **Per-task model** — run prompts in separate agent session (doesn't affect current chat)
+- Live widget below editor with active schedules
+- Human-readable display instead of raw cron
+- Safety: duplicate name prevention, infinite loop detection
+
 ### pi-loop
 
 **Repo:** [ArtemisAI/pi-loop](https://github.com/ArtemisAI/pi-loop)
-**npm:** `@pi-agents/loop`
+npm: `@pi-agents/loop`, 3 stars
 
-Recurring prompt scheduling and cron job management for pi. Useful for periodic monitoring and metrics collection.
+Similar features but less developed. Has `/loop` command, cron tools, idle gating, anti-thundering-herd jitter.
 
-**Features:**
-- `/loop` command — Fixed interval (`/loop 5m check the deploy`) or dynamic self-pacing (`/loop monitor the build`)
-- Cron tools — LLM-callable `cron_create`, `cron_delete`, `cron_list` for programmatic scheduling
-- `schedule_wakeup` — Model-driven dynamic pacing (60-3600s delays)
-- Idle gating — Prompts only fire when agent is idle
-- Durable tasks — Optionally persist schedules across sessions
-- Anti-thundering-herd — Deterministic jitter prevents API load spikes
-- Auto-expiry — Recurring tasks expire after 7 days
+**Verdict:** pi-schedule-prompt has more stars, per-task model (big plus), and live widget. Use that one.
 
 ---
 
