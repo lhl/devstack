@@ -61,17 +61,22 @@ This repo has two distinct layers:
 ### Before Starting
 
 - Read `WORKLOG.md` — check the latest entry for context on recent work and next steps
-- Read `README.md` for the wiki schema and directory roles
 - Check `git status -sb`
-- For wiki operations, read `wiki/index.md` to understand current state
+- For wiki operations, read `wiki/index.md` to understand current wiki state
 
 ### Wiki Operations
 
-Follow the schema in `README.md`:
+Follow the wiki schema in `README.md` (sections: Operations, Page conventions, index/log formats, subdirectories, filing rules).
 
-- **Ingest**: process `inbox/` items → write/update `wiki/` pages → update `wiki/index.md` → append to `wiki/log.md` → move originals to `sources/`
+- **Ingest**: process `inbox/` items → write/update `wiki/` pages → update `wiki/index.md` → prepend to `wiki/log.md` → move originals to `sources/`
 - **Query**: read `wiki/index.md` → read relevant pages → synthesize → optionally file answer as new wiki page
-- **Lint**: check for orphans, stale claims, missing pages, contradictions, broken cross-references
+- **Lint**: check for orphans, stale claims, missing pages, contradictions, broken `[[wikilinks]]`
+
+Key constraints:
+- Every wiki page needs frontmatter (`title`, `tags`, `sources`, `links`) — see README.md for format
+- Every new or updated page must be reflected in `wiki/index.md`
+- Every operation must be logged in `wiki/log.md` (reverse-chronological)
+- File sources into the correct `sources/` subdirectory by format/origin — see README.md filing rules
 
 ### Research and Claim Hygiene
 
