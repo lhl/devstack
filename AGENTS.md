@@ -12,7 +12,7 @@ Handbook, framework, and toolkit for agentic programming practices. This repo is
 
 - Primary purpose: personal agentic practices KB + supporting software
 - `AGENTS.md` is the canonical instructions file; `CLAUDE.md` is symlinked to it
-- Source-of-truth docs: `README.md` (repo structure + wiki schema), `wiki/index.md` (wiki catalog), `wiki/log.md` (operations log)
+- Source-of-truth docs: `WORKLOG.md` (session history), `README.md` (repo structure + wiki schema), `wiki/index.md` (wiki catalog), `wiki/log.md` (wiki operations log)
 - The wiki schema (ingest/query/lint operations, page conventions) lives in `README.md`
 
 ## Symlink Convention
@@ -40,6 +40,7 @@ This repo has two distinct layers:
 | --- | --- |
 | `README.md` | Repo overview, directory roles, wiki schema, setup |
 | `AGENTS.md` | This file — agent instructions |
+| `WORKLOG.md` | Append-only session log — what was done, decisions, next steps |
 | `wiki/index.md` | Agent-maintained catalog of all wiki pages |
 | `wiki/log.md` | Append-only chronological operations log |
 | `docs/` | Working project docs for this repo (dev notes, research) |
@@ -59,6 +60,7 @@ This repo has two distinct layers:
 
 ### Before Starting
 
+- Read `WORKLOG.md` — check the latest entry for context on recent work and next steps
 - Read `README.md` for the wiki schema and directory roles
 - Check `git status -sb`
 - For wiki operations, read `wiki/index.md` to understand current state
@@ -79,7 +81,29 @@ For work in `projects/` and `tools/`, use normal development workflow — no wik
 
 - For wiki changes: verify `wiki/index.md` and `wiki/log.md` are updated
 - For software changes: run relevant verification
+- Append a session entry to `WORKLOG.md`
 - Commit immediately if the logical unit is complete
+
+### WORKLOG.md Convention
+
+Append-only. Never edit or delete past entries. Each entry follows this format:
+
+```markdown
+## YYYY-MM-DD — Short description
+
+**What:** One-line summary of the session's purpose.
+
+- Bullet list of what was actually done
+- Include file paths, decisions, and outcomes
+
+**Decisions:**
+- Key choices made and why (these are the hard-to-recover bits)
+
+**Next:**
+- What remains to be done
+```
+
+The WORKLOG is the rewind tape — it should capture enough context that a future session (or a human reading git history) can understand what happened and why without replaying the full conversation.
 
 ## Verification
 
