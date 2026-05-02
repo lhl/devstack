@@ -18,6 +18,7 @@ links:
   - https://github.com/getcompanion-ai/feynman
   - https://github.com/leo-lilinxiao/codex-autoresearch
   - https://github.com/karpathy/autoresearch
+  - https://github.com/ArtemisAI/pi-loop
 ---
 
 # Autonomous Loop Extensions for Pi Agent
@@ -134,6 +135,7 @@ These implement the edit→measure→keep/revert cycle.
 
 | Extension | npm | Purpose | Relevant? |
 |---|---|---|---|
+| **pi-loop** | `@pi-agents/loop` | Cron/repeating prompts — `/loop 5m check`, `schedule_wakeup` for dynamic pacing, dual-gate verify+guard | Minor — scheduling, not experiment loops. Could be useful for periodic metric monitoring |
 | **pi-schedule-prompt** | `pi-schedule-prompt` | Cron-like recurring prompts | Minor — loops are event-driven not time-driven |
 | **pi-continuous-learning** | `pi-continuous-learning` | Distill session patterns into reusable instincts | Interesting for building optimization intuition over time |
 | **hermes-loop** | manual | Self-improving agent, skill generation from experience | Novel but unproven |
