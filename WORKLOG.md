@@ -68,5 +68,22 @@ Append-only session log. Each entry records what was done, why, and what's next.
 - Install rtk binary for command rewriting support
 - Test pi with RTK on real tasks, measure token savings
 - Explore other pi extensions (MCP, sub-agent)
+
+## 2026-05-03 — RTK wiki page created
+
+**What:** Created comprehensive wiki page for rtk-ai/rtk core tool.
+
+- Cloned and reviewed github.com/rtk-ai/rtk (v0.38.0)
+- Created wiki/tools/rtk.md with: overview, installation options, token savings table, command reference by category, auto-rewrite hook docs, supported AI tools matrix, Windows support, configuration
+- Updated wiki/index.md with rtk link
+- Added wikilink from pi-agent page to rtk page
+- Updated wiki/log.md
+
+**Decisions:**
+- Grouped commands by category (files, git, tests, build/lint, containers, AWS, analytics)
+- Included relation to pi extensions for context
+
+**Next:**
+- Update WORKLOG after current session
 - Wire up qmd collections
 - Set up pi-agent and RTK in projects/

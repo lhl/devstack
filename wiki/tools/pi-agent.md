@@ -148,7 +148,7 @@ Full docs in the repo at `packages/coding-agent/docs/`:
 
 [pi-rtk-optimizer](https://github.com/MasuRii/pi-rtk-optimizer) (`npm:pi-rtk-optimizer`) provides token optimization through two mechanisms:
 
-**1. Command Rewriting**
+**1. Command Rewriting** — Delegates to [[tools/rtk]] binary
 - Automatically rewrites bash commands to their `rtk` equivalents
 - Delegates rewrite logic to the `rtk` binary (source of truth)
 - Falls back to original command if rtk is unavailable
