@@ -91,9 +91,69 @@ A single source may touch 5-15 wiki pages.
 
 ## Setup
 
+### Coding Agents
+
+This repo is designed to work with multiple coding agents. We use `AGENTS.md` as the canonical instruction file with `CLAUDE.md` symlinked to it (see [AGENTS.md](AGENTS.md) for details).
+
+#### Claude Code
+
+[Claude Code](https://docs.anthropic.com/en/docs/claude-code) is Anthropic's CLI agent. Install via the [official instructions](https://docs.anthropic.com/en/docs/claude-code/getting-started).
+
+```bash
+# Authenticate
+export ANTHROPIC_API_KEY=sk-ant-...
+# Or use: claude login
+```
+
+Claude Code automatically loads `CLAUDE.md` (→ symlink → `AGENTS.md`) from the repo root.
+
+#### Pi Agent
+
+[Pi](https://pi.dev) ([GitHub](https://github.com/badlogic/pi-mono/tree/main/packages/coding-agent)) is a minimal, extensible terminal coding harness. It supports 20+ LLM providers and is built around a TypeScript extension system rather than batteries-included features.
+
+```bash
+# Install (pick one)
+curl -fsSL https://pi.dev/install.sh | sh     # install script
+npm install -g @mariozechner/pi-coding-agent   # npm global
+
+# Authenticate (pick one)
+export ANTHROPIC_API_KEY=sk-ant-...            # API key
+pi                                             # then /login for subscription auth
+```
+
+Pi automatically loads `AGENTS.md` (or `CLAUDE.md`) by walking parent directories from cwd — same pattern as Claude Code.
+
+**Key config paths:**
+- `~/.pi/agent/settings.json` — global settings
+- `.pi/settings.json` — project-level overrides
+- `~/.pi/agent/extensions/` — TypeScript extensions
+- `~/.pi/agent/skills/` — skills (also `.pi/skills/`, `.agents/skills/`)
+- `~/.pi/agent/prompts/` — prompt templates
+- `.pi/SYSTEM.md` — system prompt override
+
+**Packages:** Pi supports installable packages bundling extensions, skills, prompts, and themes:
+```bash
+pi install npm:@foo/pi-tools
+pi install git:github.com/user/repo@v1
+pi list
+pi update
+```
+
+See [wiki/tools/pi-agent.md](wiki/tools/pi-agent.md) for full evaluation notes and comparison with Claude Code. See [pi.dev docs](https://pi.dev/docs/latest) for complete documentation.
+
+#### Codex (OpenAI)
+
+[Codex](https://github.com/openai/codex) is OpenAI's CLI agent. It reads `AGENTS.md` natively.
+
+```bash
+npm install -g @openai/codex
+export OPENAI_API_KEY=sk-...
+codex
+```
+
 ### qmd
 
-[qmd](https://github.com/tobi/qmd) is a local semantic search engine + MCP server for markdown/code collections. Hybrid BM25 + vector search with on-device models.
+[qmd](https://github.com/tobi/qmd) is a local semantic search engine + MCP server for markdown/code collections. Hybrid BM25 + vector search with on-device models — the retrieval layer for wiki search at scale.
 
 ```bash
 # Install
