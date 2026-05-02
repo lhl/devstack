@@ -142,6 +142,83 @@ Full docs in the repo at `packages/coding-agent/docs/`:
 - `sessions.md` / `session-format.md` — session management
 - `packages.md` — package management
 
+## Extensions
+
+### RTK Optimizer (Recommended)
+
+[pi-rtk-optimizer](https://github.com/MasuRii/pi-rtk-optimizer) (`npm:pi-rtk-optimizer`) provides token optimization through two mechanisms:
+
+**1. Command Rewriting**
+- Automatically rewrites bash commands to their `rtk` equivalents
+- Delegates rewrite logic to the `rtk` binary (source of truth)
+- Falls back to original command if rtk is unavailable
+- Supports both agent `bash` tool and user `!<cmd>` commands
+
+**2. Output Compaction Pipeline**
+Multi-stage filtering for tool output:
+- ANSI stripping (removes color codes)
+- Test aggregation (summarizes pass/fail counts)
+- Build filtering (extracts errors/warnings only)
+- Git compaction (condenses status, log, diff)
+- Linter aggregation (groups by rule)
+- Search grouping (groups grep results by file)
+- Source code filtering (`none` | `minimal` | `aggressive`)
+- Smart truncation (preserves file boundaries)
+- Hard truncation (character limits)
+
+**Installation:**
+```bash
+pi install npm:pi-rtk-optimizer
+# Requires rtk binary on PATH for command rewriting:
+# brew install rtk-ai/rtk/rtk  # or cargo install rtk-ai-rtk
+```
+
+**Usage:**
+- `/rtk` — Open interactive TUI settings modal
+- `/rtk stats` — Show compaction metrics for session
+- `/rtk verify` — Check if rtk binary is available
+- `/rtk reset` — Reset to defaults
+
+**Configuration:** `~/.pi/agent/extensions/pi-rtk-optimizer/config.json`
+
+Key settings:
+- `mode`: `"rewrite"` (auto) or `"suggest"` (notify only)
+- `outputCompaction.readCompaction.enabled`: defaults `false` (code reads stay exact)
+- `outputCompaction.sourceCodeFiltering`: `"none"` | `"minimal"` | `"aggressive"`
+- `outputCompaction.truncate.maxChars`: default 12000
+
+**Version:** 0.7.0 (as of 2026-05-03)
+
+### RTK Extension Comparison
+
+| Package | Version | Command Rewriting | Output Compaction | TUI Settings | Dependencies | 
+|---------|---------|-------------------|-------------------|--------------|---------------|
+| **MasuRii/pi-rtk-optimizer** | 0.7.0 | ✅ Via `rtk` binary | ✅ Full pipeline | ✅ /rtk modal | rtk binary (opt) |
+| sherif-fanous/pi-rtk | 0.3.0 | ✅ Via `rtk` binary | ❌ | ❌ | rtk binary (req) |
+| mcowger/pi-rtk | 0.1.4 | ❌ | ✅ Limited | ❌ CLI only | None |
+
+| Feature | pi-rtk-optimizer | sherif-fanous | mcowger |
+|---------|:---:|:---:|:---:|
+| ANSI stripping | ✅ | — | ✅ |
+| Test aggregation | ✅ | — | ✅ |
+| Build filtering | ✅ | — | ✅ |
+| Git compaction | ✅ | — | ✅ |
+| Linter aggregation | ✅ | — | ✅ |
+| Search grouping | ✅ | — | ✅ |
+| Source code filtering | ✅ (3 levels) | — | ✅ (2 levels) |
+| Smart truncation | ✅ | — | ✅ |
+| Hard truncation | ✅ | — | ✅ |
+| Streaming sanitization | ✅ | ❌ | ❌ |
+| Skill-read preservation | ✅ | ❌ | ❌ |
+| Windows compatibility | ✅ | ❌ | ❌ |
+| Metrics tracking | ✅ | ❌ | ✅ |
+
+**Recommendation:** MasuRii/pi-rtk-optimizer — most active development, feature-complete, clean architecture that delegates rewrite rules to rtk binary rather than duplicating logic.
+
+**Minimal alternative:** sherif-fanous if only command rewriting needed (~60 LOC, trivial footprint)
+
+---
+
 ## Open Questions
 
 - How does pi's compaction compare to Claude Code's automatic compression in practice?

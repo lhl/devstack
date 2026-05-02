@@ -48,5 +48,25 @@ Append-only session log. Each entry records what was done, why, and what's next.
 **Next:**
 - Deeper pi evaluation: try it on real tasks, test extension development experience
 - Investigate pi's package ecosystem for MCP and sub-agent extensions
+
+## 2026-05-03 — RTK extension evaluation and install
+
+**What:** Researched and installed RTK optimizer extension for pi.
+
+- Cloned and reviewed three RTK options: sherif-fanous/pi-rtk (cmd only), mcowger/pi-rtk (output only), MasuRii/pi-rtk-optimizer (full stack)
+- Selected pi-rtk-optimizer as most feature-complete: command rewriting + output compaction + TUI settings
+- Installed globally via `pi install npm:pi-rtk-optimizer` (added to settings.json)
+- Documented RTK extension in wiki/tools/pi-agent.md with installation, usage, config options
+- Updated wiki/log.md
+
+**Decisions:**
+- MasuRii/pi-rtk-optimizer recommended: v0.7.0, best active dev, clean delegation to rtk binary
+- mcowger alternative only if output-only needed and older pi version
+- sherif-fanous only if minimal (60 LOC) desired
+
+**Next:**
+- Install rtk binary for command rewriting support
+- Test pi with RTK on real tasks, measure token savings
+- Explore other pi extensions (MCP, sub-agent)
 - Wire up qmd collections
 - Set up pi-agent and RTK in projects/
