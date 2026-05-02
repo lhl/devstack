@@ -8,6 +8,7 @@ links:
   - https://pi.dev
   - https://github.com/qualisero/awesome-pi-agent
   - https://github.com/ifiokjr/oh-pi
+  - https://github.com/ArtemisAI/pi-loop
 ---
 
 # Pi Coding Agent
@@ -294,6 +295,7 @@ Part of the tmustier/pi-extensions package. Long-running agent loops for iterati
 
 | Use Case | Recommended Extension |
 |----------|----------------------|
+| Continuous monitoring loop (time-based) | pi-loop |
 | Simple continuous loop (keep agent running) | pi-autoloop |
 | Research experiments with success conditions | pi-autoresearch |
 | Single goal, many iterations | pi-goal |
@@ -302,6 +304,26 @@ Part of the tmustier/pi-extensions package. Long-running agent loops for iterati
 | Full dashboard + workflow for research | pi-autoresearch-studio + pi-autoresearch |
 
 **Avoid installing multiple loop extensions simultaneously** — they may conflict in controlling the agent flow.
+
+---
+
+## Scheduling Extensions
+
+### pi-loop
+
+**Repo:** [ArtemisAI/pi-loop](https://github.com/ArtemisAI/pi-loop)
+**npm:** `@pi-agents/loop`
+
+Recurring prompt scheduling and cron job management for pi. Useful for periodic monitoring and metrics collection.
+
+**Features:**
+- `/loop` command — Fixed interval (`/loop 5m check the deploy`) or dynamic self-pacing (`/loop monitor the build`)
+- Cron tools — LLM-callable `cron_create`, `cron_delete`, `cron_list` for programmatic scheduling
+- `schedule_wakeup` — Model-driven dynamic pacing (60-3600s delays)
+- Idle gating — Prompts only fire when agent is idle
+- Durable tasks — Optionally persist schedules across sessions
+- Anti-thundering-herd — Deterministic jitter prevents API load spikes
+- Auto-expiry — Recurring tasks expire after 7 days
 
 ---
 
