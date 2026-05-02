@@ -1,5 +1,10 @@
 # Wiki Log
 
+## [2026-05-03] ingest | Autonomous Loop Extensions Comparison
+- Source: npm registry, 15+ GitHub repos, pi.dev/packages, codex-autoresearch fork analysis
+- Pages created: wiki/concepts/autonomous-loops.md (master comparison with tables, gap analysis, name candidates)
+- Pages updated: wiki/index.md (added Concepts section)
+
 ## [2026-05-03] update | Pi Community Extensions & Autoloop/Goal Comparison
 - Source: github.com/qualisero/awesome-pi-agent, github.com/ifiokjr/oh-pi, github.com/can1357/oh-my-pi, github.com/davebcn87/pi-autoresearch, github.com/mikeyobrien/pi-autoloop, github.com/nqh-packages/pi-goal, github.com/vurihuang/pi-goal-driven, github.com/tmustier/pi-extensions
 - Pages updated: wiki/tools/pi-agent.md (added Community Distributions section + Autonomous Loop/Goal Extensions comparison)
