@@ -1,5 +1,10 @@
 # Wiki Log
 
+## [2026-05-03] update | Pi Community Extensions & Autoloop/Goal Comparison
+- Source: github.com/qualisero/awesome-pi-agent, github.com/ifiokjr/oh-pi, github.com/can1357/oh-my-pi, github.com/davebcn87/pi-autoresearch, github.com/mikeyobrien/pi-autoloop, github.com/nqh-packages/pi-goal, github.com/vurihuang/pi-goal-driven, github.com/tmustier/pi-extensions
+- Pages updated: wiki/tools/pi-agent.md (added Community Distributions section + Autonomous Loop/Goal Extensions comparison)
+- Pages updated: wiki/index.md
+
 ## [2026-05-03] ingest | outline-edit and realitycheck
 - Source: github.com/lhl/outline-edit, github.com/lhl/realitycheck
 - Pages created: wiki/tools/outline-edit.md, wiki/tools/realitycheck.md

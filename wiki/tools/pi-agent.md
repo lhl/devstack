@@ -6,6 +6,8 @@ sources:
 links:
   - https://github.com/badlogic/pi-mono/tree/main/packages/coding-agent
   - https://pi.dev
+  - https://github.com/qualisero/awesome-pi-agent
+  - https://github.com/ifiokjr/oh-pi
 ---
 
 # Pi Coding Agent
@@ -216,6 +218,90 @@ Key settings:
 **Recommendation:** MasuRii/pi-rtk-optimizer — most active development, feature-complete, clean architecture that delegates rewrite rules to rtk binary rather than duplicating logic.
 
 **Minimal alternative:** sherif-fanous if only command rewriting needed (~60 LOC, trivial footprint)
+
+---
+
+## Community Distributions
+
+### awesome-pi-agent
+
+[qualisero/awesome-pi-agent](https://github.com/qualisero/awesome-pi-agent) — Concise, curated list of extensions, skills, and integrations for pi. The go-to resource for discovering community tools.
+
+### oh-pi
+
+[ifiokjr/oh-pi](https://github.com/ifiokjr/oh-pi) — "One-click setup for pi-coding-agent — extensions, themes, prompts, skills, and ant-colony swarm." Like oh-my-zsh for pi.
+
+### oh-my-pi
+
+[can1357/oh-my-pi](https://github.com/can1357/oh-my-pi) — "AI Coding agent for the terminal — hash-anchored edits, optimized tool harness, LSP, Python, browser, subagents, and more."
+
+Other variants exist (搜索 `oh-my-pi` on GitHub shows multiple forks with different feature sets).
+
+---
+
+## Autonomous Loop / Goal Extensions
+
+Several extensions provide autonomous loop, autoresearch, or long-running goal capabilities. They overlap in intent but differ in scope and implementation.
+
+| Extension | Author | Focus | Key Feature |
+|-----------|--------|-------|-------------|
+| [pi-autoresearch](https://github.com/davebcn87/pi-autoresearch) | davebcn87 | Autonomous experiment loop | Runs experiments in loops until goal met |
+| [pi-autoloop](https://github.com/mikeyobrien/pi-autoloop) | mikeyobrien | Autonomous LLM loops | Runs autonomous LLM loops |
+| [pi-goal](https://github.com/nqh-packages/pi-goal) | nqh-packages | Long-running goal mode | Goal-directed agent execution |
+| [pi-goal-driven](https://github.com/vurihuang/pi-goal-driven) | vurihuang | Goal-driven master/subagent | Master/subagent orchestration |
+| [ralph-wiggum](https://github.com/tmustier/pi-extensions/tree/main/ralph-wiggum) | tmustier | Iterative development loops | Long-running agent loops for iterative dev |
+| [pi-autoresearch-studio](https://github.com/jhochenbaum/pi-autoresearch-studio) | jhochenbaum | Dashboard for pi-autoresearch | UI for managing autoresearch sessions |
+
+### Detailed Comparison
+
+#### pi-autoresearch
+
+**Repo:** [davebcn87/pi-autoresearch](https://github.com/davebcn87/pi-autoresearch)
+
+Autonomous experiment loop extension. The agent runs experiments iteratively until a goal condition is met. Useful for:
+- Benchmark experiments
+- Hyperparameter tuning
+- Research loops where success/failure can be detected programmatically
+
+#### pi-autoloop
+
+**Repo:** [mikeyobrien/pi-autoloop](https://github.com/mikeyobrien/pi-autoloop)
+
+Runs autonomous LLM loops. Simple, focused implementation for keeping the agent running continuously without manual prompts.
+
+#### pi-goal
+
+**Repo:** [nqh-packages/pi-goal](https://github.com/nqh-packages/pi-goal)
+
+Long-running goal mode extension. The agent works toward a defined goal across multiple turns, maintaining context and iterating until completion.
+
+#### pi-goal-driven
+
+**Repo:** [vurihuang/pi-goal-driven](https://github.com/vurihuang/pi-goal-driven)
+
+Goal-driven master/subagent pattern as a Pi-native extension. Coordinates multiple subagents toward a common goal, with a master agent delegating subtasks.
+
+#### ralph-wiggum (pi-extensions)
+
+**Repo:** [tmustier/pi-extensions/ralph-wiggum](https://github.com/tmustier/pi-extensions/tree/main/ralph-wiggum)
+
+Part of the tmustier/pi-extensions package. Long-running agent loops for iterative development. Good for:
+- Refactoring sessions
+- Test-driven development iterations
+- Progressive code improvements
+
+### Overlap Analysis
+
+| Use Case | Recommended Extension |
+|----------|----------------------|
+| Simple continuous loop (keep agent running) | pi-autoloop |
+| Research experiments with success conditions | pi-autoresearch |
+| Single goal, many iterations | pi-goal |
+| Multi-step tasks with subagent coordination | pi-goal-driven |
+| Iterative code development/refactoring | ralph-wiggum |
+| Full dashboard + workflow for research | pi-autoresearch-studio + pi-autoresearch |
+
+**Avoid installing multiple loop extensions simultaneously** — they may conflict in controlling the agent flow.
 
 ---
 
