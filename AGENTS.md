@@ -1,0 +1,132 @@
+# devstack - Agent Guide
+
+Handbook, framework, and toolkit for agentic programming practices. This repo is a hybrid: part knowledge base (LLM Wiki pattern), part software (pi-agent, tools), part reference library. Mistakes to prevent: writing into `sources/` (immutable), editing wiki pages without updating `wiki/index.md` and `wiki/log.md`, and mixing knowledge-base content with project software.
+
+## Non-Negotiables
+
+1. **Commit after every logical work unit.** Do not wait to be asked. A logical unit is any self-contained piece of completed work: a wiki ingest, a new file, an edit to docs, a config change, scaffolding, a bug fix. If it's done, commit it. Multiple small commits are always better than one big commit at the end.
+2. **Never use `git add .`, `git add -A`, or `git commit -a`.** Stage files explicitly by name.
+3. **`sources/` is immutable.** Never modify a file after it has been filed there.
+
+## Summary
+
+- Primary purpose: personal agentic practices KB + supporting software
+- `AGENTS.md` is the canonical instructions file; `CLAUDE.md` is symlinked to it
+- Source-of-truth docs: `README.md` (repo structure + wiki schema), `wiki/index.md` (wiki catalog), `wiki/log.md` (operations log)
+- The wiki schema (ingest/query/lint operations, page conventions) lives in `README.md`
+
+## Symlink Convention
+
+All repos use `AGENTS.md` as the single instruction source. `CLAUDE.md` is a symlink:
+
+```bash
+# In any repo root:
+ln -s AGENTS.md CLAUDE.md
+```
+
+This ensures Claude Code and Codex read the same file. The symlink should be committed to git. When editing instructions, always edit `AGENTS.md` directly.
+
+## Project Overview
+
+This repo has two distinct layers:
+
+**Knowledge base** — the LLM Wiki pattern (Karpathy). Sources go into `sources/`, the agent compiles synthesized pages into `wiki/`, and `inbox/` is the staging area for unprocessed material. The agent owns `wiki/`; humans own `sources/` and `inbox/`.
+
+**Software and tools** — pi-agent, RTK configs, scripts, and other software live in `projects/` and `tools/`. These follow normal development workflows, not wiki operations.
+
+## Key Files
+
+| Path | Purpose |
+| --- | --- |
+| `README.md` | Repo overview, directory roles, wiki schema, setup |
+| `AGENTS.md` | This file — agent instructions |
+| `wiki/index.md` | Agent-maintained catalog of all wiki pages |
+| `wiki/log.md` | Append-only chronological operations log |
+| `docs/` | Working project docs for this repo (dev notes, research) |
+
+## Directory Ownership
+
+| Directory | Owner | Mutability |
+| --- | --- | --- |
+| `inbox/` | Human drops, agent processes | Transient — items move to `sources/` after ingest |
+| `sources/` | Human curates | Immutable once filed — agent reads, never modifies |
+| `wiki/` | Agent | Agent creates, updates, cross-links; human reads |
+| `docs/` | Human or agent | Project working docs, not wiki content |
+| `projects/` | Human or agent | Software — normal dev workflow |
+| `tools/` | Human or agent | Scripts and configs — normal dev workflow |
+
+## Workflow Expectations
+
+### Before Starting
+
+- Read `README.md` for the wiki schema and directory roles
+- Check `git status -sb`
+- For wiki operations, read `wiki/index.md` to understand current state
+
+### Wiki Operations
+
+Follow the schema in `README.md`:
+
+- **Ingest**: process `inbox/` items → write/update `wiki/` pages → update `wiki/index.md` → append to `wiki/log.md` → move originals to `sources/`
+- **Query**: read `wiki/index.md` → read relevant pages → synthesize → optionally file answer as new wiki page
+- **Lint**: check for orphans, stale claims, missing pages, contradictions, broken cross-references
+
+### Software Development
+
+For work in `projects/` and `tools/`, use normal development workflow — no wiki operations required.
+
+### Before Claiming Done
+
+- For wiki changes: verify `wiki/index.md` and `wiki/log.md` are updated
+- For software changes: run relevant verification
+- Commit immediately if the logical unit is complete
+
+## Verification
+
+| Scope | Check |
+| --- | --- |
+| Wiki ingest | `wiki/index.md` updated, `wiki/log.md` appended, source archived to `sources/` |
+| Wiki lint | No orphan pages, no broken `[[wikilinks]]`, index matches actual files |
+| Software | Depends on the project — run tests/builds as appropriate |
+| Repo structure | No files in `sources/` modified after initial filing |
+
+## Git Discipline
+
+**Commit immediately when a logical unit is complete. Do not batch. Do not wait to be asked.**
+
+A logical unit is complete when it can stand on its own. Examples:
+
+- Scaffolding new directories or files → commit
+- Adding or updating a doc → commit
+- A wiki ingest (pages + index + log) → commit
+- A config or schema change → commit
+- A code change that works → commit
+- Repo setup or cleanup → commit
+
+How to commit:
+
+1. `git status -sb` — review what changed
+2. `git add <file> <file> ...` — stage explicitly by name, never `git add .` / `-A` / `-a`
+3. `git diff --staged` — review the staged diff
+4. Commit with conventional prefix: `feat:`, `docs:`, `wiki:`, `fix:`, `chore:`, `refactor:`
+5. No AI attribution or bylines
+
+Keep wiki commits separate from software commits when both happen in the same session. Leave unrelated local changes untouched.
+
+## Coordination Hygiene
+
+- High-conflict files: `AGENTS.md`, `README.md`, `wiki/index.md`
+- Do not revert or overwrite work you did not make
+- If `wiki/index.md` or `wiki/log.md` has been modified by another session, read before writing
+
+## Blockers
+
+- Ask for help when the wiki schema in `README.md` doesn't cover a new source type or edge case
+- Escalate if sources in `sources/` appear to have been modified
+
+## Meta: Evolving This File
+
+- Keep weight appropriate — this is a Medium-weight repo
+- Promote recurring mistakes into explicit rules
+- If wiki schema rules change, update `README.md` (the schema), not this file
+- Remove rules that are no longer enforced
