@@ -1,5 +1,10 @@
 # Wiki Log
 
+## [2026-05-03] ingest | outline-edit and realitycheck
+- Source: github.com/lhl/outline-edit, github.com/lhl/realitycheck
+- Pages created: wiki/tools/outline-edit.md, wiki/tools/realitycheck.md
+- Pages updated: wiki/index.md
+
 ## [2026-05-03] ingest | RTK (Rust Token Killer)
 - Source: github.com/rtk-ai/rtk, rtk-ai.app
 - Pages created: wiki/tools/rtk.md (comprehensive overview, command reference)

@@ -85,5 +85,21 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 **Next:**
 - Update WORKLOG after current session
+
+## 2026-05-03 — Wiki pages for outline-edit and realitycheck
+
+**What:** Created wiki pages for lhl's two tools.
+
+- Researched and documented github.com/lhl/outline-edit (v0.2.1): CLI for Outline KB with local markdown cache, zero stdlib dependencies, "why not MCP" analysis
+- Researched and documented github.com/lhl/realitycheck (v0.3.3): framework for rigorous claim/source/prediction tracking, LanceDB + embeddings, Claude Code/Codex/Amp/OpenCode integrations
+- Created wiki/tools/outline-edit.md and wiki/tools/realitycheck.md
+- Updated wiki/index.md and wiki/log.md
+
+**Decisions:**
+- Created "why not MCP" section to capture the rationale for outline-edit
+- Mapped realitycheck CLI commands and agent integrations
+
+**Next:**
+- Commit after session
 - Wire up qmd collections
 - Set up pi-agent and RTK in projects/
