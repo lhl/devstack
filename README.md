@@ -4,22 +4,34 @@ An opiniated guide for agentic programming best practices. This is what I'm curr
 
 ## Coding Agent
 
-- [Pi Coding Agent](https://pi.dev/) - an open source minimal terminal coding harness that will adapt to the way you want to work. You may want to start or use Claude Code, OpenAI Codex, OpenCode, etc, but Pi's flexibility and ease of customization makes it something probably worth trying sooner rather than later
-### Pi Extensions
+[Pi Coding Agent](https://pi.dev/) — an open source minimal terminal coding harness that adapts to the way you want to work. You may want to start with Claude Code, OpenAI Codex, OpenCode, etc, but Pi's flexibility and ease of customization makes it worth trying sooner rather than later.
 
-Here's what I actually have installed for my Pi setup:
+```bash
+curl -fsSL https://pi.dev/install.sh | sh
+```
+
+### Automation & Workflow
 
 - [pi-multiloop](https://github.com/lhl/pi-multiloop) — my autoloop. A fresh implementation from the things I learned from my [codex-autoresearch](https://github.com/lhl/codex-autoresearch/) fork and from my experience with autoloops since 2025
-- [pi-zentui](https://github.com/lhl/pi-zentui) — my personal fork of a status-line that fits my preference
-- `pi-rtk-optimizer` — token optimization via RTK command rewriting + output compaction
-  - [rtk](https://github.com/rtk-ai/rtk) — if you pay for tokens or have a quota, I've found this to be the easiest way to reduce token consumption. You can hook this up to basically any agentic harness relatively easily
-- `pi-schedule-prompt` — natural language scheduling, cron, per-task model
 - `pi-boomerang` — token-efficient autonomous loops — summarize between iterations
+- `pi-schedule-prompt` — natural language scheduling, cron, per-task model
 - `pi-continue` — mid-run context compaction with Continuation Ledger
-- `pi-code-previews` — Shiki syntax-highlighted tool output rendering in TUI
+
+### Web Access
+
 - `pi-web-access` — web search, content extraction, video/YT, GitHub clone, PDF
 - `pi-smart-fetch` — browser-like TLS fingerprints + Defuddle site extractors
 - `camoufox-pi` — stealth web access via Camoufox anti-fingerprinting Firefox fork (requires `npx camoufox fetch` + `/reload`)
+
+### UX
+
+- [pi-zentui](https://github.com/lhl/pi-zentui) — my personal fork of a status-line that fits my preference
+- `pi-code-previews` — Shiki syntax-highlighted tool output rendering in TUI
+
+### Token Optimization
+
+- `pi-rtk-optimizer` — token optimization via RTK command rewriting + output compaction
+  - [rtk](https://github.com/rtk-ai/rtk) — if you pay for tokens or have a quota, I've found this to be the easiest way to reduce token consumption. You can hook this up to basically any agentic harness relatively easily
 
 
 If you want to install everything:
