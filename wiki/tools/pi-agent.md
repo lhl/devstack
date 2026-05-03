@@ -22,6 +22,7 @@ Pi (pi.dev) is a minimal, extensible terminal coding harness by Mario Zechner (b
 |---|---|---|---|
 | **pi-rtk-optimizer** | `npm:pi-rtk-optimizer` | Token optimization via RTK command rewriting + output compaction | ✅ Installed |
 | **pi-schedule-prompt** | `npm:pi-schedule-prompt` | Natural language scheduling, cron, per-task model | ✅ Installed |
+| **pi-boomerang** | `npm:pi-boomerang` | Token-efficient autonomous loops — summarize between iterations | ✅ Installed |
 
 **Install commands:**
 ```bash
@@ -50,10 +51,31 @@ pi install npm:pi-schedule-prompt
 /schedule-prompt "review PR in 30 minutes"
 /schedule-prompt "follow up tomorrow at 9am"
 
-# Via LLM tools (the extension provides these):
-schedule_wakeup delaySeconds=300  # Dynamic pacing
+# Via LLM tools
+schedule_wakeup delaySeconds=300
 cron_create cron="0 * * * *" prompt="hourly check"
 ```
+
+### pi-boomerang
+
+```
+# Plain task
+/boomerang Fix the login bug
+
+# Run prompt template
+/boomerang /commit "fix auth bug"
+
+# Chain templates
+/boomerang /scout "map auth" -> /planner "design JWT" -> /impl
+
+# Auto-boomerang for next prompt (shortcut: Ctrl+Alt+B)
+/boomerang auto on
+
+# Cancel mid-task
+/boomerang-cancel
+```
+
+**Key feature:** Replaces full turn history with compact handoff summary — same outcome, fraction of tokens. Good for 15+ iteration runs.
 
 ## Installation
 
