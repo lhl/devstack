@@ -4,6 +4,30 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-05-03 — Web fetch/search package survey + installation
+
+**What:** Evaluated 9 pi packages for web fetch/search, installed 3, documented everything.
+
+- Surveyed all 9 web fetch/search packages on pi.dev + npm: @pi-lab/webfetch, pi-fetch, @ogulcancelik/pi-web-browse, @demigodmode/pi-web-agent, @the-forge-flow/camoufox-pi, @counterposition/pi-web-search, pi-web-access, @apmantza/greedysearch-pi, pi-smart-fetch
+- Installed pi-web-access (v0.10.7) — primary, 418 stars, videos/YT/GitHub/PDF/zero-config
+- Installed pi-smart-fetch (v0.2.35) — TLS-fingerprinted fetches, Defuddle site extractors
+- Installed @the-forge-flow/camoufox-pi (v0.2.1) — extreme stealth for anti-bot-protected pages
+- Added comprehensive comparison to wiki/tools/pi-agent.md: overview table, capability matrix, architecture analysis, recommendations, installed package details
+- Updated README.md installed components table
+- Updated wiki/log.md, wiki frontmatter links
+
+**Decisions:**
+- pi-web-access is the default web tool — most features, most polish, largest community
+- pi-smart-fetch is the lightweight anti-bot layer (TLS fingerprinting, no headless browser)
+- camoufox-pi is the nuclear option for Cloudflare/DataDome/etc — heavy but effective
+- Skipped pi-fetch (LLM-generated, too basic), @pi-lab/webfetch (no repo/community)
+
+**Next:**
+- Smoke test all three packages on real pages
+- Test pi-web-access YouTube understanding and GitHub cloning
+
+---
+
 ## 2026-05-03 — Initial repo scaffolding
 
 **What:** Set up devstack as a hybrid LLM Wiki + software toolkit repo.

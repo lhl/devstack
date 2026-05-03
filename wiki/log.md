@@ -1,5 +1,10 @@
 # Wiki Log
 
+## [2026-05-03] update | Web fetch/search packages evaluated + installed
+- Surveyed 9 pi packages for web fetch/search capabilities
+- Installed: pi-web-access (v0.10.7), pi-smart-fetch (v0.2.35), @the-forge-flow/camoufox-pi (v0.2.1)
+- Pages updated: wiki/tools/pi-agent.md (added Web Fetch & Search Packages section with 9-package comparison tables, capability matrix, architecture analysis, recommendations, installed package details; added to installed extensions table)
+
 ## [2026-05-03] update | pi install -l missing npm install documented
 - `pi install -l` registers extension path but does not run `npm install` — likely a pi-agent bug
 - Pages updated: wiki/tools/pi-agent.md (replaced shiki global install note with local npm install steps for all git-cloned extensions)

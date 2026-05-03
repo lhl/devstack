@@ -11,6 +11,9 @@ links:
   - https://github.com/ArtemisAI/pi-loop
   - https://github.com/tintinweb/pi-schedule-prompt
   - https://github.com/Tiziano-AI/pi-continue
+  - https://github.com/nicobailon/pi-web-access
+  - https://github.com/Thinkscape/agent-smart-fetch
+  - https://github.com/MonsieurBarti/camoufox-pi
 ---
 
 # Pi Coding Agent
@@ -26,6 +29,9 @@ Pi (pi.dev) is a minimal, extensible terminal coding harness by Mario Zechner (b
 | **pi-boomerang** | `npm:pi-boomerang` | Token-efficient autonomous loops — summarize between iterations | ✅ Installed |
 | **pi-continue** | `git:pi-continue` | Mid-run context compaction with Continuation Ledger | ✅ Installed (v0.6.0, local) |
 | **pi-code-previews** | `git:pi-code-previews` | Shiki syntax-highlighted tool output rendering in TUI | ✅ Installed (v0.1.14, local) |
+| **pi-web-access** | `npm:pi-web-access` | Web search, content extraction, video/YT understanding, GitHub cloning, PDF | ✅ Installed (v0.10.7) |
+| **pi-smart-fetch** | `npm:pi-smart-fetch` | Browser-like TLS fingerprints + Defuddle extraction for bot-defended pages | ✅ Installed (v0.2.35) |
+| **camoufox-pi** | `npm:@the-forge-flow/camoufox-pi` | Stealth web access via Camoufox (C++-level anti-fingerprinting Firefox fork) | ✅ Installed (v0.2.1) |
 
 **Install commands:**
 ```bash
@@ -39,6 +45,11 @@ pi install npm:pi-schedule-prompt
 # pi install -l does NOT run npm install — must install deps manually:
 # (cd .pi/git/pi-continue && npm install)
 # (cd .pi/git/pi-code-previews && npm install)
+
+# Web fetch & search
+pi install npm:pi-web-access
+pi install npm:pi-smart-fetch
+pi install npm:@the-forge-flow/camoufox-pi
 ```
 
 ## Installed Extension Usage
@@ -616,6 +627,132 @@ npm: `@pi-agents/loop`, 3 stars
 Similar features but less developed. Has `/loop` command, cron tools, idle gating, anti-thundering-herd jitter.
 
 **Verdict:** pi-schedule-prompt has more stars, per-task model (big plus), and live widget. Use that one.
+
+---
+
+## Web Fetch & Search Packages
+
+Nine pi packages for web fetching and search were evaluated (2026-05-03). Three were selected for installation.
+
+### Summary Comparison
+
+| # | Package | Ver | License | Stars | Approach | Search | Fetch | Unique Strength |
+|---|---|---|---|---|---|---|---|---|
+| 1 | **pi-web-access** | 0.10.7 | MIT | ⭐418 | Multi-API + MCP | ✅ 4 providers | ✅ Multi-format | Video/YT, GitHub clone, PDF, zero-config |
+| 2 | **@ogulcancelik/pi-web-browse** | 1.0.5 | MIT | 70¹ | Headless CDP browser | ✅ Google/DDG | ✅ Browser render | Bot bypass, persistent daemon |
+| 3 | **@apmantza/greedysearch-pi** | 1.8.5 | MIT | 21 | Browser automation | ✅ AI engines² | ✅ Readability | No API keys needed |
+| 4 | **pi-smart-fetch** | 0.2.35 | MIT | 18 | TLS impersonation | ❌ | ✅ Defuddle | Fingerprint bypass, site extractors |
+| 5 | **@demigodmode/pi-web-agent** | 0.4.0 | AGPL-3 | 5 | Orchestrated pipeline | ✅ Internal | ✅ HTTP+browser | Research-optimized, evidence ranking |
+| 6 | **@counterposition/pi-web-search** | 0.4.0 | GPL-3 | 4 | Multi-API routing | ✅ 3 providers | ✅ Jina | Smart provider routing |
+| 7 | **pi-fetch** | 2.0.0 | GPL-2 | 2 | Curl + HTML→text | ❌ | ✅ Basic | Minimal, shell-based |
+| 8 | **@the-forge-flow/camoufox-pi** | 0.2.1 | MIT | 0 | Camoufox (FF fork) | ✅ DDG | ✅ Stealth | C++-level anti-fingerprint |
+| 9 | **@pi-lab/webfetch** | 0.1.1 | MIT | —³ | Node fetch + Readability | ❌ | ✅ Basic | LRU cache, script extraction |
+
+¹ Part of ogulcancelik/pi-extensions monorepo (70 stars)  
+² Perplexity, Bing Copilot, Google AI — queried via real browser  
+³ No public repo, no community signals
+
+### Capability Matrix
+
+| Capability | pi-web-access | pi-web-browse | greedysearch | smart-fetch | pi-web-agent | counterposition | camoufox | pi-fetch | pi-lab |
+|---|---|---|---|---|---|---|---|---|---|
+| **Web search** | ✅ Exa/Perplexity/Gemini | ✅ Google/DDG | ✅ AI engines | ❌ | ✅ internal | ✅ Brave/Tavily/Exa | ✅ DDG | ❌ | ❌ |
+| **Page fetch** | ✅ Multi-fallback | ✅ Browser-rendered | ✅ Readability | ✅ TLS+Defuddle | ✅ HTTP+browser | ✅ Jina Reader | ✅ Stealth FF | ✅ curl | ✅ node fetch |
+| **No API keys** | ✅ (Exa MCP) | ✅ | ✅ | ✅ | ❌⁴ | ❌ | ✅ | ✅ | ✅ |
+| **Anti-bot** | Fallback chain | CDP browser | Browser automation | TLS fingerprint | Headless escalation | ❌ | C++-level stealth | ❌ | ❌ |
+| **YouTube** | ✅ Full | ❌ | ❌ | Partial (extract) | ❌ | ❌ | ❌ | ❌ | ❌ |
+| **GitHub repos** | ✅ Clone | ❌ | ✅ API | Partial (extract) | ❌ | ❌ | ❌ | ❌ | ❌ |
+| **Video files** | ✅ Analysis+frames | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| **PDF** | ✅ Text extract | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| **Batch fetch** | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| **Code search** | ✅ | ❌ | ✅ (coding_task) | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| **SSRF protection** | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ |
+| **Screenshots** | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ |
+
+⁴ Search needs API keys; HTTP fetch might work but docs don't clarify
+
+### Architecture & Quality
+
+| Package | Source Files | Key Deps | Design Notes |
+|---|---|---|---|
+| **pi-web-access** | 25 TS | readability, linkedom, turndown, unpdf, p-limit | Clean flat structure, one file per provider. Most polished. |
+| **pi-web-browse** | ~8 TS (in monorepo) | playwright, readability, cheerio, jsdom, turndown, undici | CDP daemon pattern, warm browser sessions. |
+| **greedysearch-pi** | Extractor-based (.mjs) | jsdom, readability, turndown | Shell scripts + browser extractors, pragmatic. |
+| **smart-fetch** | 31 TS (monorepo) | wreq-js, defuddle, linkedom, pi-tui, typebox | Bun monorepo, shared core, unit+integration tests. |
+| **pi-web-agent** | 68 TS | readability, cheerio, jsdom, playwright-core | Most engineered: orchestration, evidence ranking, cache, presentation. |
+| **counterposition** | ~12 TS | Provider-specific clients | Clean provider abstraction, smart routing logic. |
+| **camoufox-pi** | 99 TS | camoufox-js, playwright-core, turndown | Heavily engineered but specialized. CLI, credentials, signal handling. |
+| **pi-fetch** | 0 visible | @kreuzberg/html-to-markdown-node | Shells out to curl. "Generated with an LLM." Bare minimum. |
+| **@pi-lab/webfetch** | 1 bundled .mjs | readability, fflate, linkedom, turndown, lru-cache | Single-file bundled extension. Minimal but clean. |
+
+### Recommendations
+
+**Primary (installed): `pi-web-access`** — 418 stars, 62 forks, most features, most polish. Zero-config Exa MCP means it works immediately. YouTube understanding, GitHub cloning, and PDF extraction are genuinely unique. Actively maintained (pushed 2026-05-02).
+
+**TLS fingerprint bypass (installed): `pi-smart-fetch`** — Browser-like TLS/SSL + HTTP fingerprints via wreq-js for bot-defended pages. Defuddle extraction with specialized support for YouTube, Reddit, X/Twitter, GitHub, HN, and Substack. Batch fetch with bounded concurrency. Lighter alternative to a full headless browser.
+
+**Extreme stealth (installed): `@the-forge-flow/camoufox-pi`** — Firefox fork with C++-level anti-fingerprinting patches (SpiderMonkey/Gecko). ~100% bypass rate vs ~33% for Playwright-Chromium in independent benchmarks. Heavy: ~500MB binary download on first use, 200-1300MB RSS. Only needed for Cloudflare/DataDome/PerimeterX/Turnstile-protected pages.
+
+**For general anti-bot without the stealth weight:** `@ogulcancelik/pi-web-browse` — real Chrome CDP, 70-star ecosystem, persistent daemon for warm sessions. Battle-tested.
+
+**For no-API-key AI search:** `@apmantza/greedysearch-pi` — queries Perplexity/Bing/Google AI through real browser, no keys needed. 21 stars.
+
+**For research quality:** `@counterposition/pi-web-search` — smart provider routing (Brave for fast, Tavily/Exa for thorough). Requires API keys but uses them intelligently. `@demigodmode/pi-web-agent` — most sophisticated pipeline, but AGPL-3 and still early (10 open issues).
+
+**Skip:** `pi-fetch` (too basic, LLM-generated), `@pi-lab/webfetch` (no repo, no community, no search — just a basic fetch tool).
+
+### Installed Package Details
+
+#### pi-web-access (v0.10.7)
+
+**Tools:**
+- `web_search` — multi-provider search with automatic fallback (Exa → Perplexity → Gemini API → Gemini Web)
+- `code_search` — Exa MCP code-context search, no API key required
+- `fetch_content` — fetch URLs with format auto-detection (HTML, PDF, YouTube, GitHub, local video)
+- `get_search_content` — retrieve stored content from previous searches/fetches
+
+**Key features:**
+- Zero-config Exa MCP search (no API key needed)
+- GitHub repos cloned locally instead of scraped
+- YouTube video understanding via Gemini (transcripts, visual descriptions, chapter markers)
+- Local video file analysis (MP4, MOV, WebM, AVI up to 50MB)
+- Frame extraction from YouTube/local videos at exact timestamps
+- PDF extraction to markdown
+- Blocked page retry through Jina Reader and Gemini extraction
+- Optional API keys for Exa, Perplexity, Gemini in `~/.pi/web-search.json`
+- Requires Pi v0.37.3+
+
+#### pi-smart-fetch (v0.2.35)
+
+**Tools:**
+- `web_fetch` — fetch URL with browser-like TLS/SSL fingerprints
+- `batch_web_fetch` — fetch many URLs with bounded concurrency
+
+**Key features:**
+- Browser-like TLS/SSL + HTTP fingerprints via wreq-js
+- Defuddle extraction: specialized extractors for YouTube, Reddit, X/Twitter, GitHub, HN, Substack
+- Multiple output formats: markdown, html, text, json
+- Configurable fingerprint profiles (browser, OS)
+- Downloads and large file support — streams to temp files
+- Client-side `<meta>` redirect following
+- Global defaults configurable in `.pi/settings.json`
+
+#### @the-forge-flow/camoufox-pi (v0.2.1)
+
+**Tools:**
+- `tff-fetch_url` — fetch URL via stealth Firefox, return HTML/markdown with optional selector/screenshot
+- `tff-search_web` — DuckDuckGo search via stealth Firefox
+
+**Key features:**
+- Camoufox: Firefox fork patched at C++ level for anti-fingerprint resistance
+- For sites that block conventional headless browsers (Cloudflare, DataDome, PerimeterX)
+- SSRF protection: private IP ranges, link-local, loopback, cloud metadata blocked per-hop
+- Scheme allow-list: only http/https accepted
+- Response size caps: max_bytes (default 2MiB, max 50MiB)
+- Isolate mode: one-shot browser context per call
+- Lazy binary download: ~500MB Camoufox binary fetched on first use
+- Screenshot support: full-page or viewport, PNG/JPEG
+- CSS selector extraction
 
 ---
 
