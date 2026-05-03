@@ -1,5 +1,10 @@
 # Wiki Log
 
+## [2026-05-03] update | pi-zentui color refinements: model/thinking teal → syntaxType, cwdText → pale lavender
+- Changed model name and `(thinking)` suffix color in `index.ts`: hardcoded bright teal `#5eead4` → `syntaxType` theme token (muted teal, matches rest of UI)
+- Changed `cwdText` in `zentui.json`: `syntaxOperator` → `#c9b8e8` (pale lavender for working folder)
+- Pages updated: wiki/tools/pi-agent.md (index.ts row updated, cwdText row added to config table)
+
 ## [2026-05-03] update | pi-zentui local customizations documented
 - Documented local code fixes and UI changes to pi-zentui extension:
   - `ui.ts`: fixed `theme.fg()` hex crash → `colorize()`, changed rail `█` → `❯` (white), removed extra editor line spacing

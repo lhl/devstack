@@ -367,7 +367,7 @@ The extension source was modified locally to fix crashes and tailor the UI. Chan
 | File | Change |
 |---|---|
 | `ui.ts` | Fixed `theme.fg()` hex crash → `colorize()`; changed rail from `█` to `❯` (white); removed extra editor line spacing |
-| `index.ts` | Fixed `setWidget` factory API crash; rewrote meta widget (right-aligned, provider dim/model teal, `(thinking)` teal, org prefix stripped) |
+| `index.ts` | Fixed `setWidget` factory API crash; rewrote meta widget (right-aligned, provider dim, model/`(thinking)` muted teal via `syntaxType` theme token, org prefix stripped) |
 
 **User config (color preferences):**
 
@@ -375,6 +375,7 @@ The extension source was modified locally to fix crashes and tailor the UI. Chan
 |---|---|---|
 | `contextNormal` | `#facc15` | Lemon yellow |
 | `tokens` | `#fa8072` | Salmon |
+| `cwdText` | `#c9b8e8` | Pale lavender |
 
 **Relevant but not edited:**
 
