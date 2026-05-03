@@ -278,7 +278,27 @@ pi
 # /login inside pi
 ```
 
-Current version: 0.71.1 (as of 2026-05-03)
+Current version: 0.72.1 (as of 2026-05-03)
+
+## Rendering & UI Extensions
+
+### pi-code-previews (Evaluated, Interesting)
+
+**Repo:** [mattleong/pi-code-previews](https://github.com/mattleong/pi-code-previews) | **npm:** `pi-code-previews` (v0.1.14)
+
+Purely cosmetic — enhances how built-in tool calls render in the pi TUI. Does NOT modify tool execution or LLM behavior.
+
+- Uses **Shiki** for syntax-highlighted previews of file content, diffs, commands, and search results
+- Clearer `edit` and `write` diffs with configurable word-level emphasis (`smart` | `all` | `off`)
+- `grep` results grouped by file
+- `find` and `ls` path lists compacted with optional icons (unicode / nerd / off)
+- Optional visual warnings for risky shell commands and secret-looking output
+- Auto-skips tools already owned by another extension (no conflicts)
+- Configurable via `/code-preview-settings` (TUI), `.pi/settings.json`, or env vars (`CODE_PREVIEW_*`)
+- Health check via `/code-preview-health`
+- Comprehensive test suite (15 test files)
+
+**Verdict:** Low-risk, high-value quality-of-life upgrade. Would make tool output significantly more scannable. Worth installing.
 
 ## Core Architecture
 
