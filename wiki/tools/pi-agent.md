@@ -236,6 +236,35 @@ Replaces default compaction with an observational-memory format. Single-pass (li
 
 **Verdict:** A thoughtful alternative to default compaction if you prefer priority-scored, deduplicated summaries with explicit action bias. The two-threshold flow (observer + reflector) is well-designed. Main hesitation: uses the expensive session model rather than a cheap dedicated summarizer, so cost is the same as a regular turn. The reflector pruning caps are aggressive — useful for keeping observation blocks compact, but you trade completeness. Not installed for now — pi-continue handles mid-run continuation and we're fine with default's summary format.
 
+### Two Observational Memory Extensions Compared
+
+Two packages share the "observational memory" name but are architecturally unrelated:
+
+| Aspect | elpapi42/pi-observational-memory (v2.3.0) | GitHubFoxy/pi-extension-observational-memory |
+|---|---|---|
+| **npm** | `pi-observational-memory` | `pi-extension-observational-memory` |
+| **Architecture** | Three-tier: Observer → Compaction → Reflector+Pruner | Single-pass + reflector GC |
+| **Background observer** | ✅ Async, incremental (~1k token chunks), stores silent tree entries | ❌ No background observer — works only at compaction time |
+| **Summary assembly** | **Mechanical concatenation** — no LLM rewrite, byte-identical across cycles. Eliminates summary-of-a-summary degradation. | LLM-generated summary each compaction (like default) |
+| **Summary format** | `## Reflections` (durable prose) + `## Observations` (timestamped, relevance-tiered) | `## Observations` (🔴🟡🟢 emoji-priority) + `## Open Threads` + `## Next Action Bias` |
+| **Memory layers** | Two: durable reflections (identity, constraints) vs temporal observations (events). Reflections crystallize once, persist forever. | One: prioritized observations only |
+| **Compaction model** | Configurable via `compactionModel` — can point at a cheap/fast model separate from the session model | Always uses the active session model (expensive) |
+| **Pruning strategy** | Pruner drops observations by id across up to 5 passes, with token-budget pressure. Reflector crystallizes new reflections from pool. | Single-pass dedup + hard cap-prune (e.g., max 96 🔴, 40 🟡, 16 🟢; 72/28/8 when forced) |
+| **Auto-trigger** | Proactive: triggers compaction when agent is idle, configurable at ~50k raw tokens | Buffered observer on `agent_end` at configurable thresholds (observer 30k + reflector 40k + retain 8k) |
+| **Crash recovery** | Observer stores observations as silent tree entries in session JSONL | State only in-memory; lost on restart |
+| **Cache-friendly** | Memory updates batched at compaction boundaries — prompt prefix caching intact between compactions | Same: memory injected only at compaction, not mid-stream |
+| **Temporal reasoning** | Every observation has per-minute timestamp (`YYYY-MM-DD HH:MM`) | Date header only ("Date: unknown" if not available) |
+| **Commands** | `/om-status`, `/om-view` | `/obs-memory-status`, `/obs-auto-compact`, `/obs-mode`, `/obs-view`, `/obs-reflect` |
+| **UI** | Notification-based | Rich TUI overlay (`Ctrl+Shift+O`), model picker |
+| **Tests** | ✅ vitest test suite (7 test files) | ❌ No tests |
+| **Lines of code** | ~2,500 across 20+ modules | ~1,500 in single file + overlay |
+| **Split-turn handling** | Unknown | Metadata preserved, included in single-pass input |
+| **File tracking** | Unknown | Cumulative (merges with previous compaction tags) |
+
+**Key insight:** elpapi42's is a proper implementation of the [Mastra observational memory](https://mastra.ai/blog/observational-memory) pattern (94.87% on LongMemEval). The background observer + mechanical summary assembly means the summary never degrades through repeated compactions — it's the observation *pool* that evolves, not the summary text. Foxy's is a lighter adaptation with a different summary format and nicer UI polish.
+
+**Verdict:** If choosing between the two, elpapi42's is the stronger technical foundation — dedicated compaction model support, mechanical summary assembly (no compounding drift), background observer, crash recovery, test suite. Foxy's has nicer UX (overlay, model picker) but uses the expensive session model and LLM-generated summaries that degrade across cycles. Neither installed currently.
+
 ## Installation
 
 ```bash

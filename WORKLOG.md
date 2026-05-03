@@ -191,5 +191,24 @@ Append-only session log. Each entry records what was done, why, and what's next.
 - Not installing: uses expensive session model, different summary format from default, reflector pruning is lossy
 - Well-designed but better suited for teams that want structured observation logs, not general-purpose compaction
 
+## 2026-05-03 — Two observational memory extensions compared
+
+**What:** Compared elpapi42/pi-observational-memory (v2.3.0) vs GitHubFoxy/pi-extension-observational-memory.
+
+- Reviewed elpapi42's source in depth (src/observer.ts, src/compaction.ts, src/prompts.ts, types, config)
+- elpapi42 architecture: background observer (incremental, ~1k chunk agentic loops) → mechanical summary assembly (NO LLM rewrite — eliminates summary-of-a-summary) → reflector+pruner (multi-pass id-based drops, up to 5 passes)
+- Foxy architecture: single-pass LLM summarization → dedup + cap-prune, uses session model
+- Key differences: background observer vs single-pass, mechanical concatenation vs LLM-generated summaries, dedicated compaction model vs session model, reflection layer vs emoji-priority-only, crash recovery (silent tree entries) vs in-memory only, test suite vs none
+- Added comparison table (19 rows) to wiki/tools/pi-agent.md Compaction Landscape section
+- Decision: elpapi42's is technically stronger (mechanical assembly, dedicated model, tests); Foxy's has better UX (overlay, picker). Neither installed.
+- Updated WORKLOG.md and wiki/log.md
+
+**Decisions:**
+- elpapi42's version is the more mature implementation — follows Mastra's observational memory pattern properly
+- Neither installed: elpapi42's would be the choice if we wanted observational memory, but default covers our needs
+
+**Next:**
+- Test pi-continue mid-run guard in a long continuous session
+
 **Next:**
 - Test pi-continue mid-run guard in a long continuous session

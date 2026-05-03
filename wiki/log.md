@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-05-03] update | Two observational memory extensions compared
+- Source: github.com/elpapi42/pi-observational-memory (v2.3.0) vs github.com/GitHubFoxy/pi-observational-memory
+- Pages updated: wiki/tools/pi-agent.md (added 19-row comparison table: architecture, background observer, summary assembly, memory layers, compaction model, pruning, auto-trigger, crash recovery, temporal reasoning, commands, UI, tests, code size)
+
 ## [2026-05-03] update | pi-extension-observational-memory (Foxy) evaluated
 - Source: github.com/GitHubFoxy/pi-observational-memory (npm: pi-extension-observational-memory)
 - Pages updated: wiki/tools/pi-agent.md (added detailed analysis of Foxy's version, distinct from elpapi42's pi-observational-memory; comparison table vs pi-agentic-compaction)
