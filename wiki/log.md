@@ -1,5 +1,8 @@
 # Wiki Log
 
+## [2026-05-03] update | pi-code-previews shiki dependency documented
+- Pages updated: wiki/tools/pi-agent.md (added `npm install -g shiki` to install commands)
+
 ## [2026-05-03] update | pi-code-previews installed
 - Source: github.com/mattleong/pi-code-previews (v0.1.14, local git clone)
 - Pages updated: wiki/tools/pi-agent.md (added to installed extensions table, updated usage section)
