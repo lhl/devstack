@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-05-03] ingest | Pi status line / powerline footer
+- Pages created: wiki/tools/pi-statusline.md
+- Pages updated: wiki/index.md
+
 ## [2026-05-03] ingest | Pi model selection & customization
 - Pages created: wiki/tools/pi-model-selection.md
 - Pages updated: wiki/index.md
