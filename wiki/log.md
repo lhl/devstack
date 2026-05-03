@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-05-03] ingest | Pi model selection & customization
+- Pages created: wiki/tools/pi-model-selection.md
+- Pages updated: wiki/index.md
+
 ## [2026-05-03] update | camoufox-pi install fix: documented permissions + reload step
 - Root cause: camoufox-pi cached failed launch state from before binary install; reload after fetch fixed it
 - Also needs `chmod -R 755 ~/.cache/camoufox/` after fetch (binary permissions prompt)
