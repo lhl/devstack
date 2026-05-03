@@ -51,8 +51,9 @@ pi install npm:pi-web-access
 pi install npm:pi-smart-fetch
 pi install npm:@the-forge-flow/camoufox-pi
 
-# camoufox-pi also needs its ~500MB browser binary (one-time, lazy download):
-# npx camoufox fetch
+# camoufox-pi also needs its ~500MB browser binary (one-time):
+# npx camoufox fetch && chmod -R 755 ~/.cache/camoufox/
+# Then /reload inside pi before first use.
 ```
 
 ## Installed Extension Usage
@@ -760,8 +761,9 @@ Nine pi packages for web fetching and search were evaluated (2026-05-03). Three 
 **Install note:** The `pi install` above registers the extension, but the Camoufox browser binary (~500MB) must be downloaded separately before first use:
 ```bash
 npx camoufox fetch
+chmod -R 755 ~/.cache/camoufox/  # fix execute permissions if prompted
 ```
-Without this, `tff-fetch_url` and `tff-search_web` will fail with `browser_launch_failed`.
+Then run `/reload` inside pi — the extension caches launch state at load time, so a reload after binary install is required. Without this, `tff-fetch_url` and `tff-search_web` will fail with `browser_launch_failed`.
 
 ---
 

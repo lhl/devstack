@@ -1,5 +1,10 @@
 # Wiki Log
 
+## [2026-05-03] update | camoufox-pi install fix: documented permissions + reload step
+- Root cause: camoufox-pi cached failed launch state from before binary install; reload after fetch fixed it
+- Also needs `chmod -R 755 ~/.cache/camoufox/` after fetch (binary permissions prompt)
+- Pages updated: wiki/tools/pi-agent.md (install commands + install note), README.md
+
 ## [2026-05-03] update | Web fetch/search packages evaluated + installed
 - Surveyed 9 pi packages for web fetch/search capabilities
 - Installed: pi-web-access (v0.10.7), pi-smart-fetch (v0.2.35), @the-forge-flow/camoufox-pi (v0.2.1)

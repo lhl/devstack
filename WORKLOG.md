@@ -23,7 +23,7 @@ Append-only session log. Each entry records what was done, why, and what's next.
 - Skipped pi-fetch (LLM-generated, too basic), @pi-lab/webfetch (no repo/community)
 
 **Next:**
-- Smoke test all three packages on real pages
+- Smoke test all three packages on real pages ✅ — all three operational after camoufox reload fix
 - Test pi-web-access YouTube understanding and GitHub cloning
 
 ---
