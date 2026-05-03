@@ -16,6 +16,18 @@ links:
 
 Pi (pi.dev) is a minimal, extensible terminal coding harness by Mario Zechner (badlogic/Earendil Inc). It provides a lean foundation — 4 default tools, no built-in MCP, no plan mode, no permission system — with the philosophy that users build what they need via extensions.
 
+## Installed Extensions
+
+| Extension | npm | Purpose | Status |
+|---|---|---|---|
+| **pi-rtk-optimizer** | `npm:pi-rtk-optimizer` | Token optimization via RTK command rewriting + output compaction | ✅ Installed |
+| **pi-schedule-prompt** | `npm:pi-schedule-prompt` | Natural language scheduling, cron, per-task model | ⬜ To install |
+
+**Install commands:**
+```bash
+pi install npm:pi-schedule-prompt
+```
+
 ## Installation
 
 ```bash

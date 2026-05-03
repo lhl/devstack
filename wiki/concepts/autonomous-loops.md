@@ -135,8 +135,8 @@ These implement the edit→measure→keep/revert cycle.
 
 | Extension | npm | Purpose | Relevant? |
 |---|---|---|---|
-| **pi-loop** | `@pi-agents/loop` | Cron/repeating prompts — `/loop 5m check`, `schedule_wakeup` for dynamic pacing, dual-gate verify+guard | Minor — scheduling, not experiment loops. Could be useful for periodic metric monitoring |
-| **pi-schedule-prompt** | `pi-schedule-prompt` | Cron-like recurring prompts | Minor — loops are event-driven not time-driven |
+| **pi-schedule-prompt** | `pi-schedule-prompt` | Natural language scheduling with cron, intervals, per-task model, live widget | ✅ Recommended for scheduling |
+| **pi-loop** | `@pi-agents/loop` | Cron/repeating prompts — `/loop 5m check`, `schedule_wakeup` for dynamic pacing | Minor — scheduling, not experiment loops |
 | **pi-continuous-learning** | `pi-continuous-learning` | Distill session patterns into reusable instincts | Interesting for building optimization intuition over time |
 | **hermes-loop** | manual | Self-improving agent, skill generation from experience | Novel but unproven |
 | **Feynman** | `@companion-ai/feynman` | Research agent (alphaXiv, parallel research) | Paper search only — our paper work is more manual |
