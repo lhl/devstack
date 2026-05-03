@@ -48,12 +48,12 @@ pi install npm:pi-continue
 pi install npm:pi-code-previews
 pi install npm:pi-multiloop
 
-# Pre-fetch the Camoufox browser binary (~500 MB) so the camoufox-pi extension
-# doesn't probe-and-warn on first pi launch.
-camoufox_bin="$(npm root -g)/@the-forge-flow/camoufox-pi/node_modules/.bin/camoufox-js"
-if [ -x "$camoufox_bin" ]; then
-  echo "Fetching Camoufox browser binary..."
-  "$camoufox_bin" fetch
-fi
+# My UI
+pi install https://github.com/lhl/pi-zentui
+
+
+# install camoufox
+PIP_REQUIRE_HASHES=0 pip install -U camoufox[geoip]
+camoufox fetch
 
 echo "Done. Run 'pi' to start."
