@@ -135,3 +135,23 @@ Append-only session log. Each entry records what was done, why, and what's next.
 - Publish v0.1.0 to npm when ready
 - Update wiki/concepts/autonomous-loops.md to reference pi-multiloop
 - Wire up qmd collections for wiki/ and sources/
+
+## 2026-05-03 — pi-continue installed
+
+**What:** Installed pi-continue extension for mid-run context compaction.
+
+- Researched 8 pi compaction extensions (pi-boomerang, pi-vcc, pi-observational-memory, pi-custom-compaction, pi-model-aware-compaction, pi-context-cap, pi-continue, pi-rtk-optimizer)
+- Confirmed pi has built-in auto-compaction (triggers at `contextWindow - reserveTokens`, default reserveTokens=16384) — works between turns
+- Identified pi-continue's unique value: handles mid-run overflow (long tool-heavy sequences that exceed context before reaching turn boundaries)
+- Installed pi-continue v0.6.0 from local git clone (npm 11 peer-dep resolution issue with `@mariozechner/pi-coding-agent >=0.72.0` despite 0.72.1 being installed)
+  - Location: `.pi/git/pi-continue` (project-local)
+  - `pi install -l .pi/git/pi-continue` — no npm deps, pure TS extension
+- Updated wiki/tools/pi-agent.md: added to installed extensions table + usage section (commands, Continuation Ledger, optional file sync)
+- Updated wiki/log.md
+
+**Decisions:**
+- Local git clone over npm install due to npm 11 regression with peer deps
+- Complements pi-boomerang (context collapse between iterations) and built-in compaction (between turns) — pi-continue fills the mid-run gap
+
+**Next:**
+- Test pi-continue mid-run guard in a long continuous session

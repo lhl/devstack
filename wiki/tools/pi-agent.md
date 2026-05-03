@@ -10,6 +10,7 @@ links:
   - https://github.com/ifiokjr/oh-pi
   - https://github.com/ArtemisAI/pi-loop
   - https://github.com/tintinweb/pi-schedule-prompt
+  - https://github.com/Tiziano-AI/pi-continue
 ---
 
 # Pi Coding Agent
@@ -23,10 +24,15 @@ Pi (pi.dev) is a minimal, extensible terminal coding harness by Mario Zechner (b
 | **pi-rtk-optimizer** | `npm:pi-rtk-optimizer` | Token optimization via RTK command rewriting + output compaction | ✅ Installed |
 | **pi-schedule-prompt** | `npm:pi-schedule-prompt` | Natural language scheduling, cron, per-task model | ✅ Installed |
 | **pi-boomerang** | `npm:pi-boomerang` | Token-efficient autonomous loops — summarize between iterations | ✅ Installed |
+| **pi-continue** | `git:pi-continue` | Mid-run context compaction with Continuation Ledger | ✅ Installed (v0.6.0, local) |
 
 **Install commands:**
 ```bash
 pi install npm:pi-schedule-prompt
+
+# pi-continue installed from local git clone due to npm 11 peer-dep issue:
+# git clone https://github.com/Tiziano-AI/pi-continue .pi/git/pi-continue
+# pi install -l .pi/git/pi-continue
 ```
 
 ## Installed Extension Usage
@@ -76,6 +82,42 @@ cron_create cron="0 * * * *" prompt="hourly check"
 ```
 
 **Key feature:** Replaces full turn history with compact handoff summary — same outcome, fraction of tokens. Good for 15+ iteration runs.
+
+### pi-continue
+
+```
+# Open action palette (interactive) or continue now (non-interactive)
+/continue
+
+# Compact now, aborting active work if needed, then resume
+/continue steer [focus]
+
+# Wait until pi is idle, compact, then resume
+/continue queue [focus]
+
+# Preview prompt payloads that would be used (read-only overlay)
+/continue preview [focus]
+
+# Show latest continuation status, config, thresholds
+/continue status
+
+# Show latest Continuation Ledger in transient TUI overlay
+/continue ledger
+
+# Edit package settings (project or global)
+/continue settings [project|global]
+
+# Delete package settings after confirmation
+/continue reset [project|global]
+```
+
+**Key feature:** Handles mid-run context overflow — waits for completed assistant/tool-result batch, triggers compaction before the next oversized provider request, injects a structured Continuation Ledger (active task, recency, context map, working edge, validation, risks, anti-rework), then resumes the same task in-session.
+
+**Optional sync:** Can write `CONTINUE.md` and/or replace `AGENTS.md` with modeled updates — both off by default. The `agentGuideSyncMode` allows the agent guide to evolve into a living operating record across long runs.
+
+**Configuration:** `~/.pi/agent/extensions/pi-continue.json` (global) or `.pi/extensions/pi-continue.json` (project). Key settings: `midRunGuardEnabled` (default true), `summarizerModel` ("inherit" uses active model), `reasoning`, `continuationDocSyncMode`, `agentGuideSyncMode`.
+
+**Version:** 0.6.0 (as of 2026-05-03, installed from local git clone due to npm 11 peer-dep resolution issue)
 
 ## Installation
 
