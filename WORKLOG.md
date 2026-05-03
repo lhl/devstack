@@ -4,6 +4,27 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-05-03 — pi-zentui local customizations documented
+
+**What:** Documented local code fixes and UI changes to pi-zentui in the wiki.
+
+- Added "Local Customizations" subsection to `wiki/tools/pi-agent.md` under the Status Bars section:
+  - `ui.ts`: fixed `theme.fg()` hex crash → `colorize()`, rail `█` → `❯` (white), removed extra editor line spacing
+  - `index.ts`: fixed `setWidget` factory API crash, rewrote meta widget (right-aligned, provider dim/model teal, `(thinking)` teal, org prefix stripped)
+  - `zentui.json`: `contextNormal` → `#facc15` (lemon), `tokens` → `#fa8072` (salmon)
+  - `config.ts` noted as read-only (default config + colorize helper)
+- Updated `wiki/index.md` (description for pi-agent), `wiki/log.md` (prepended entry)
+- Committed: wiki: document pi-zentui local customizations
+
+**Decisions:**
+- Used tables in wiki page to organize file-level changes vs color config vs read-only files
+- Separated user config from extension source edits — clear owner distinction
+
+**Next:**
+- Continue other tasks or wait for next prompt
+
+---
+
 ## 2026-05-03 — Web fetch/search package survey + installation
 
 **What:** Evaluated 9 pi packages for web fetch/search, installed 3, documented everything.
