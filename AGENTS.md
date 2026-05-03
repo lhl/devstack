@@ -12,8 +12,8 @@ Handbook, framework, and toolkit for agentic programming practices. This repo is
 
 - Primary purpose: personal agentic practices KB + supporting software
 - `AGENTS.md` is the canonical instructions file; `CLAUDE.md` is symlinked to it
-- Source-of-truth docs: `WORKLOG.md` (session history), `README.md` (repo structure + wiki schema), `wiki/index.md` (wiki catalog), `wiki/log.md` (wiki operations log)
-- The wiki schema (ingest/query/lint operations, page conventions) lives in `README.md`
+- Source-of-truth docs: `WORKLOG.md` (session history), `README.md` (repo structure), `docs/WIKI.md` (wiki schema), `wiki/index.md` (wiki catalog), `wiki/log.md` (wiki operations log)
+- The wiki schema (ingest/query/lint operations, page conventions) lives in `docs/WIKI.md`
 
 ## Symlink Convention
 
@@ -38,9 +38,10 @@ This repo has two distinct layers:
 
 | Path | Purpose |
 | --- | --- |
-| `README.md` | Repo overview, directory roles, wiki schema, setup |
+| `README.md` | Repo overview, directory roles, setup |
 | `AGENTS.md` | This file — agent instructions |
 | `WORKLOG.md` | Append-only session log — what was done, decisions, next steps |
+| `docs/WIKI.md` | Wiki schema — operations, page conventions, filing rules |
 | `wiki/index.md` | Agent-maintained catalog of all wiki pages |
 | `wiki/log.md` | Append-only chronological operations log |
 | `docs/` | Working project docs for this repo (dev notes, research) |
@@ -68,17 +69,17 @@ This repo has two distinct layers:
 
 ### Wiki Operations
 
-Follow the wiki schema in `README.md` (sections: Operations, Page conventions, index/log formats, subdirectories, filing rules).
+Full wiki schema is in [`docs/WIKI.md`](docs/WIKI.md) — operations, page conventions, index/log formats, subdirectories, filing rules.
 
 - **Ingest**: process `inbox/` items → write/update `wiki/` pages → update `wiki/index.md` → prepend to `wiki/log.md` → move originals to `sources/`
 - **Query**: read `wiki/index.md` → read relevant pages → synthesize → optionally file answer as new wiki page
 - **Lint**: check for orphans, stale claims, missing pages, contradictions, broken `[[wikilinks]]`
 
 Key constraints:
-- Every wiki page needs frontmatter (`title`, `tags`, `sources`, `links`) — see README.md for format
+- Every wiki page needs frontmatter (`title`, `tags`, `sources`, `links`) — see `docs/WIKI.md` for format
 - Every new or updated page must be reflected in `wiki/index.md`
 - Every operation must be logged in `wiki/log.md` (reverse-chronological)
-- File sources into the correct `sources/` subdirectory by format/origin — see README.md filing rules
+- File sources into the correct `sources/` subdirectory by format/origin — see `docs/WIKI.md` filing rules
 
 ### Research and Claim Hygiene
 
