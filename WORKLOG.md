@@ -103,3 +103,35 @@ Append-only session log. Each entry records what was done, why, and what's next.
 - Commit after session
 - Wire up qmd collections
 - Set up pi-agent and RTK in projects/
+
+## 2026-05-03 — Autonomous loop research + pi-multiloop extension
+
+**What:** Comprehensive research of pi autonomous loop ecosystem, designed and implemented pi-multiloop extension.
+
+- Surveyed 15+ autonomous loop extensions (pi-autoresearch, pi-boomerang, pi-supervisor, pi-teams, PiSwarm, pi-ralph, etc.)
+- Created wiki/concepts/autonomous-loops.md with master comparison tables, gap analysis, convergence detection methods
+- Analyzed our codex-autoresearch fork's multi-loop architecture (path-based namespacing, LANE+RUN_TAG, cross-process locking)
+- Identified key gap: no pi extension supports multi-loop-per-worktree with lane isolation
+- Designed and implemented pi-multiloop (github.com/lhl/pi-multiloop, npm: pi-multiloop)
+  - 7 modules: lanes.ts, state.ts, metrics.ts, loop.ts, modes.ts, index.ts, ui.ts
+  - 4 modes: optimize (edit→measure→keep/revert), punchlist, research, dev
+  - Lane-based state isolation with JSONL history + JSON snapshots
+  - MAD confidence scoring for noisy benchmarks
+  - Escalation ladder (3→refine, 5→pivot, 2 pivots→stop)
+  - Pi extension API integration (events, tools, commands, TUI status)
+  - 43 passing tests (vitest), clean TypeScript compilation
+- Added as devstack submodule at projects/pi-multiloop
+- Originally named pi-autoloop, renamed to pi-multiloop (pi-autoloop taken by mikeyobrien/pi-autoloop)
+
+**Decisions:**
+- pi-multiloop not pi-autoloop: github.com/mikeyobrien/pi-autoloop already exists (different project)
+- Pi packages as peerDependencies only: too large a dependency tree for devDeps, use global install for type-checking
+- JSONL over TSV for results: structured, easier to parse in TypeScript
+- No cross-process locking (unlike codex-autoresearch): pi is single-process
+- Complementary with pi-boomerang (context compression) and pi-supervisor (goal enforcement), not built-in
+
+**Next:**
+- Test pi-multiloop with `pi install file:.` on a real project
+- Publish v0.1.0 to npm when ready
+- Update wiki/concepts/autonomous-loops.md to reference pi-multiloop
+- Wire up qmd collections for wiki/ and sources/
