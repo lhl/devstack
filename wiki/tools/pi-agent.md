@@ -25,14 +25,17 @@ Pi (pi.dev) is a minimal, extensible terminal coding harness by Mario Zechner (b
 | **pi-schedule-prompt** | `npm:pi-schedule-prompt` | Natural language scheduling, cron, per-task model | ✅ Installed |
 | **pi-boomerang** | `npm:pi-boomerang` | Token-efficient autonomous loops — summarize between iterations | ✅ Installed |
 | **pi-continue** | `git:pi-continue` | Mid-run context compaction with Continuation Ledger | ✅ Installed (v0.6.0, local) |
+| **pi-code-previews** | `git:pi-code-previews` | Shiki syntax-highlighted tool output rendering in TUI | ✅ Installed (v0.1.14, local) |
 
 **Install commands:**
 ```bash
 pi install npm:pi-schedule-prompt
 
-# pi-continue installed from local git clone due to npm 11 peer-dep issue:
+# pi-continue and pi-code-previews installed from local git clones due to npm 11 peer-dep issue:
 # git clone https://github.com/Tiziano-AI/pi-continue .pi/git/pi-continue
+# git clone https://github.com/mattleong/pi-code-previews .pi/git/pi-code-previews
 # pi install -l .pi/git/pi-continue
+# pi install -l .pi/git/pi-code-previews
 ```
 
 ## Installed Extension Usage
@@ -282,23 +285,29 @@ Current version: 0.72.1 (as of 2026-05-03)
 
 ## Rendering & UI Extensions
 
-### pi-code-previews (Evaluated, Interesting)
+### pi-code-previews (✅ Installed)
 
 **Repo:** [mattleong/pi-code-previews](https://github.com/mattleong/pi-code-previews) | **npm:** `pi-code-previews` (v0.1.14)
 
 Purely cosmetic — enhances how built-in tool calls render in the pi TUI. Does NOT modify tool execution or LLM behavior.
 
+**Usage:**
+```
+/code-preview-settings    # Open TUI settings (theme, line counts, icons, tools)
+/code-preview-health      # Show renderer state, active/skipped tools, Shiki status
+```
+
+**Features:**
 - Uses **Shiki** for syntax-highlighted previews of file content, diffs, commands, and search results
 - Clearer `edit` and `write` diffs with configurable word-level emphasis (`smart` | `all` | `off`)
 - `grep` results grouped by file
 - `find` and `ls` path lists compacted with optional icons (unicode / nerd / off)
 - Optional visual warnings for risky shell commands and secret-looking output
 - Auto-skips tools already owned by another extension (no conflicts)
-- Configurable via `/code-preview-settings` (TUI), `.pi/settings.json`, or env vars (`CODE_PREVIEW_*`)
-- Health check via `/code-preview-health`
+- Configurable via `.pi/settings.json` (`codePreview.*`) or env vars (`CODE_PREVIEW_*`)
 - Comprehensive test suite (15 test files)
 
-**Verdict:** Low-risk, high-value quality-of-life upgrade. Would make tool output significantly more scannable. Worth installing.
+**Version:** 0.1.14 (as of 2026-05-03, installed from local git clone)
 
 ## Core Architecture
 

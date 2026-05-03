@@ -221,8 +221,17 @@ Append-only session log. Each entry records what was done, why, and what's next.
 - Low-risk, high-value: would make tool output much more scannable
 - Worth installing — no downside
 
+## 2026-05-03 — pi-code-previews installed
+
+**What:** Installed pi-code-previews v0.1.14 for syntax-highlighted tool output.
+
+- Installed from local git clone at `.pi/git/pi-code-previews` (npm 11 peer-dep issue)
+- Registered in `.pi/settings.json` as `"git/pi-code-previews"`
+- Updated wiki/tools/pi-agent.md: added to installed extensions table, updated Rendering & UI Extensions section with usage commands
+- Updated wiki/log.md
+
 **Next:**
-- Install pi-code-previews
+- Test /code-preview-settings and /code-preview-health in a pi session
 
 **Next:**
 - Test pi-continue mid-run guard in a long continuous session

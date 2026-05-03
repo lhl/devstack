@@ -1,0 +1,8 @@
+node_modules/
+.DS_Store
+*.log
+.pi/npm/
+.pi/git/
+.pi/agent/code-previews.json
+.pi/code-previews.json
+code-previews.json

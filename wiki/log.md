@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-05-03] update | pi-code-previews installed
+- Source: github.com/mattleong/pi-code-previews (v0.1.14, local git clone)
+- Pages updated: wiki/tools/pi-agent.md (added to installed extensions table, updated usage section)
+
 ## [2026-05-03] update | pi-code-previews evaluated
 - Source: github.com/mattleong/pi-code-previews (npm: pi-code-previews, v0.1.14)
 - Pages updated: wiki/tools/pi-agent.md (added Rendering & UI Extensions section; fixed pi version number)

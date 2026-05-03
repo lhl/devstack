@@ -1,5 +1,6 @@
 {
   "packages": [
-    "git/pi-continue"
+    "git/pi-continue",
+    "git/pi-code-previews"
   ]
 }
