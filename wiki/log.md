@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-05-03] update | pi-extension-observational-memory (Foxy) evaluated
+- Source: github.com/GitHubFoxy/pi-observational-memory (npm: pi-extension-observational-memory)
+- Pages updated: wiki/tools/pi-agent.md (added detailed analysis of Foxy's version, distinct from elpapi42's pi-observational-memory; comparison table vs pi-agentic-compaction)
+
 ## [2026-05-03] update | pi-agentic-compaction evaluated
 - Source: github.com/laulauland/pi-agentic-compaction
 - Pages updated: wiki/tools/pi-agent.md (added Compaction Landscape section with evaluated extensions table + detailed pi-agentic-compaction gains/losses analysis)

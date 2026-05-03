@@ -130,8 +130,9 @@ Pi has built-in auto-compaction (enabled by default, triggers at `contextWindow 
 | **pi-continue** | Mid-run guard + Continuation Ledger | ✅ Installed |
 | **pi-boomerang** | Context collapse after autonomous task runs | ✅ Installed |
 | **@sting8k/pi-vcc** | Algorithmic, no LLM calls | Researched |
-| **pi-observational-memory** | Tiered cognitive memory with reflections | Researched |
-| **pi-agentic-compaction** | Agentic loop over virtual filesystem | Evaluated (below) |
+| **pi-observational-memory** (elpapi42) | Tiered cognitive memory with reflections (v2.3.0) | Researched |
+| **pi-extension-observational-memory** (Foxy) | Observational summaries + reflector GC, single-pass | Evaluated (below) |
+| **pi-agentic-compaction** | Agentic loop over virtual filesystem | Evaluated |
 | **pi-model-aware-compaction** | Per-model compaction thresholds | Researched |
 | **pi-custom-compaction** | Swap model + template + trigger | Researched |
 | **pi-context-cap** | Cap model windows to force earlier compaction | Researched |
@@ -160,7 +161,80 @@ Replaces pi's default single-pass summarization with an agentic exploration loop
 - **No split-turn handling** — default has explicit logic for mid-turn cuts (`turnPrefixMessages`); this extension doesn't
 - **Raw JSON serialization** — summarizer must parse JSON structure with jq, more complex than default's readable text format
 
-**Verdict:** Interesting concept but riskier than default for general use. Worth revisiting when sessions routinely exceed 100k+ tokens where single-pass costs become painful. Pin a capable model (not the default cheap ones) if summary quality matters. Currently not installed — pi-continue + built-in compaction cover our needs.
+**Verdict:** Interesting concept but riskier than default for general use. Worth revisiting when sessions routinely exceed 100k+ tokens where single-pass costs become painful. Pin a capable model (not the default cheap ones) if summary quality matters. Currently not installed.
+
+### pi-extension-observational-memory (Evaluated, Not Installed)
+
+**Repo:** [GitHubFoxy/pi-observational-memory](https://github.com/GitHubFoxy/pi-observational-memory) | **npm:** `pi-extension-observational-memory`
+
+Replaces default compaction with an observational-memory format. Single-pass (like default) but with a different summary structure, post-processing reflector, and built-in auto-trigger.
+
+**Overrides:** Yes — returns a custom `compaction` result from `session_before_compact`, fully replacing the default summary format. Also hooks `session_before_tree` for branch summaries. Falls back gracefully if no model/API key or if generation fails.
+
+**Architecture:**
+- Single-pass summarization via `serializeConversation` + `convertToLlm` (same as default)
+- Uses the **active session model** (not a separate cheap model)
+- After generation: runs a **reflector** (dedup + priority-cap pruning) when observation token estimate crosses threshold (default 40k) or when forced
+- Cumulative file tracking — merges `<read-files>` and `<modified-files>` from previous compactions
+- Two-threshold flow:
+  - **Observer trigger** (default 30k tokens): raw-tail tokens since last compaction → fires auto-compaction on `agent_end` in buffered mode
+  - **Reflector trigger** (default 40k tokens): observation-block tokens → fires reflector dedup/prune
+  - **Raw-tail retain** (default 8k tokens): extra buffer before observer triggers, for partial activation
+
+**Summary format:**
+```markdown
+## Observations
+- 🔴 critical constraints, blockers, deadlines, irreversible decisions
+- 🟡 important but possibly evolving context
+- 🟢 low-priority informational context
+
+## Open Threads
+- unfinished work items
+
+## Next Action Bias
+1. most likely immediate next action
+2. optional second action
+```
+
+**Commands:**
+```
+/obs-memory-status      # Show compaction + branch summary metadata, token estimates
+/obs-auto-compact        # Show/set thresholds and mode (keyed or positional)
+/obs-mode                # Show/set observer mode: buffered (default) or blocking
+/obs-view [obs|raw] [N]  # Inspect latest observation summary
+/obs-reflect [focus]     # Force aggressive reflection + trigger compaction now
+```
+
+**Gains vs default compaction:**
+- **Better memory format** — priority-tagged observations (🔴/🟡/🟢) with open threads and action bias, more scannable than default's long-form narrative
+- **Reflector GC** — deduplicates and prunes observations on overflow; both threshold-based (automatic) and forced (`/obs-reflect`)
+- **Cumulative file tags** — merges read/modified files across compactions, same as default
+- **Buffered auto-mode** — background observer trigger on `agent_end` at configurable thresholds, with cooldown
+- **Status overlay** — `Ctrl+Shift+O` opens a live TUI overlay showing compaction state, token estimates, observation counts
+- **Split-turn aware** — preserves `preparation.isSplitTurn` in metadata, `turnPrefixMessages` included in serialized input for single-pass
+
+**Losses vs default compaction:**
+- **Incompatible summary format** — completely different structure from default; summaries aren't interchangeable (but the summary is self-contained, so the LLM can still read it)
+- **No dedicated summarizer model** — uses the active session model (same cost as conversation model); if that model is expensive (e.g., Opus), compaction costs what a conversation turn costs
+- **Single-pass bottleneck** — same as default: model must ingest the full serialized conversation; no cost savings on long sessions (unlike pi-agentic-compaction's agentic exploration)
+- **Reflector is lossy by design** — dedup and cap pruning can drop context the default would preserve; forced reflector is aggressive (max 72 🔴, 28 🟡, 8 🟢)
+
+**Comparison with pi-agentic-compaction:**
+
+| Aspect | pi-agentic-compaction | pi-extension-observational-memory |
+|---|---|---|
+| Exploration | Agentic (bash + jq tools) | Single-pass (like default) |
+| Model | Separate cheap models (configurable) | Active session model |
+| Cost profile | Cheaper for long sessions (reads only what it queries) | Same as default (reads everything) |
+| Latency | Higher (multiple tool-call turns) | Same as default (one LLM call) |
+| Summary format | Standard markdown (customizable structure) | Priority-tagged observations + threads + bias |
+| Post-processing | None (raw model output) | Reflector dedup + priority-cap pruning |
+| File tracking | Current messages only | Cumulative (merges previous compaction tags) |
+| Auto-trigger | None (relies on pi's built-in) | Buffered observer on `agent_end` at configurable thresholds |
+| Split-turn handling | None | Preserves metadata, includes in single-pass input |
+| Risk of missing context | High (depends on model's exploration strategy) | Low (single-pass, but reflector pruning can drop items) |
+
+**Verdict:** A thoughtful alternative to default compaction if you prefer priority-scored, deduplicated summaries with explicit action bias. The two-threshold flow (observer + reflector) is well-designed. Main hesitation: uses the expensive session model rather than a cheap dedicated summarizer, so cost is the same as a regular turn. The reflector pruning caps are aggressive — useful for keeping observation blocks compact, but you trade completeness. Not installed for now — pi-continue handles mid-run continuation and we're fine with default's summary format.
 
 ## Installation
 

@@ -173,3 +173,23 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 **Next:**
 - Test pi-continue mid-run guard in a long continuous session
+
+## 2026-05-03 — pi-extension-observational-memory (Foxy) evaluated
+
+**What:** Evaluated GitHubFoxy's observational memory extension.
+
+- Reviewed [GitHubFoxy/pi-observational-memory](https://github.com/GitHubFoxy/pi-observational-memory) source (index.ts, overlay.ts, DESIGN.md) and README
+- npm: `pi-extension-observational-memory` — distinct from elpapi42's `pi-observational-memory` (v2.3.0)
+- Key finding: it DOES override default compaction (returns custom `compaction` from `session_before_compact`), but falls back gracefully on failure
+- Architecture: single-pass via session model, priority-tagged observation format (🔴/🟡/🟢), reflector GC (dedup + cap-prune), two-threshold flow (observer 30k + reflector 40k + retain 8k), cumulative file tags, buffered auto-mode with status overlay
+- Compared vs default compaction (gains: better memory format, reflector GC, buffered auto-mode; losses: incompatible format, expensive session model, lossy pruning) and vs pi-agentic-compaction (table: exploration method, model, cost, latency, format, file tracking, risk)
+- Added to wiki/tools/pi-agent.md: updated evaluated extensions table + detailed analysis with comparison table
+- Decision: not installing — pi-continue handles mid-run, default format is fine, session-model cost is a blocker for routine compaction
+- Updated wiki/log.md
+
+**Decisions:**
+- Not installing: uses expensive session model, different summary format from default, reflector pruning is lossy
+- Well-designed but better suited for teams that want structured observation logs, not general-purpose compaction
+
+**Next:**
+- Test pi-continue mid-run guard in a long continuous session
