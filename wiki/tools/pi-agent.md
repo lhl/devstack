@@ -28,6 +28,33 @@ Pi (pi.dev) is a minimal, extensible terminal coding harness by Mario Zechner (b
 pi install npm:pi-schedule-prompt
 ```
 
+## Installed Extension Usage
+
+### pi-rtk-optimizer
+
+```
+/rtk              # Open interactive TUI settings modal
+/rtk stats        # Show compaction metrics for session
+/rtk verify       # Check if rtk binary is available
+/rtk reset        # Reset to defaults
+```
+
+### pi-schedule-prompt
+
+```
+# Recurring prompts
+/schedule-prompt "check build status" every 5 minutes
+/schedule-prompt "analyze metrics" every hour
+
+# One-time reminders
+/schedule-prompt "review PR in 30 minutes"
+/schedule-prompt "follow up tomorrow at 9am"
+
+# Via LLM tools (the extension provides these):
+schedule_wakeup delaySeconds=300  # Dynamic pacing
+cron_create cron="0 * * * *" prompt="hourly check"
+```
+
 ## Installation
 
 ```bash
