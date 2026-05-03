@@ -2,37 +2,47 @@
 
 An opiniated guide for agentic programming best practices. This is what I'm currently using/moving towards to for development.
 
-## Components
+## Coding Agent
 
-- **Pi Agent** — personal agent framework
-- **RTK** — Rust Token Killer (CLI proxy for token-optimized dev operations)
-- **Goal / Ralph Loop / AutoResearch** — autonomous research and goal-tracking patterns
-- **LLM Wiki** — git-backed, agent-maintained knowledge base (Karpathy pattern)
-
-## Installed Components
-
+- [Pi Coding Agent](https://pi.dev/) - an open source minimal terminal coding harness that will adapt to the way you want to work. You may want to start or use Claude Code, OpenAI Codex, OpenCode, etc, but Pi's flexibility and ease of customization makes it something probably worth trying sooner rather than later
 ### Pi Extensions
 
-| Extension | Install | Version | Purpose |
-|---|---|---|---|
-| `pi-rtk-optimizer` | npm (global) | 0.7.0 | Token optimization via RTK command rewriting + output compaction |
-| `pi-schedule-prompt` | npm (global) | 0.2.0 | Natural language scheduling, cron, per-task model |
-| `pi-boomerang` | npm (global) | 0.6.3 | Token-efficient autonomous loops — summarize between iterations |
-| `pi-continue` | git (project-local) | 0.6.0 | Mid-run context compaction with Continuation Ledger |
-| `pi-code-previews` | git (project-local) | 0.1.14 | Shiki syntax-highlighted tool output rendering in TUI |
-| `pi-web-access` | npm (global) | 0.10.7 | Web search, content extraction, video/YT, GitHub clone, PDF |
-| `pi-smart-fetch` | npm (global) | 0.2.35 | Browser-like TLS fingerprints + Defuddle site extractors |
-| `camoufox-pi` | npm (global) | 0.2.1 | Stealth web access via Camoufox anti-fingerprinting Firefox fork (requires `npx camoufox fetch` + `/reload`) |
-| `pi-zentui` | npm (global) | 0.1.2 | Starship-inspired status line + Opencode-style TUI (footer, bordered editor, accent rail) |
+Here's what I actually have installed for my Pi setup:
+
+- [pi-multiloop](https://github.com/lhl/pi-multiloop) — my autoloop. A fresh implementation from the things I learned from my [codex-autoresearch](https://github.com/lhl/codex-autoresearch/) fork and from my experience with autoloops since 2025
+- [pi-zentui](https://github.com/lhl/pi-zentui) — my personal fork of a status-line that fits my preference
+- `pi-rtk-optimizer` — token optimization via RTK command rewriting + output compaction
+  - [rtk](https://github.com/rtk-ai/rtk) — if you pay for tokens or have a quota, I've found this to be the easiest way to reduce token consumption. You can hook this up to basically any agentic harness relatively easily
+- `pi-schedule-prompt` — natural language scheduling, cron, per-task model
+- `pi-boomerang` — token-efficient autonomous loops — summarize between iterations
+- `pi-continue` — mid-run context compaction with Continuation Ledger
+- `pi-code-previews` — Shiki syntax-highlighted tool output rendering in TUI
+- `pi-web-access` — web search, content extraction, video/YT, GitHub clone, PDF
+- `pi-smart-fetch` — browser-like TLS fingerprints + Defuddle site extractors
+- `camoufox-pi` — stealth web access via Camoufox anti-fingerprinting Firefox fork (requires `npx camoufox fetch` + `/reload`)
+
+
+If you want to install everything:
+```
+git clone https://github.com/lhl/devstack
+cd devstack
+./pi-setup.sh
+```
 
 ### Standalone Tools
 
 | Tool | Version | Install | Purpose |
 |---|---|---|---|
-| `rtk` | 0.38.0 | cargo (`~/.local/bin`) | High-performance CLI proxy for token-optimized dev commands |
 | `outline-edit` | 0.2.0 | pip (mambaforge) | CLI for Outline knowledge base with local markdown cache |
 | `qmd` | 2.1.0 | npm (global) | Local semantic search engine for markdown/code collections |
 | `realitycheck` | — | ❌ Not installed | Framework for rigorous claim/source/prediction tracking |
+
+
+
+
+## This Repo
+
+This  
 
 Detailed docs for each component at `wiki/tools/`. Extension evaluations and comparisons at `wiki/tools/pi-agent.md`.
 
@@ -59,6 +69,8 @@ devstack/
 ├── projects/              # Software submodules / subdirs
 └── tools/                 # Scripts, configs, utilities
 ```
+
+
 
 ### Directory roles
 
