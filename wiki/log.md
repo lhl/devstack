@@ -1,5 +1,10 @@
 # Wiki Log
 
+## [2026-05-04] ingest | LLM Wiki concept page
+- Source: sources/conversations/RESEARCH-llmwiki.md, sources/gists/karpathy-llm-wiki.md, sources/gists/rohitg00-llm-wiki-v2.md
+- Pages created: wiki/concepts/llm-wiki.md
+- Pages updated: wiki/index.md
+
 ## [2026-05-03] update | pi-zentui rail: `┃` → `▌` (U+258C left half block)
 - Changed `RAIL` constant from `┃` (U+2503 HEAVY VERTICAL LINE) → `▌` (U+258C LEFT HALF BLOCK)
 - Pages updated: wiki/tools/pi-agent.md (ui.ts row)
