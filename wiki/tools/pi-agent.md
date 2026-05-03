@@ -50,6 +50,9 @@ pi install npm:pi-schedule-prompt
 pi install npm:pi-web-access
 pi install npm:pi-smart-fetch
 pi install npm:@the-forge-flow/camoufox-pi
+
+# camoufox-pi also needs its ~500MB browser binary (one-time, lazy download):
+# npx camoufox fetch
 ```
 
 ## Installed Extension Usage
@@ -753,6 +756,12 @@ Nine pi packages for web fetching and search were evaluated (2026-05-03). Three 
 - Lazy binary download: ~500MB Camoufox binary fetched on first use
 - Screenshot support: full-page or viewport, PNG/JPEG
 - CSS selector extraction
+
+**Install note:** The `pi install` above registers the extension, but the Camoufox browser binary (~500MB) must be downloaded separately before first use:
+```bash
+npx camoufox fetch
+```
+Without this, `tff-fetch_url` and `tff-search_web` will fail with `browser_launch_failed`.
 
 ---
 

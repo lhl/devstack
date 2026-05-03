@@ -22,7 +22,7 @@ Handbook / framework / toolkit for agentic programming practices.
 | `pi-code-previews` | git (project-local) | 0.1.14 | Shiki syntax-highlighted tool output rendering in TUI |
 | `pi-web-access` | npm (global) | 0.10.7 | Web search, content extraction, video/YT, GitHub clone, PDF |
 | `pi-smart-fetch` | npm (global) | 0.2.35 | Browser-like TLS fingerprints + Defuddle site extractors |
-| `camoufox-pi` | npm (global) | 0.2.1 | Stealth web access via Camoufox anti-fingerprinting Firefox fork |
+| `camoufox-pi` | npm (global) | 0.2.1 | Stealth web access via Camoufox anti-fingerprinting Firefox fork (requires `npx camoufox fetch` for browser binary) |
 
 ### Standalone Tools
 
