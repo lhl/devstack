@@ -233,5 +233,16 @@ Append-only session log. Each entry records what was done, why, and what's next.
 **Next:**
 - Test /code-preview-settings and /code-preview-health in a pi session
 
+## 2026-05-03 — README updated with installed components table
+
+**What:** Added Installed Components section to README.md.
+
+- Pi Extensions table: 5 entries with install method, version, purpose
+- Standalone Tools table: 4 entries (3 installed, 1 pending)
+- Cross-reference to wiki/tools/ for detailed docs
+
+**Decisions:**
+- Single source of truth: wiki pages have full details; README has quick-reference tables
+
 **Next:**
 - Test pi-continue mid-run guard in a long continuous session

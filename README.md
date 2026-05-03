@@ -9,6 +9,29 @@ Handbook / framework / toolkit for agentic programming practices.
 - **Goal / Ralph Loop / AutoResearch** — autonomous research and goal-tracking patterns
 - **LLM Wiki** — git-backed, agent-maintained knowledge base (Karpathy pattern)
 
+## Installed Components
+
+### Pi Extensions
+
+| Extension | Install | Version | Purpose |
+|---|---|---|---|
+| `pi-rtk-optimizer` | npm (global) | 0.7.0 | Token optimization via RTK command rewriting + output compaction |
+| `pi-schedule-prompt` | npm (global) | 0.2.0 | Natural language scheduling, cron, per-task model |
+| `pi-boomerang` | npm (global) | 0.6.3 | Token-efficient autonomous loops — summarize between iterations |
+| `pi-continue` | git (project-local) | 0.6.0 | Mid-run context compaction with Continuation Ledger |
+| `pi-code-previews` | git (project-local) | 0.1.14 | Shiki syntax-highlighted tool output rendering in TUI |
+
+### Standalone Tools
+
+| Tool | Version | Install | Purpose |
+|---|---|---|---|
+| `rtk` | 0.38.0 | cargo (`~/.local/bin`) | High-performance CLI proxy for token-optimized dev commands |
+| `outline-edit` | 0.2.0 | pip (mambaforge) | CLI for Outline knowledge base with local markdown cache |
+| `qmd` | 2.1.0 | npm (global) | Local semantic search engine for markdown/code collections |
+| `realitycheck` | — | ❌ Not installed | Framework for rigorous claim/source/prediction tracking |
+
+Detailed docs for each component at `wiki/tools/`. Extension evaluations and comparisons at `wiki/tools/pi-agent.md`.
+
 ## Repo Structure
 
 ```
