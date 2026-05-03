@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-05-03] update | pi-code-previews evaluated
+- Source: github.com/mattleong/pi-code-previews (npm: pi-code-previews, v0.1.14)
+- Pages updated: wiki/tools/pi-agent.md (added Rendering & UI Extensions section; fixed pi version number)
+
 ## [2026-05-03] update | Two observational memory extensions compared
 - Source: github.com/elpapi42/pi-observational-memory (v2.3.0) vs github.com/GitHubFoxy/pi-observational-memory
 - Pages updated: wiki/tools/pi-agent.md (added 19-row comparison table: architecture, background observer, summary assembly, memory layers, compaction model, pruning, auto-trigger, crash recovery, temporal reasoning, commands, UI, tests, code size)

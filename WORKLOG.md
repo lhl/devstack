@@ -207,8 +207,22 @@ Append-only session log. Each entry records what was done, why, and what's next.
 - elpapi42's version is the more mature implementation — follows Mastra's observational memory pattern properly
 - Neither installed: elpapi42's would be the choice if we wanted observational memory, but default covers our needs
 
+## 2026-05-03 — pi-code-previews evaluated
+
+**What:** Evaluated pi-code-previews (Shiki syntax-highlighted TUI rendering for pi tool calls).
+
+- Reviewed README, index.ts — purely cosmetic, no tool execution changes
+- Features: syntax highlighting via Shiki, edit/write diffs with word emphasis, grep file grouping, find/ls path compacting with icons, bash/secret warnings, TUI settings
+- 15 test files, well-structured codebase, auto-skips conflicting extensions
+- Added to wiki/tools/pi-agent.md: new Rendering & UI Extensions section
+- Fixed pi version number (0.71.1 → 0.72.1 as actually installed)
+
+**Decisions:**
+- Low-risk, high-value: would make tool output much more scannable
+- Worth installing — no downside
+
 **Next:**
-- Test pi-continue mid-run guard in a long continuous session
+- Install pi-code-previews
 
 **Next:**
 - Test pi-continue mid-run guard in a long continuous session
