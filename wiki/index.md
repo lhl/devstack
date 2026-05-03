@@ -5,6 +5,10 @@
 - [[concepts/autonomous-loops]] — Autonomous loop extensions for Pi: optimization, multi-agent, goal supervision, comparison tables
 - [[concepts/llm-wiki]] — The LLM Wiki pattern: agent-compiled knowledge base vs RAG, implementations, ecosystem
 
+## Practices
+
+- [[practices/ml-workflow-tips]] — ML dev environment setup: mamba + uv, nvm.fish, Starship, byobu/tmux, Atuin
+
 ## Tools
 
 - [[tools/pi-agent]] — Pi coding agent: minimal extensible terminal coding harness (pi.dev), local pi-zentui customization log

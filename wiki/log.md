@@ -1,5 +1,10 @@
 # Wiki Log
 
+## [2026-05-04] create | ML Workflow Tips practice page
+- Source: https://llm-tracker.info/howto/ML-Workflow-Tips, local config (~/.config/atuin/config.toml, nvm.fish)
+- Pages created: wiki/practices/ml-workflow-tips.md
+- Covers: mamba + uv, nvm.fish, Starship, byobu/tmux, Atuin config
+
 ## [2026-05-04] ingest | LLM Wiki concept page
 - Source: sources/conversations/RESEARCH-llmwiki.md, sources/gists/karpathy-llm-wiki.md, sources/gists/rohitg00-llm-wiki-v2.md
 - Pages created: wiki/concepts/llm-wiki.md

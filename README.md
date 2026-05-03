@@ -4,59 +4,79 @@ An opiniated guide for agentic programming best practices. This is what I'm curr
 
 ## Coding Agent
 
-[Pi Coding Agent](https://pi.dev/) — an open source minimal terminal coding harness that adapts to the way you want to work. You may want to start with Claude Code, OpenAI Codex, OpenCode, etc, but Pi's flexibility and ease of customization makes it worth trying sooner rather than later.
+[Pi Coding Agent](https://pi.dev/) is an open source "minimal terminal coding harness" that is designed be customized and adapt to the way you want to work. You can start with Claude Code, OpenAI Codex, OpenCode or any harness you want, but if you're looking to start really customizing your workflow/experience, or looking for the best tool to use with multiple models (or just looking for a harness that won't introduce ridiculous regressions constantly), I believe Pi Agent's flexibility and ease of customization actually makes it the current best option. 
+
+You should visit their nicely designed website to get a better idea of what it's all about, but if you just want to install my current setup (pi + my plugins):
 
 ```bash
-curl -fsSL https://pi.dev/install.sh | sh
-```
-
-### Automation & Workflow
-
-- [pi-multiloop](https://github.com/lhl/pi-multiloop) — my autoloop. A fresh implementation from the things I learned from my [codex-autoresearch](https://github.com/lhl/codex-autoresearch/) fork and from my experience with autoloops since 2025
-- `pi-boomerang` — token-efficient autonomous loops — summarize between iterations
-- `pi-schedule-prompt` — natural language scheduling, cron, per-task model
-- `pi-continue` — mid-run context compaction with Continuation Ledger
-
-### Web Access
-
-- `pi-web-access` — web search, content extraction, video/YT, GitHub clone, PDF
-- `pi-smart-fetch` — browser-like TLS fingerprints + Defuddle site extractors
-- `camoufox-pi` — stealth web access via Camoufox anti-fingerprinting Firefox fork (requires `npx camoufox fetch` + `/reload`)
-
-### UX
-
-- [pi-zentui](https://github.com/lhl/pi-zentui) — my personal fork of a status-line that fits my preference
-- `pi-code-previews` — Shiki syntax-highlighted tool output rendering in TUI
-
-### Token Optimization
-
-- `pi-rtk-optimizer` — token optimization via RTK command rewriting + output compaction
-  - [rtk](https://github.com/rtk-ai/rtk) — if you pay for tokens or have a quota, I've found this to be the easiest way to reduce token consumption. You can hook this up to basically any agentic harness relatively easily
-
-
-If you want to install everything:
-```
 git clone https://github.com/lhl/devstack
 cd devstack
 ./pi-setup.sh
 ```
 
-### Standalone Tools
+### Web Access
 
-| Tool | Version | Install | Purpose |
-|---|---|---|---|
-| `outline-edit` | 0.2.0 | pip (mambaforge) | CLI for Outline knowledge base with local markdown cache |
-| `qmd` | 2.1.0 | npm (global) | Local semantic search engine for markdown/code collections |
-| `realitycheck` | — | ❌ Not installed | Framework for rigorous claim/source/prediction tracking |
+This is probably the biggest feature you're going to need. `pi-web-access` is the most popular and robust plugin, and the others augment the capabilities with better data extraction or more robust browsing
 
+- [nicobailon/pi-web-access](https://github.com/nicobailon/pi-web-access) - web search, content extraction, video/YT, GitHub clone, PDF
+- [Thinkscape/agent-smart-fetch](https://github.com/Thinkscape/agent-smart-fetch) (pi-smart-fetch) - browser-like TLS fingerprints + Defuddle site extractors
+- [MonsieurBarti/camoufox-pi](https://github.com/MonsieurBarti/camoufox-pi) - stealth web access via Camoufox anti-fingerprinting Firefox fork (requires `npx camoufox fetch` + `/reload`)
+  - [Camoufox](https://github.com/daijro/camoufox) - there are a few different builds, but basically, it's a Firefox fork designed for AI agents
 
+### Automation & Workflow
+
+There are also a bajillion sub-agent extensions, I mostly would rather start new sessions or control my sub-agents rather than having them spawned willy-nilly, but if I find a good extension I actually use, I'll add it here.
+
+- [lhl/pi-multiloop](https://github.com/lhl/pi-multiloop) - my autoloop. A from-scratch implementation from the things I learned from my [codex-autoresearch](https://github.com/lhl/codex-autoresearch/) fork and from my experience working with autoloops since mid-2025
+- [tintinweb/pi-schedule-prompt](https://github.com/tintinweb/pi-schedule-prompt) - if you just want an easy heartbeat (recurring cron-like tasks, or one-shot tasks) this does the job 
+
+### Context Management 
+
+For saving tokens.
+
+- [MasuRii/pi-rtk-optimizer](https://github.com/MasuRii/pi-rtk-optimizer) - the most mature/complete `rtk` plugin (`rtk` is a standalone rust binary that dynamically filters and compresses command outputs before they reach LLM context for huge token savings)
+  - [rtk](https://github.com/rtk-ai/rtk) — if you pay for tokens or have a quota, I've found this to be the easiest way to reduce token consumption
+- [nicobailon/pi-boomerang](https://github.com/nicobailon/pi-boomerang) - this allows launching subagents for tasks that deliver just summarized outputs to your harness 
+- [Tiziano-AI/pi-continue](https://github.com/Tiziano-AI/pi-continue) - Pi has good compaction OOTB (the plugins I looked at weren't unambiguous improvements) but this is one nice add-on that helps with the corner case where you run out of context mid-run
+
+### UX
+
+- [lhl/pi-zentui](https://github.com/lhl/pi-zentui) - my personal fork of a status-line that fits my preferences
+- [mattleong/pi-code-previews](https://github.com/mattleong/pi-code-previews) - for better syntax-highlighting from tool calls
+
+### Skills
+
+- `outline-edit` — CLI for Outline knowledge base with local markdown cache (pip, mambaforge)
+
+## Models (as of May 2026)
+
+Pi supports a number of providers OOTB including most first-party frontier model providers as well as Bedrock, Vertex, and HuggingFace and OpenRouter.
+
+My current best coding models:
+- GPT-5.5 xhigh
+- GPT-5.4 xhigh
+- Opus-4.7 xhigh
+- Opus-4.6 max
+- GPT-5.3-codex xhigh
+- GPT-5.2 xhigh
+
+I haven't used enough of the latest open models but these should be good (Sonnet 4.x level?):
+- DeepSeek V4 Pro
+- MiniMax M2.7
+- Kimi K2.6
+- MiMo V2.5 Pro
+- Qwen3.6 Max Preview
 
 
 ## This Repo
 
-This  
+This repo is also an LLM Wiki (Karpathy pattern) — a personal knowledge base where an agent ingests sources, compiles synthesized wiki pages, and maintains cross-links. Detailed docs for each component at `wiki/tools/`. Extension evaluations and comparisons at `wiki/tools/pi-agent.md`.
 
-Detailed docs for each component at `wiki/tools/`. Extension evaluations and comparisons at `wiki/tools/pi-agent.md`.
+### Tools
+
+| Tool | Version | Install | Purpose |
+|---|---|---|---|
+| `qmd` | 2.1.0 | npm (global) | Local semantic search engine for markdown/code collections |
 
 ## Repo Structure
 
@@ -82,8 +102,6 @@ devstack/
 └── tools/                 # Scripts, configs, utilities
 ```
 
-
-
 ### Directory roles
 
 **inbox/** — Drop anything here: URLs, PDFs, conversations, screenshots, half-formed notes. The agent processes items into `wiki/` pages and archives originals into `sources/`. Unprocessed items live here until ingested.
@@ -103,85 +121,6 @@ devstack/
 ## Wiki Schema
 
 See [`docs/WIKI.md`](docs/WIKI.md) for the full wiki operational schema (operations, page conventions, frontmatter format, index/log formats, subdirectories, filing rules).
-
-## Setup
-
-### Coding Agents
-
-This repo is designed to work with multiple coding agents. We use `AGENTS.md` as the canonical instruction file with `CLAUDE.md` symlinked to it (see [AGENTS.md](AGENTS.md) for details).
-
-#### Claude Code
-
-[Claude Code](https://docs.anthropic.com/en/docs/claude-code) is Anthropic's CLI agent. Install via the [official instructions](https://docs.anthropic.com/en/docs/claude-code/getting-started).
-
-```bash
-# Authenticate
-export ANTHROPIC_API_KEY=sk-ant-...
-# Or use: claude login
-```
-
-Claude Code automatically loads `CLAUDE.md` (→ symlink → `AGENTS.md`) from the repo root.
-
-#### Pi Agent
-
-[Pi](https://pi.dev) ([GitHub](https://github.com/badlogic/pi-mono/tree/main/packages/coding-agent)) is a minimal, extensible terminal coding harness. It supports 20+ LLM providers and is built around a TypeScript extension system rather than batteries-included features.
-
-```bash
-# Install (pick one)
-curl -fsSL https://pi.dev/install.sh | sh     # install script
-npm install -g @mariozechner/pi-coding-agent   # npm global
-
-# Authenticate (pick one)
-export ANTHROPIC_API_KEY=sk-ant-...            # API key
-pi                                             # then /login for subscription auth
-```
-
-Pi automatically loads `AGENTS.md` (or `CLAUDE.md`) by walking parent directories from cwd — same pattern as Claude Code.
-
-**Key config paths:**
-- `~/.pi/agent/settings.json` — global settings
-- `.pi/settings.json` — project-level overrides
-- `~/.pi/agent/extensions/` — TypeScript extensions
-- `~/.pi/agent/skills/` — skills (also `.pi/skills/`, `.agents/skills/`)
-- `~/.pi/agent/prompts/` — prompt templates
-- `.pi/SYSTEM.md` — system prompt override
-
-**Packages:** Pi supports installable packages bundling extensions, skills, prompts, and themes:
-```bash
-pi install npm:@foo/pi-tools
-pi install git:github.com/user/repo@v1
-pi list
-pi update
-```
-
-See [wiki/tools/pi-agent.md](wiki/tools/pi-agent.md) for full evaluation notes and comparison with Claude Code. See [pi.dev docs](https://pi.dev/docs/latest) for complete documentation.
-
-#### Codex (OpenAI)
-
-[Codex](https://github.com/openai/codex) is OpenAI's CLI agent. It reads `AGENTS.md` natively.
-
-```bash
-npm install -g @openai/codex
-export OPENAI_API_KEY=sk-...
-codex
-```
-
-### qmd
-
-[qmd](https://github.com/tobi/qmd) is a local semantic search engine + MCP server for markdown/code collections. Hybrid BM25 + vector search with on-device models — the retrieval layer for wiki search at scale.
-
-```bash
-# Install
-npm install -g @tobilu/qmd
-
-# Add collections and build embeddings
-qmd collection add ~/github/lhl/devstack/wiki --name devstack-wiki
-qmd collection add ~/github/lhl/devstack/sources --name devstack-sources
-qmd embed
-
-# Run as MCP server (for Claude Code / Codex)
-qmd mcp --http --daemon
-```
 
 ## Sources & References
 
