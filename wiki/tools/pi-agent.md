@@ -21,7 +21,7 @@ Pi (pi.dev) is a minimal, extensible terminal coding harness by Mario Zechner (b
 | Extension | npm | Purpose | Status |
 |---|---|---|---|
 | **pi-rtk-optimizer** | `npm:pi-rtk-optimizer` | Token optimization via RTK command rewriting + output compaction | ✅ Installed |
-| **pi-schedule-prompt** | `npm:pi-schedule-prompt` | Natural language scheduling, cron, per-task model | ⬜ To install |
+| **pi-schedule-prompt** | `npm:pi-schedule-prompt` | Natural language scheduling, cron, per-task model | ✅ Installed |
 
 **Install commands:**
 ```bash
