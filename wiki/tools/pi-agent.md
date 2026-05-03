@@ -366,7 +366,7 @@ The extension source was modified locally to fix crashes and tailor the UI. Chan
 
 | File | Change |
 |---|---|
-| `ui.ts` | Fixed `theme.fg()` hex crash → `colorize()`; rail `█` → `┃` (U+2503 heavy); extracted `RAIL` constant so editor and user message rail are consistent; removed extra editor line spacing |
+| `ui.ts` | Fixed `theme.fg()` hex crash → `colorize()`; rail `█` → `▌` (U+258C left half block); extracted `RAIL` constant so editor and user message rail are consistent; removed extra editor line spacing |
 | `index.ts` | Fixed `setWidget` factory API crash; rewrote meta widget (right-aligned, provider dim, model/`(thinking)` muted teal via `syntaxType` theme token, org prefix stripped) |
 
 **User config (color preferences):**

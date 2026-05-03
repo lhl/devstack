@@ -1,6 +1,8 @@
 # Wiki Log
 
-## [2026-05-03] update | pi-zentui rail: `❯` → `┃` (U+2503 heavy), unified via RAIL constant
+## [2026-05-03] update | pi-zentui rail: `┃` → `▌` (U+258C left half block)
+- Changed `RAIL` constant from `┃` (U+2503 HEAVY VERTICAL LINE) → `▌` (U+258C LEFT HALF BLOCK)
+- Pages updated: wiki/tools/pi-agent.md (ui.ts row)
 - Editor rail (`PolishedEditor.render` in `ui.ts`): `❯` → `┃` (U+2503 HEAVY VERTICAL LINE)
 - User message rail: already `┃` via `currentRailColor`, now also uses shared `RAIL` constant (both places reference same var)
 - Added `const RAIL = "┃"` at top of `ui.ts` — single source of truth for the rail character
