@@ -32,6 +32,8 @@ pi install npm:pi-boomerang
 pi install npm:pi-web-access
 pi install npm:pi-smart-fetch
 pi install npm:@the-forge-flow/camoufox-pi@0.2.1
+pi install npm:pi-continue
+pi install npm:pi-code-previews
 pi install npm:pi-multiloop
 
 echo "Done. Run 'pi' to start."
