@@ -25,6 +25,18 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-05-03 — pi-zentui rail: `┃` → `▌` (U+258C left half block)
+
+**What:** Switched rail from `┃` to `▌` (U+258C LEFT HALF BLOCK) — softer, more compact.
+
+- Changed `RAIL` constant in `ui.ts`: `┃` (U+2503) → `▌` (U+258C)
+- Committed: wiki: update pi-zentui rail to ▌ (U+258C left half block)
+
+**Next:**
+- Reload pi (`/reload`) to apply all pending changes
+
+---
+
 ## 2026-05-03 — pi-zentui rail: unified to ┃ (U+2503) via RAIL constant
 
 **What:** Unified rail character across editor and user message, switched from `❯` to `┃`.
