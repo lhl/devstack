@@ -26,16 +26,12 @@ fi
 pi --version
 
 # Install plugin stack
-PI_MULTILOOP_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")/../github/lhl/pi-multiloop" && pwd)"
-
-echo "Installing plugin stack..."
-
 pi install npm:pi-rtk-optimizer
 pi install npm:pi-schedule-prompt
 pi install npm:pi-boomerang
 pi install npm:pi-web-access
 pi install npm:pi-smart-fetch
 pi install npm:@the-forge-flow/camoufox-pi@0.2.1
-pi install "$PI_MULTILOOP_PATH"
+pi install npm:pi-multiloop
 
 echo "Done. Run 'pi' to start."
