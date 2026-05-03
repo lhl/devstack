@@ -119,6 +119,49 @@ cron_create cron="0 * * * *" prompt="hourly check"
 
 **Version:** 0.6.0 (as of 2026-05-03, installed from local git clone due to npm 11 peer-dep resolution issue)
 
+## Compaction Landscape
+
+Pi has built-in auto-compaction (enabled by default, triggers at `contextWindow - reserveTokens`). Several extensions modify or replace this behavior:
+
+### Evaluated Compaction Extensions
+
+| Extension | Approach | Status |
+|---|---|---|
+| **pi-continue** | Mid-run guard + Continuation Ledger | ✅ Installed |
+| **pi-boomerang** | Context collapse after autonomous task runs | ✅ Installed |
+| **@sting8k/pi-vcc** | Algorithmic, no LLM calls | Researched |
+| **pi-observational-memory** | Tiered cognitive memory with reflections | Researched |
+| **pi-agentic-compaction** | Agentic loop over virtual filesystem | Evaluated (below) |
+| **pi-model-aware-compaction** | Per-model compaction thresholds | Researched |
+| **pi-custom-compaction** | Swap model + template + trigger | Researched |
+| **pi-context-cap** | Cap model windows to force earlier compaction | Researched |
+
+### pi-agentic-compaction (Evaluated, Not Installed)
+
+**Repo:** [laulauland/pi-agentic-compaction](https://github.com/laulauland/pi-agentic-compaction)
+
+Replaces pi's default single-pass summarization with an agentic exploration loop:
+- Mounts the conversation as `/conversation.json` in an in-memory virtual filesystem (just-bash)
+- Gives the summarizer `bash`/`zsh` + `jq`, `grep`, `head`, `tail`, `wc`, `cat` to explore it
+- Model queries only the parts it needs across multiple tool-call turns, then emits the summary
+- Configurable multi-model fallback chain via `/compaction-model`; defaults to cheap models (`cerebras/zai-glm-4.7`, `openai/gpt-5.4-mini`)
+
+**Gains vs default compaction:**
+- **Cheaper** for long conversations — model reads only what it queries, not the entire transcript
+- **Better file accuracy** — pairs tool calls with tool results, filters no-op edits
+- **Tool result fidelity** — keeps up to 50k chars (default truncates at 2k)
+- **Steerable** — `/compact focus on X` biases exploration strategy and output
+
+**Losses vs default compaction:**
+- **Multiple API calls** per compaction (exploration loop) instead of a single pass
+- **Higher latency** — multiple round-trips + tool execution
+- **Small-model blind spots** — cheap defaults (zai-glm-4.7, gpt-5.4-mini) may miss context a full-pass model would catch; bad exploration = bad summary
+- **No cumulative file tracking** — detects files only from current messages, doesn't carry forward across compactions
+- **No split-turn handling** — default has explicit logic for mid-turn cuts (`turnPrefixMessages`); this extension doesn't
+- **Raw JSON serialization** — summarizer must parse JSON structure with jq, more complex than default's readable text format
+
+**Verdict:** Interesting concept but riskier than default for general use. Worth revisiting when sessions routinely exceed 100k+ tokens where single-pass costs become painful. Pin a capable model (not the default cheap ones) if summary quality matters. Currently not installed — pi-continue + built-in compaction cover our needs.
+
 ## Installation
 
 ```bash

@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-05-03] update | pi-agentic-compaction evaluated
+- Source: github.com/laulauland/pi-agentic-compaction
+- Pages updated: wiki/tools/pi-agent.md (added Compaction Landscape section with evaluated extensions table + detailed pi-agentic-compaction gains/losses analysis)
+
 ## [2026-05-03] update | pi-continue extension installed
 - Source: github.com/Tiziano-AI/pi-continue (v0.6.0)
 - Pages updated: wiki/tools/pi-agent.md (added pi-continue to installed extensions table, usage section with commands and Continuation Ledger docs)

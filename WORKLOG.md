@@ -155,3 +155,21 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 **Next:**
 - Test pi-continue mid-run guard in a long continuous session
+
+## 2026-05-03 — pi-agentic-compaction evaluated
+
+**What:** Evaluated pi-agentic-compaction extension (agentic-loop compaction).
+
+- Reviewed [laulauland/pi-agentic-compaction](https://github.com/laulauland/pi-agentic-compaction) source and README
+- Compared against pi's default compaction: agentic exploration loop (just-bash virtual filesystem + jq/grep tools) vs single-pass summarization
+- Documented gains (cheaper for long sessions, better file accuracy, steerable, 50k tool result limit vs 2k) and losses (multiple API calls, latency, small-model blind spots, no cumulative file tracking, no split-turn handling, raw JSON serialization)
+- Added to wiki/tools/pi-agent.md: new "Compaction Landscape" section with evaluated extensions table + detailed pi-agentic-compaction analysis
+- Decision: not installing for now — pi-continue + built-in compaction cover current needs; revisit when sessions routinely exceed 100k+ tokens
+- Updated wiki/log.md
+
+**Decisions:**
+- Not installing: riskier than default for general use, cheap-default-model blind spots, no split-turn handling
+- Worth revisiting later for very long sessions where single-pass costs matter
+
+**Next:**
+- Test pi-continue mid-run guard in a long continuous session
