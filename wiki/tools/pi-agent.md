@@ -36,8 +36,9 @@ pi install npm:pi-schedule-prompt
 # git clone https://github.com/mattleong/pi-code-previews .pi/git/pi-code-previews
 # pi install -l .pi/git/pi-continue
 # pi install -l .pi/git/pi-code-previews
-# pi-code-previews requires shiki as a manual global dependency:
-# npm install -g shiki
+# pi install -l does NOT run npm install — must install deps manually:
+# (cd .pi/git/pi-continue && npm install)
+# (cd .pi/git/pi-code-previews && npm install)
 ```
 
 ## Installed Extension Usage
