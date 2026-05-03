@@ -32,7 +32,7 @@ Pi (pi.dev) is a minimal, extensible terminal coding harness by Mario Zechner (b
 | **pi-web-access** | `npm:pi-web-access` | Web search, content extraction, video/YT understanding, GitHub cloning, PDF | ✅ Installed (v0.10.7) |
 | **pi-smart-fetch** | `npm:pi-smart-fetch` | Browser-like TLS fingerprints + Defuddle extraction for bot-defended pages | ✅ Installed (v0.2.35) |
 | **camoufox-pi** | `npm:@the-forge-flow/camoufox-pi` | Stealth web access via Camoufox (C++-level anti-fingerprinting Firefox fork) | ✅ Installed (v0.2.1) |
-| **pi-statusbar** | `git:github.com/mjakl/pi-statusbar` | Focused powerline-style status bar (fork of pi-powerline-footer, extras stripped) | ✅ Installed (v0.10.0) |
+| **pi-zentui** | `npm:pi-zentui` | Starship-inspired status line + Opencode-style TUI (footer with git/runtime, bordered editor, accent rail) | ✅ Installed (v0.1.2) |
 
 **Install commands:**
 ```bash
@@ -53,7 +53,7 @@ pi install npm:pi-smart-fetch
 pi install npm:@the-forge-flow/camoufox-pi
 
 # Status bar
-pi install git:github.com/mjakl/pi-statusbar
+pi install npm:pi-zentui
 
 # camoufox-pi also needs its ~500MB browser binary (one-time):
 # npx camoufox fetch && chmod -R 755 ~/.cache/camoufox/
@@ -330,6 +330,37 @@ Purely cosmetic — enhances how built-in tool calls render in the pi TUI. Does 
 - Comprehensive test suite (15 test files)
 
 **Version:** 0.1.14 (as of 2026-05-03, installed from local git clone)
+
+## Status Bars
+
+We use **pi-zentui** for the status line and editor styling.
+
+### pi-zentui (Installed)
+
+**Repo:** [lmilojevicc/pi-zentui](https://github.com/lmilojevicc/pi-zentui) | **npm:** `npm:pi-zentui` | v0.1.2
+
+Starship-inspired footer + Opencode-style TUI for pi.
+
+**Footer (Starship-inspired):**
+- `󰝰 dirname` — current directory with icon
+- `on  branch` — git branch with icon
+- `[!?↑]` — git status indicators (modified, untracked, ahead/behind, stashed)
+- `via  v5.5.0` — runtime detection (Bun, Deno, Node, Python, Go, Rust, Lua, Java, Ruby, PHP)
+- Right side: context usage, token counts, cost
+
+**Editor (Opencode-inspired):**
+- Bordered input box with accent-colored left rail
+- Model name and provider displayed inside the editor frame
+- Thinking level indicator when enabled
+- Matching style for previous user messages
+
+**Status Icons:** `!` modified, `?` untracked, `+` staged, `✘` deleted, `»` renamed, `$` stashed, `↑` ahead, `↓` behind, `⇕` diverged
+
+**Install:** `pi install npm:pi-zentui` (config at `~/.pi/agent/zentui.json`)
+
+### Status Bar Alternatives Evaluated
+
+See [[tools/pi-statusline]] for full comparison of pi-statusbar, pi-powerline-footer, and custom footer approaches.
 
 ## Core Architecture
 

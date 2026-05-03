@@ -2,6 +2,7 @@
 title: Pi Status Line (Powerline Footer)
 tags: [tools, pi, configuration, tui, ui]
 links:
+  - https://github.com/lmilojevicc/pi-zentui
   - https://github.com/nicobailon/pi-powerline-footer
   - https://github.com/mjakl/pi-statusbar
   - https://github.com/Graffioh/dotfiles/tree/main/pi/agent/extensions/berto-powerline-footer
@@ -12,6 +13,8 @@ links:
 
 The default pi footer is minimal: working directory, session name, token/cache usage, cost, context %, and current model. The editor border color changes with thinking level, but there's no segment config, no glyphs, no presets. For a colorful, segmented, themeable status bar (equivalent to ccstatus / claude-hud for Claude Code), you install an extension.
 
+**Current choice: pi-zentui** — Starship-inspired footer + Opencode-style editor. Compact, clean, customizable via `~/.pi/agent/zentui.json`.
+
 ## Extension API
 
 The TUI extension surface supports: replacing the editor, adding widgets above/below it, adding a status line, replacing the footer, and overlays. Segments don't have to be owned by one extension — any extension can publish into a shared status registry via `extension_statuses` + a `statusKey`. This is how popular powerline footers pick up status from other extensions.
@@ -19,6 +22,25 @@ The TUI extension surface supports: replacing the editor, adding widgets above/b
 See [[tools/pi-agent]] for the full extension API surface.
 
 ## Third-Party Status Bars
+
+### pi-zentui (Recommended)
+
+[lmilojevicc/pi-zentui](https://github.com/lmilojevicc/pi-zentui) — Starship-inspired footer + Opencode-style TUI.
+
+**Rendering:** A real footer line (not embedded in editor border) with icon-rich segments. Also restyles the editor with accent rails and bordered boxes.
+
+**Segments:**
+- Directory name (with icon)
+- Git branch (with icon)
+- Git status indicators: `!` modified, `?` untracked, `+` staged, `✘` deleted, `$` stashed, `↑` ahead, `↓` behind, `⇕` diverged
+- Runtime detection: bun, deno, node, python, go, rust, lua, java, ruby, php
+- Context %, token counts, cost (right side)
+
+**Configuration:** `~/.pi/agent/zentui.json` — presets + custom segment order, colors, icons. Supports Nerd Font icons.
+
+```bash
+pi install npm:pi-zentui
+```
 
 ### pi-powerline-footer (Popular)
 

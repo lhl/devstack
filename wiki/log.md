@@ -1,5 +1,10 @@
 # Wiki Log
 
+## [2026-05-03] update | Switched statusbar from pi-statusbar to pi-zentui
+- Removed pi-statusbar (git:github.com/mjakl/pi-statusbar) — uninstalled via `pi remove`
+- Installed pi-zentui (npm:pi-zentui, v0.1.2) — Starship-inspired footer + Opencode-style TUI
+- Pages updated: README.md (extensions table), wiki/tools/pi-agent.md (installed table + new Status Bars section), wiki/tools/pi-statusline.md (added pi-zentui as recommended option, added to frontmatter links)
+
 ## [2026-05-03] ingest | Pi status line / powerline footer
 - Pages created: wiki/tools/pi-statusline.md
 - Pages updated: wiki/index.md

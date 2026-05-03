@@ -23,7 +23,7 @@ Handbook / framework / toolkit for agentic programming practices.
 | `pi-web-access` | npm (global) | 0.10.7 | Web search, content extraction, video/YT, GitHub clone, PDF |
 | `pi-smart-fetch` | npm (global) | 0.2.35 | Browser-like TLS fingerprints + Defuddle site extractors |
 | `camoufox-pi` | npm (global) | 0.2.1 | Stealth web access via Camoufox anti-fingerprinting Firefox fork (requires `npx camoufox fetch` + `/reload`) |
-| `pi-statusbar` | git (global) | 0.10.0 | Powerline-style focused status bar (forked from pi-powerline-footer, extras stripped) |
+| `pi-zentui` | npm (global) | 0.1.2 | Starship-inspired status line + Opencode-style TUI (footer, bordered editor, accent rail) |
 
 ### Standalone Tools
 
