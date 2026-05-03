@@ -32,6 +32,7 @@ Pi (pi.dev) is a minimal, extensible terminal coding harness by Mario Zechner (b
 | **pi-web-access** | `npm:pi-web-access` | Web search, content extraction, video/YT understanding, GitHub cloning, PDF | ✅ Installed (v0.10.7) |
 | **pi-smart-fetch** | `npm:pi-smart-fetch` | Browser-like TLS fingerprints + Defuddle extraction for bot-defended pages | ✅ Installed (v0.2.35) |
 | **camoufox-pi** | `npm:@the-forge-flow/camoufox-pi` | Stealth web access via Camoufox (C++-level anti-fingerprinting Firefox fork) | ✅ Installed (v0.2.1) |
+| **pi-statusbar** | `git:github.com/mjakl/pi-statusbar` | Focused powerline-style status bar (fork of pi-powerline-footer, extras stripped) | ✅ Installed (v0.10.0) |
 
 **Install commands:**
 ```bash
@@ -50,6 +51,9 @@ pi install npm:pi-schedule-prompt
 pi install npm:pi-web-access
 pi install npm:pi-smart-fetch
 pi install npm:@the-forge-flow/camoufox-pi
+
+# Status bar
+pi install git:github.com/mjakl/pi-statusbar
 
 # camoufox-pi also needs its ~500MB browser binary (one-time):
 # npx camoufox fetch && chmod -R 755 ~/.cache/camoufox/
