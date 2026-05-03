@@ -21,7 +21,24 @@ Append-only session log. Each entry records what was done, why, and what's next.
 - Separated user config from extension source edits — clear owner distinction
 
 **Next:**
-- Continue other tasks or wait for next prompt
+- Reload pi (`/reload`) so the color changes take effect
+
+---
+
+## 2026-05-03 — pi-zentui color refinements
+
+**What:** Two color refinements to match muted UI teal and add pale lavender to working folder.
+
+- **Model name teal:** Changed hardcoded bright teal `#5eead4` → `syntaxType` theme token in `index.ts` meta widget (both model name and `(thinking)` suffix)
+  - The `syntaxType` token is the muted teal used throughout the rest of the pi UI
+- **Working folder:** Changed `cwdText` in `zentui.json` from `syntaxOperator` → `#c9b8e8` (pale lavender)
+- Wiki updated: `wiki/tools/pi-agent.md` (index.ts row, cwdText row added), `wiki/log.md` (new entry prepended)
+- Committed: wiki: update pi-zentui color refinements
+
+**Note:** `index.ts` and `zentui.json` are outside the devstack repo — changes made directly to `~/.pi/agent/` paths. Need `/reload` inside pi to pick up the changes.
+
+**Next:**
+- Reload pi (`/reload`) so the color changes take effect
 
 ---
 
