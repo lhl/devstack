@@ -25,6 +25,21 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-05-03 — pi-zentui rail: unified to ┃ (U+2503) via RAIL constant
+
+**What:** Unified rail character across editor and user message, switched from `❯` to `┃`.
+
+- Added `const RAIL = "┃"` (U+2503 HEAVY VERTICAL LINE) at top of `ui.ts` — single source of truth
+- Editor rail in `PolishedEditor.render`: `❯` → `RAIL`
+- User message rail in `patchUserMessageComponent`: already `┃` but now also uses `RAIL` constant
+- Wiki updated: `wiki/tools/pi-agent.md` (ui.ts row), `wiki/log.md` (new entry prepended)
+- Committed: wiki: update pi-zentui rail character to ┃ (U+2503)
+
+**Next:**
+- Reload pi (`/reload`) to apply rail + color changes
+
+---
+
 ## 2026-05-03 — pi-zentui color refinements
 
 **What:** Two color refinements to match muted UI teal and add pale lavender to working folder.
