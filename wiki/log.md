@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-05-03] update | pi-zentui rail: `❯` → `┃` (U+2503 heavy), unified via RAIL constant
+- Editor rail (`PolishedEditor.render` in `ui.ts`): `❯` → `┃` (U+2503 HEAVY VERTICAL LINE)
+- User message rail: already `┃` via `currentRailColor`, now also uses shared `RAIL` constant (both places reference same var)
+- Added `const RAIL = "┃"` at top of `ui.ts` — single source of truth for the rail character
+- Pages updated: wiki/tools/pi-agent.md (ui.ts row updated)
+
 ## [2026-05-03] update | pi-zentui color refinements: model/thinking teal → syntaxType, cwdText → pale lavender
 - Changed model name and `(thinking)` suffix color in `index.ts`: hardcoded bright teal `#5eead4` → `syntaxType` theme token (muted teal, matches rest of UI)
 - Changed `cwdText` in `zentui.json`: `syntaxOperator` → `#c9b8e8` (pale lavender for working folder)
