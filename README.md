@@ -54,6 +54,7 @@ devstack/
 │   ├── tools/             # qmd, RTK, Claude Code, Codex, etc.
 │   ├── practices/         # Workflows, playbooks, how-tos
 │   └── projects/          # Pi Agent, devstack, etc.
+├── writing/               # Your authored content — writeups, talks, slides
 ├── docs/                  # Project working docs for this repo
 ├── projects/              # Software submodules / subdirs
 └── tools/                 # Scripts, configs, utilities
@@ -66,6 +67,8 @@ devstack/
 **sources/** — Karpathy's "raw" layer. Immutable once filed. The agent reads from here but never modifies these files. Organized by type. Binary files (PDFs, images) can use Git LFS via `.gitattributes`.
 
 **wiki/** — Agent-owned. The agent creates, updates, and cross-links pages here. Humans read it; the agent writes it. Every page should use `[[wikilinks]]` for cross-references. `index.md` is the entry point — a categorized catalog of all pages with one-line summaries. `log.md` is an append-only chronological record of operations (ingests, queries, lint passes).
+
+**writing/** — Your own authored content: workflow writeups, talks, slide decks, presentations. Not ingested sources or agent wiki pages — these are things you wrote for external audiences.
 
 **docs/** — Working documents for this repo itself — development notes, research, planning. May be human-authored or agent-authored. Not part of the wiki; these are project-specific artifacts.
 

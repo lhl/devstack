@@ -44,6 +44,7 @@ This repo has two distinct layers:
 | `wiki/index.md` | Agent-maintained catalog of all wiki pages |
 | `wiki/log.md` | Append-only chronological operations log |
 | `docs/` | Working project docs for this repo (dev notes, research) |
+| `writing/` | Your authored content — writeups, talks, slides |
 
 ## Directory Ownership
 
@@ -52,6 +53,7 @@ This repo has two distinct layers:
 | `inbox/` | Human drops, agent processes | Transient — items move to `sources/` after ingest |
 | `sources/` | Human curates | Immutable once filed — agent reads, never modifies |
 | `wiki/` | Agent | Agent creates, updates, cross-links; human reads |
+| `writing/` | Human | Your authored work — not for agent ingest |
 | `docs/` | Human or agent | Project working docs, not wiki content |
 | `projects/` | Human or agent | Software — normal dev workflow |
 | `tools/` | Human or agent | Scripts and configs — normal dev workflow |
