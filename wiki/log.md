@@ -1,5 +1,13 @@
 # Wiki Log
 
+## [2026-05-03] update | pi-zentui local customizations documented
+- Documented local code fixes and UI changes to pi-zentui extension:
+  - `ui.ts`: fixed `theme.fg()` hex crash → `colorize()`, changed rail `█` → `❯` (white), removed extra editor line spacing
+  - `index.ts`: fixed `setWidget` factory API crash, rewrote meta widget (right-aligned, provider dim/model teal, `(thinking)` teal, org prefix stripped)
+  - `zentui.json` user config: `contextNormal` → `#facc15` (lemon), `tokens` → `#fa8072` (salmon)
+  - `config.ts` noted as read-only (default config + colorize helper, no changes needed)
+- Pages updated: wiki/tools/pi-agent.md (added Local Customizations subsection under Status Bars), wiki/index.md (updated description)
+
 ## [2026-05-03] update | Switched statusbar from pi-statusbar to pi-zentui
 - Removed pi-statusbar (git:github.com/mjakl/pi-statusbar) — uninstalled via `pi remove`
 - Installed pi-zentui (npm:pi-zentui, v0.1.2) — Starship-inspired footer + Opencode-style TUI

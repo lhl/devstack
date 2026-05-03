@@ -358,6 +358,32 @@ Starship-inspired footer + Opencode-style TUI for pi.
 
 **Install:** `pi install npm:pi-zentui` (config at `~/.pi/agent/zentui.json`)
 
+### Local Customizations
+
+The extension source was modified locally to fix crashes and tailor the UI. Changes are in the pi-zentui extension directory at `~/.pi/agent/extensions/pi-zentui/`.
+
+**Extension source (code fixes + UI changes):**
+
+| File | Change |
+|---|---|
+| `ui.ts` | Fixed `theme.fg()` hex crash → `colorize()`; changed rail from `█` to `❯` (white); removed extra editor line spacing |
+| `index.ts` | Fixed `setWidget` factory API crash; rewrote meta widget (right-aligned, provider dim/model teal, `(thinking)` teal, org prefix stripped) |
+
+**User config (color preferences):**
+
+| Setting | Value | Color |
+|---|---|---|
+| `contextNormal` | `#facc15` | Lemon yellow |
+| `tokens` | `#fa8072` | Salmon |
+
+**Relevant but not edited:**
+
+| File | Purpose |
+|---|---|
+| `config.ts` | Default config + `colorize()` helper. Read-only — no changes needed. |
+
+**Config location:** `~/.pi/agent/zentui.json` (user config)
+
 ### Status Bar Alternatives Evaluated
 
 See [[tools/pi-statusline]] for full comparison of pi-statusbar, pi-powerline-footer, and custom footer approaches.
