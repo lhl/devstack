@@ -68,6 +68,14 @@ I haven't used enough of the latest open models but these should be good (Sonnet
 - Qwen3.6 Max Preview
 
 
+## Guides & Writeups
+
+Things I've written about agentic coding and dev workflows:
+
+- [Agentic Coding](writing/20260415%20Agentic%20Coding.pdf) — talk/slides on agentic coding practices (April 2026)
+- [Supply Chain Security for Software Developers](writing/202604-supply-chain-security.md) — practical supply chain security for devs (April 2026)
+- [My Workflow](writing/202602-lhl-workflow.md) — personal AI-assisted coding workflow notes (February 2026)
+
 ## This Repo
 
 This repo is also an LLM Wiki (Karpathy pattern) — a personal knowledge base where an agent ingests sources, compiles synthesized wiki pages, and maintains cross-links. Detailed docs for each component at `wiki/tools/`. Extension evaluations and comparisons at `wiki/tools/pi-agent.md`.
