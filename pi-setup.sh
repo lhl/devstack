@@ -45,6 +45,7 @@ pi install npm:pi-web-access
 pi install npm:pi-smart-fetch
 pi install npm:@the-forge-flow/camoufox-pi@0.2.1
 pi install npm:pi-code-previews
+pi install npm:@tintinweb/pi-tasks
 pi install npm:pi-multiloop
 pi install npm:@sting8k/pi-vcc
 
