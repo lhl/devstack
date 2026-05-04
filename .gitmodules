@@ -1,3 +1,6 @@
 [submodule "projects/pi-multiloop"]
 	path = projects/pi-multiloop
 	url = https://github.com/lhl/pi-multiloop.git
+[submodule "pi-backtask"]
+	path = pi-backtask
+	url = https://github.com/lhl/pi-backtask.git
