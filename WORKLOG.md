@@ -358,3 +358,19 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 **Next:**
 - Test pi-continue mid-run guard in a long continuous session
+
+## 2026-05-04 — pi-backtask review
+
+**What:** Reviewed the local `pi-backtask/` extension implementation for policy, RPC, result-flow, and runtime issues.
+
+- Inspected `pi-backtask/pi-backtask.ts`, `README.md`, `HANDOFF.md`, commit history, and local `@tintinweb/pi-tasks` RPC behavior.
+- Ran gob smoke checks for JSON status/stop metadata using temporary jobs and removed them afterward.
+- Attempted the documented TypeScript check; bare `npx tsc` resolves to the placeholder package in this repo, and `npx -p typescript tsc` requires missing peer/node type dependencies.
+- Identified issues to report: RPC `confirm` still spawns, stopped RPC agents are reported as failures, session JSONL parsing misses Pi v3 `message` envelopes, reactive-output debounce can emit empty alerts, policy values fail open, shell/background policy bypasses exist, and gob-backed tasks are not reattached after pi restart.
+
+**Decisions:**
+- Treated this as a review-only pass: no changes were made inside `pi-backtask/`.
+- Left unrelated untracked file `writing/202604-supply-chain-security.md` untouched.
+
+**Next:**
+- Fix high-priority policy/RPC/result-flow issues in `pi-backtask.ts`, then add a reproducible TypeScript check with explicit dev dependencies.
