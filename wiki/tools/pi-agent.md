@@ -27,7 +27,7 @@ Pi (pi.dev) is a minimal, extensible terminal coding harness by Mario Zechner (b
 | **pi-rtk-optimizer** | `npm:pi-rtk-optimizer` | Token optimization via RTK command rewriting + output compaction | ✅ Installed |
 | **pi-schedule-prompt** | `npm:pi-schedule-prompt` | Natural language scheduling, cron, per-task model | ✅ Installed |
 | **pi-boomerang** | `npm:pi-boomerang` | Token-efficient autonomous loops — summarize between iterations | ✅ Installed |
-| **pi-continue** | `git:pi-continue` | Mid-run context compaction with Continuation Ledger | ✅ Installed (v0.6.0, local) |
+| **pi-continue** | `git:pi-continue` | Mid-run context compaction with Continuation Ledger | ❌ Disabled (v0.6.0, local) |
 | **pi-code-previews** | `git:pi-code-previews` | Shiki syntax-highlighted tool output rendering in TUI | ✅ Installed (v0.1.14, local) |
 | **pi-web-access** | `npm:pi-web-access` | Web search, content extraction, video/YT understanding, GitHub cloning, PDF | ✅ Installed (v0.10.7) |
 | **pi-smart-fetch** | `npm:pi-smart-fetch` | Browser-like TLS fingerprints + Defuddle extraction for bot-defended pages | ✅ Installed (v0.2.35) |
@@ -142,7 +142,29 @@ cron_create cron="0 * * * *" prompt="hourly check"
 
 **Configuration:** `~/.pi/agent/extensions/pi-continue.json` (global) or `.pi/extensions/pi-continue.json` (project). Key settings: `midRunGuardEnabled` (default true), `summarizerModel` ("inherit" uses active model), `reasoning`, `continuationDocSyncMode`, `agentGuideSyncMode`.
 
-**Version:** 0.6.0 (as of 2026-05-03, installed from local git clone due to npm 11 peer-dep resolution issue)
+**Version:** 0.6.2 (as of 2026-05-04)
+
+**Status: DISABLED** — Removed from install script and `settings.json`. See known issue below.
+
+#### Known Issue: "Compaction cancelled" Error
+
+As of v0.6.2, pi-continue's handoff synthesis can fail with:
+
+```
+automatic continuation: saving handoff (N/M tokens, threshold T).
+Error: Compaction cancelled
+automatic continuation: handoff failed: pi-continue could not create a usable handoff, so continuation stopped before resuming.
+```
+
+This is **not model-specific** — observed with both Kimi K2 and Claude Opus. The root cause is in `extensions/continue/index.ts` line ~310: the history summarizer LLM pass doesn't produce the structured JSON artifacts pi-continue expects (`parseHistoryArtifacts` returns null), triggering a `SynthesisStageError("history-artifact")` which causes `{ cancel: true }` to be returned to pi-core's `session_before_compact` hook.
+
+When this happens, pi-core throws `"Compaction cancelled"` and the session cannot compact at all — it's stuck. Since pi-continue intercepts the `session_before_compact` event, pi's built-in compaction is also blocked.
+
+**Workaround:** Disable globally via `~/.pi/agent/extensions/pi-continue.json`:
+```json
+{ "enabled": false }
+```
+Or remove `"npm:pi-continue"` from `~/.pi/agent/settings.json` packages array. Pi's built-in compaction then takes over and works fine.
 
 ## Compaction Landscape
 
@@ -377,7 +399,7 @@ Replaces default compaction with an observational-memory format. Single-pass (li
 | Split-turn handling | None | Preserves metadata, includes in single-pass input |
 | Risk of missing context | High (depends on model's exploration strategy) | Low (single-pass, but reflector pruning can drop items) |
 
-**Verdict:** A thoughtful alternative to default compaction if you prefer priority-scored, deduplicated summaries with explicit action bias. The two-threshold flow (observer + reflector) is well-designed. Main hesitation: uses the expensive session model rather than a cheap dedicated summarizer, so cost is the same as a regular turn. The reflector pruning caps are aggressive — useful for keeping observation blocks compact, but you trade completeness. Not installed for now — pi-continue handles mid-run continuation and we're fine with default's summary format.
+**Verdict:** A thoughtful alternative to default compaction if you prefer priority-scored, deduplicated summaries with explicit action bias. The two-threshold flow (observer + reflector) is well-designed. Main hesitation: uses the expensive session model rather than a cheap dedicated summarizer, so cost is the same as a regular turn. The reflector pruning caps are aggressive — useful for keeping observation blocks compact, but you trade completeness. Not installed for now — we're fine with pi's built-in compaction (pi-continue was disabled due to synthesis failures, see above).
 
 ### Two Observational Memory Extensions Compared
 

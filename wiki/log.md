@@ -9,6 +9,12 @@
 - Repo changes (committed separately): AGENTS.md rule for pi plugin/toolchain sync, pi-setup.sh + README.md pi-vcc install and config bootstrap
 - Source: direct package docs (pi.dev, GitHub READMEs), pi core compaction.md, local failure observation
 
+## [2026-05-04] update | pi-agent — pi-continue disabled
+- Documented "Compaction cancelled" synthesis failure (not model-specific)
+- Marked pi-continue as disabled in status table
+- Added known issue section with root cause analysis and workaround
+- Removed from pi-setup.sh and README.md
+
 ## [2026-05-04] create | ML Workflow Tips practice page
 - Source: https://llm-tracker.info/howto/ML-Workflow-Tips, local config (~/.config/atuin/config.toml, nvm.fish)
 - Pages created: wiki/practices/ml-workflow-tips.md
