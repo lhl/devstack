@@ -374,3 +374,29 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 **Next:**
 - Fix high-priority policy/RPC/result-flow issues in `pi-backtask.ts`, then add a reproducible TypeScript check with explicit dev dependencies.
+
+## 2026-05-04 — pi-backtask caveats and bug fixes
+
+**What:** Documented pi-backtask design/security caveats and fixed the review bugs that were practical in the single-file extension.
+
+- Updated `pi-backtask/pi-backtask.ts`:
+  - Policy settings now merge global then project overrides and fail closed on invalid explicit policy/tool values.
+  - RPC `confirm` policy now hard-gates pi-tasks spawns instead of notifying and continuing.
+  - RPC stop now marks the background task as killed, emits the `status: "stopped"` lifecycle path, and avoids poller misclassification as failed.
+  - Session result parsing now handles Pi v3 JSONL `message` envelopes as well as the older top-level role/content shape.
+  - Reactive output debounce now batches actual pending output instead of sending empty alerts, checks output before last-line de-dupe, resets regex state, and clears timers on completion/shutdown.
+  - Slash-command parsing now handles quoted leading arguments for `/bg run` and `/bg agent` examples.
+  - RPC spawn startup failures no longer return success IDs, and fast RPC starts register the subagent mapping before polling begins.
+  - Bash background-pattern interception now remains active when shell policy is denied.
+- Updated `pi-backtask/README.md` and `pi-backtask/HANDOFF.md` with design/security caveats: policy is not a sandbox, shell access can bypass agent gates, interception is best-effort, gob process survival is stronger than extension reattachment, injected output is untrusted, and agents share the working tree.
+- Verified `pi-backtask.ts` with esbuild bundling and `git diff --check`; gob temporary job list is clean.
+- Committed in submodule: `0e3fcea fix: harden backtask policy and rpc flow`.
+
+**Decisions:**
+- Did not attempt to sandbox arbitrary shell access or implement gob-job reattachment; these are now documented caveats rather than hidden guarantees.
+- Kept pi-tasks `confirm` as a rejection/manual-approval gate instead of adding an interactive approval protocol.
+- Left unrelated untracked file `writing/202604-supply-chain-security.md` untouched.
+
+**Next:**
+- If stronger guarantees are needed later, add real shell command classification or run agents in disposable worktrees/containers.
+- Add a small package/tsconfig or test harness if pi-backtask should have fully reproducible local type checks.
