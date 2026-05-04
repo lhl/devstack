@@ -400,3 +400,18 @@ Append-only session log. Each entry records what was done, why, and what's next.
 **Next:**
 - If stronger guarantees are needed later, add real shell command classification or run agents in disposable worktrees/containers.
 - Add a small package/tsconfig or test harness if pi-backtask should have fully reproducible local type checks.
+
+## 2026-05-04 — pi-backtask reviewer handoff refreshed
+
+**What:** Updated `pi-backtask/HANDOFF.md` so it is suitable to send to a colleague after the bugfix pass.
+
+- Refreshed metadata with current line count and latest bugfix commit reference.
+- Added a "Latest Bugfix Pass" section summarizing policy, RPC stop, session parsing, reactive output, slash parsing, startup-race, and bash interception fixes.
+- Updated caveats and protocol wording to avoid overclaiming sandbox behavior or automated test coverage.
+- Committed in submodule: `eaf4252 docs: refresh reviewer handoff`.
+
+**Decisions:**
+- Kept the bugfix commit `0e3fcea` called out explicitly even though the handoff docs commit is newer, so reviewers can separate implementation from documentation changes.
+
+**Next:**
+- Send `pi-backtask/HANDOFF.md` to reviewers alongside the branch/commit range.
