@@ -39,6 +39,31 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-05-05 — pi-vertex: tests, stream lifecycle fix, maxTokens fix
+
+**What:** Second pass on `lhl/pi-vertex` fork — added the highest-impact missing tests, fixed two runtime bugs, and improved model output capacity.
+
+- Added 27 comprehensive unit tests for `convertToGeminiMessages` in `tests/convert-to-gemini.test.ts`. Covers: user text/images, assistant text/thinking/tool calls, tool results (single + merged consecutive), cross-provider signature stripping, `skip_thought_signature_validator` escape hatch for Gemini 3, redacted/empty thinking filtering, and a full multi-turn conversation.
+- Added 3 unit tests for `streaming/index.ts` dispatch in `tests/streaming-dispatch.test.ts`. Verifies gemini vs maas routing and unknown endpoint type errors. Uses `vi.mock` on `../streaming/gemini.js` and `../streaming/maas.js` to isolate dispatch logic.
+- Fixed `streamAnthropic()` in `streaming/maas.ts` to call `stream.end()` before returning. Previously it pushed `{ type: "done" }` but relied on the caller (`streamMaaS`) to end the stream — fragile if called from elsewhere or if an error happened between `done` and the outer finally. Now consistent with `streamGemini()` which already called `stream.end()`.
+- Removed hardcoded `maxTokens / 2` halving in `streaming/gemini.ts` and `streaming/maas.ts`. Every model was silently capped at half its advertised output capacity (e.g., Claude Opus 4.6's 32K limit was reduced to 16K). Now uses full `model.maxTokens` unless `options.maxTokens` explicitly overrides.
+- Bumped version to `1.1.6`, updated `CHANGELOG.md` and `TEST_COVERAGE.md`. Updated `wiki/tools/pi-agent.md` version string to v1.1.6.
+- Pushed to `https://github.com/lhl/pi-vertex`. All 76 tests pass, `npm run build` (tsc --noEmit) passes, `npm run check` (biome) passes.
+
+**Decisions:**
+- Used `vi.mock` with factory functions returning stub streams for dispatch tests. This is cleaner than trying to mock the full Pi event stream protocol.
+- For `convertToGeminiMessages` tests, built typed fixture factories (`user()`, `assistant()`, `toolResult()`) that produce full `Message` objects matching the Pi `types.ts` interface. This ensures tests catch type-level mismatches if the upstream protocol changes.
+- Kept `noExplicitAny` as `warn` in Biome. The `convertToGeminiMessages` return type is genuinely `any[]` because the Gemini SDK content format is not fully typed in our code; using `unknown[]` would require casting at every call site without improving safety.
+
+**Next:**
+- Add integration tests for `streaming/gemini.ts` (mock `@google/genai` `generateContentStream` with fake `GenerateContentResponse` chunks).
+- Add integration tests for `streaming/maas.ts` (mock `@anthropic-ai/vertex-sdk` `messages.stream()` with fake SSE events, and mock `streamSimpleOpenAICompletions` for the OpenAI-compatible MaaS path).
+- Add `index.ts` extension registration tests (mock Pi ExtensionAPI).
+- Set up `np` or `semantic-release` for automated npm publishing from GitHub Actions.
+- Continue monitoring `ssweens/pi-packages` commits for upstream fixes to cherry-pick.
+
+---
+
 ## 2026-05-05 — Compaction: switched from pi default to pi-vcc
 
 **What:** Pi's default auto-compaction started failing with `400 status code (no body)` after one compact-and-retry on long sessions, blocking progress. Evaluated alternatives and switched to `@sting8k/pi-vcc` as the override compactor.
