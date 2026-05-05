@@ -4,6 +4,29 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-05-05 — Compaction: switched from pi default to pi-vcc
+
+**What:** Pi's default auto-compaction started failing with `400 status code (no body)` after one compact-and-retry on long sessions, blocking progress. Evaluated alternatives and switched to `@sting8k/pi-vcc` as the override compactor.
+
+- Diagnosed the failure as pi core's single-pass summarizer receiving a span larger than the summarizer LLM's input window. Persists independent of `pi-continue` (which had already been removed from `~/.pi/agent/settings.json`).
+- Compared five approaches: settings tuning, `pi-grounded-compaction`, `pi-agentic-compaction`, `@sting8k/pi-vcc`, `@pi-unipi/compactor`. Details in `wiki/tools/pi-agent.md` under "Why we moved off default compaction".
+- Installed `@sting8k/pi-vcc` via `pi install npm:@sting8k/pi-vcc` and wrote `~/.pi/agent/pi-vcc-config.json` with `overrideDefaultCompaction: true` so it handles `/compact` and auto-threshold, not just `/pi-vcc`.
+- Updated `pi-setup.sh` to drop `pi-continue`, install `pi-vcc`, and bootstrap the config file on fresh installs (preserves existing config if present).
+- Updated `README.md` Context Management section with the new plugin and a pointer to the wiki evaluation.
+- Updated `wiki/tools/pi-agent.md` Compaction Landscape: marked pi-continue removed, pi-vcc installed; added new detail sections for `pi-grounded-compaction` and `@pi-unipi/compactor`; added the "Why we moved off default compaction" subsection.
+- Added an `AGENTS.md` rule requiring `pi-setup.sh` + `README.md` + `wiki/tools/pi-agent.md` to be updated together whenever the pi plugin stack changes.
+
+**Decisions:**
+- Picked pi-vcc over `@pi-unipi/compactor` despite the latter's XML resume snapshots and BM25 recall. Rationale: smaller surface area (0 deps vs `@pi-unipi/core` + optional `better-sqlite3` + 18-package ecosystem), ≈4× more real-world usage (3,299 vs 774 downloads/mo), visible quality-iteration history in release notes (v0.3.7 "reduce junk in compacted summaries"), recall reads raw JSONL directly (no index to stale). Migration cost to UniPi compactor later is low if we find pi-vcc lossy in practice.
+- Kept `overrideDefaultCompaction: true` rather than the default `false`. The default only runs pi-vcc on explicit `/pi-vcc`; we want it to replace the failing code path, not sit alongside it.
+- Committed in three logical units: `AGENTS.md` rule → wiki documentation → setup+README. Kept wiki commit separate from software/setup commit per repo discipline.
+
+**Next:**
+- Dogfood pi-vcc on real long sessions. Watch for: (1) lost behavioral preferences that would have been synthesized by an LLM summary, (2) cases where `vcc_recall` regex+OR fails to surface relevant prior context. If either becomes a pattern, reconsider `@pi-unipi/compactor` for its BM25 recall and XML resume.
+- If the wiki `compaction-landscape` section grows further, consider splitting into its own page (`wiki/tools/pi-compaction.md`) and linking from `pi-agent.md`.
+
+---
+
 ## 2026-05-03 — pi-zentui local customizations documented
 
 **What:** Documented local code fixes and UI changes to pi-zentui in the wiki.
