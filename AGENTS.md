@@ -94,6 +94,16 @@ When ingesting research sources or writing wiki pages that reference external wo
 
 Software in `projects/` uses git submodules. Normal development workflow — no wiki operations required.
 
+### Pi Plugin / Toolchain Changes
+
+Whenever the installed pi plugin stack changes (install, remove, pin a version, switch a source), update **both** `pi-setup.sh` and `README.md` in the same session so the repo reflects the actual local setup. Specifically:
+
+- `pi-setup.sh` — add/remove the `pi install …` line, add any required config bootstrap (e.g. writing `~/.pi/agent/<plugin>-config.json`), and keep version pins accurate
+- `README.md` — update the relevant section (Web Access, Automation & Workflow, Context Management, UX, etc.) with a one-line description and link
+- `wiki/tools/pi-agent.md` — update the evaluated/installed status table and any per-extension section when the decision changes
+
+Treat this as part of the same logical unit as the install itself — commit together. The same rule applies to other toolchain changes tracked by `pi-setup.sh` (rtk, camoufox, etc.).
+
 **Submodule convention** (for `projects/`):
 - Prefer submodules over vendored snapshots — keeps the repo lean
 - Record provenance: source URL, reviewed commit/tag, review date, short note on why it's here
