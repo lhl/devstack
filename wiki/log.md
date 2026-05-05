@@ -1,5 +1,14 @@
 # Wiki Log
 
+## [2026-05-05] update | Compaction decision: install pi-vcc with overrideDefaultCompaction
+- Trigger: pi default auto-compaction failing with `400 status code (no body)` after one compact-and-retry, blocking long sessions. Persisted after pi-continue was removed from settings.
+- Root cause: pi's single-pass summarization hands the whole span to the summarizer LLM; when span + prompt exceeds the summarizer's input window the provider rejects with 400.
+- Options compared: settings tuning, `pi-grounded-compaction` (single-pass with model presets), `pi-agentic-compaction` (multi-call agentic loop), `@sting8k/pi-vcc` (zero-LLM extraction), `@pi-unipi/compactor` (zero-LLM + FTS5 + XML resume).
+- Decision: `@sting8k/pi-vcc` with `overrideDefaultCompaction: true` — smallest surface area, most real-world usage (4× downloads vs UniPi compactor), visible quality-iteration history in release notes, lineage-aware recall that can't go stale.
+- Pages updated: wiki/tools/pi-agent.md (new "Why we moved off default compaction" section, updated Evaluated Compaction Extensions table, added pi-grounded-compaction and @pi-unipi/compactor sections, marked pi-continue removed)
+- Repo changes (committed separately): AGENTS.md rule for pi plugin/toolchain sync, pi-setup.sh + README.md pi-vcc install and config bootstrap
+- Source: direct package docs (pi.dev, GitHub READMEs), pi core compaction.md, local failure observation
+
 ## [2026-05-04] create | ML Workflow Tips practice page
 - Source: https://llm-tracker.info/howto/ML-Workflow-Tips, local config (~/.config/atuin/config.toml, nvm.fish)
 - Pages created: wiki/practices/ml-workflow-tips.md

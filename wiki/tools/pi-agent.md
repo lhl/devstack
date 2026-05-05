@@ -152,15 +152,133 @@ Pi has built-in auto-compaction (enabled by default, triggers at `contextWindow 
 
 | Extension | Approach | Status |
 |---|---|---|
-| **pi-continue** | Mid-run guard + Continuation Ledger | ✅ Installed |
+| **@sting8k/pi-vcc** | Algorithmic, no LLM calls | ✅ Installed (override) |
 | **pi-boomerang** | Context collapse after autonomous task runs | ✅ Installed |
-| **@sting8k/pi-vcc** | Algorithmic, no LLM calls | Researched |
+| **pi-continue** | Mid-run guard + Continuation Ledger | ❌ Removed (2026-05-05) |
+| **pi-grounded-compaction** | Custom summary prompt + model presets + files-touched grounding | Evaluated (below) |
+| **@pi-unipi/compactor** | Zero-LLM pipeline + FTS5 recall + XML resume snapshots | Evaluated (below) |
 | **pi-observational-memory** (elpapi42) | Tiered cognitive memory with reflections (v2.3.0) | Researched |
 | **pi-extension-observational-memory** (Foxy) | Observational summaries + reflector GC, single-pass | Evaluated (below) |
 | **pi-agentic-compaction** | Agentic loop over virtual filesystem | Evaluated |
 | **pi-model-aware-compaction** | Per-model compaction thresholds | Researched |
 | **pi-custom-compaction** | Swap model + template + trigger | Researched |
 | **pi-context-cap** | Cap model windows to force earlier compaction | Researched |
+
+### Why we moved off default compaction (2026-05-05)
+
+On long sessions (research + ingest work on large transcripts) pi's default auto-compaction began failing with:
+
+```
+Error: 400 status code (no body)
+Context overflow recovery failed after one compact-and-retry attempt.
+Try reducing context or switching to a larger-context model.
+```
+
+Root cause: pi serializes the full summarization span (everything from the last kept boundary up to `contextTokens − keepRecentTokens`) and hands it to the summarizer LLM in one call. When the span plus the summary prompt exceeds the summarizer's input window, the provider rejects the call with a 400. Pi's built-in recovery is a single compact-and-retry; when that also fails, the session cannot progress until the user manually reduces context or switches models.
+
+We hit this even **after removing `pi-continue`** (which had been our mid-run continuation helper) — so the problem was in pi core's single-pass summarization, not a plugin interaction. `pi-continue` was removed from `settings.json` before this evaluation; its removal did not fix the 400.
+
+Options considered in order of how directly each kills the failure mode:
+
+| Option | Type | Fixes 400? | Why / why not |
+|---|---|---|---|
+| Raise `compaction.reserveTokens` / `keepRecentTokens` in settings | Tuning | Partial | Shrinks the span on each pass, but a single oversized turn can still exceed the summarizer window |
+| `pi-grounded-compaction` | Single-pass, configurable model preset | Partial | Only if the preset model has a big enough context window; still one LLM call |
+| `pi-agentic-compaction` | Multi-call agentic loop reading `/conversation.json` | ✅ | Summarizer never ingests the full span |
+| `@sting8k/pi-vcc` | Zero-LLM algorithmic extraction | ✅ | No network call to fail |
+| `@pi-unipi/compactor` | Zero-LLM pipeline + FTS5 + XML resume | ✅ | No network call to fail |
+
+The two zero-LLM options (`pi-vcc`, `@pi-unipi/compactor`) describe the same 6-stage pipeline (normalize → filter → build sections → brief → format → merge) and the same "95%+ reduction on long sessions" claim, strongly suggesting UniPi's compactor is architecturally derived from pi-vcc. On pure extraction quality they should be comparable; they diverge on recall, continuity, and surface area.
+
+**Decision: install `@sting8k/pi-vcc` with `overrideDefaultCompaction: true`.** Rationale:
+
+- **Directly eliminates the failure mode** — no LLM call, no 400 possible.
+- **Smaller surface area** — zero dependencies, 158 KB, single responsibility. Easier to audit and remove than UniPi's 18-package suite.
+- **More iteration on summary quality** — v0.3.7 release notes: *"reduce junk in compacted summaries — tightened preference patterns, dedup vs goals, cleaner Outstanding Context."* Concrete tuning against real sessions.
+- **More real-world usage** — 3,299 downloads/mo vs UniPi compactor's 774/mo (≈4× exposure to edge cases).
+- **Transparent merge semantics** — per-section merge policy documented (sticky for goal/prefs, volatile for outstanding context, union for files/commits, rolling for transcript).
+- **Recall that can't go stale** — `vcc_recall` reads the raw session JSONL directly with regex + ranked OR. No index to maintain or resync. Lineage-aware (`scope:"all"` opt-in for cross-branch search).
+- **Low migration cost** — if after a week of real usage we find we miss state reinjection (XML resume snapshots) or BM25 recall, swapping to `@pi-unipi/compactor` is a single settings change.
+
+**Trade-offs accepted:**
+
+- No synthesis of implicit context ("we chose B over A because of latency" won't appear unless stated explicitly in a message). Mitigated by `vcc_recall` over raw JSONL.
+- No cross-compaction state reinjection (UniPi's XML resume). If a compaction drops behavioral preferences, the agent must re-derive them from the recall tool.
+- Regex-based preference extraction is pattern-matched on `always/never/prefer/…` — will miss nuanced preferences stated in other forms.
+
+**Install & config:**
+
+```bash
+pi install npm:@sting8k/pi-vcc
+```
+
+`~/.pi/agent/pi-vcc-config.json`:
+
+```json
+{
+  "overrideDefaultCompaction": true,
+  "debug": false
+}
+```
+
+With `overrideDefaultCompaction: true`, pi-vcc handles `/compact`, auto-threshold compaction, and the new `/pi-vcc` / `/pi-vcc-recall` slash commands. To search prior history after compaction, use `vcc_recall({ query: "…" })` or `/pi-vcc-recall …`.
+
+### pi-grounded-compaction (Evaluated, Not Installed)
+
+**Package:** [`pi-grounded-compaction`](https://pi.dev/packages/pi-grounded-compaction) by w-winter ([source: `w-winter/dot314`](https://github.com/w-winter/dot314))
+
+Single-pass LLM summarization with two angles:
+
+1. **Model presets** — route compaction to a different model than the session model. Presets like `fast` (e.g. Gemini Flash) and `deep` (e.g. Opus) let you compact cheaply on a session running an expensive main model. `--preset <name>` / `-p <name>` CLI override on `/compact`.
+2. **Grounded files-touched tracking** — shared collector covers pi native tools, RepoPrompt (`read_file`, `apply_edits`, `file_actions`, `git mv/rm`), and bash patterns (`sed -i`, `mv`, `rm`, shell redirections). Normalizes path spellings so the same file appears once. Also augments branch summaries during `/tree`.
+
+**Gains vs default:**
+- Model selection per compaction; thinking level configurable independently
+- File tracking catches bash and RepoPrompt ops that default compaction misses
+- Same mechanism extended to `/tree` branch summaries
+- No prefix-cache penalty (compaction serializes to text first, so there's no cached-prefix to preserve)
+
+**Losses vs default:**
+- Still a **single LLM call** — does not fix the 400 failure mode unless you pick a preset model with a big enough context window
+- Conflicts with other `session_before_compact` extensions (explicit warning in README re: `pi-agentic-compaction`)
+- Branch-summary control is narrower than compaction (pi's `session_before_tree` hook doesn't expose model/thinking level)
+
+**Verdict:** The best option **if you want to keep prose summaries** but route compaction to a cheaper/larger-context model. File-tracking grounding is genuinely nice for repos that use bash `sed -i`/`mv`. Not a fit for us because we specifically want to eliminate the summarization LLM call entirely — `pi-grounded-compaction` still has one, just on a different model.
+
+### @pi-unipi/compactor (Evaluated, Not Installed)
+
+**Package:** [`@pi-unipi/compactor`](https://pi.dev/packages/@pi-unipi/compactor) by Neuron-Mr-White ([source: `Neuron-Mr-White/unipi`](https://github.com/Neuron-Mr-White/unipi), monorepo `packages/compactor`)
+
+Zero-LLM context engine. Part of the **UniPi** suite (18 packages: workflow, ralph, memory, subagents, web-api, mcp, notify, footer, btw, ask-user, milestone, kanboard, info-screen, utility, updater, input-shortcuts, compactor, core).
+
+**Architecture:** Same 6-stage pipeline as pi-vcc (normalize → filter → build sections → brief → format → merge), plus:
+- **Session Engine** with SQLite + XML **resume snapshots** for cross-compaction state continuity
+- **Display Engine** (mode-aware rendering)
+- **Auto Injection** of behavioral state after compaction (Pipeline Feature toggle)
+- **FTS5 index** for project content via `content_index` / `content_search`
+- **Sandbox** tool for running code in 11 languages (`sandbox`, `sandbox_file`, `sandbox_batch`)
+- 4 presets: `precise` / `balanced` (default) / `thorough` / `lean`, with per-project override
+- TUI settings overlay (Presets / Strategies / Pipeline tabs)
+- Footer + info-screen dashboard integration showing compaction count, tokens saved, compression ratio
+
+**Recall:** `session_recall` with **BM25** search, optional proximity reranking, timeline sort. Requires `better-sqlite3` (optional dep) for the FTS5 index.
+
+**Gains vs pi-vcc:**
+- **Cross-compaction state continuity** — XML resume snapshots + Auto Injection reinject behavioral state after a compaction, not just the textual summary
+- **BM25 recall** — more sophisticated retrieval for natural-language queries than pi-vcc's regex + ranked OR
+- **More tuning knobs** — 4 presets, per-pipeline-feature toggles, TUI overlay, per-project overrides
+- **Content indexing beyond the session** — FTS5 index of project files can reduce re-reading same files into context
+- **Ecosystem integration** — footer stats, info-screen dashboard, coexist triggers with other UniPi packages
+
+**Losses vs pi-vcc:**
+- **Much bigger surface area** — 281 KB package, pulls `@pi-unipi/core`, optional `better-sqlite3`, part of 18-package suite
+- **Newer and less battle-tested** — v0.2.3 published May 1 2026, 774 downloads/mo vs pi-vcc's 3,299/mo
+- **Index-dependent recall** — BM25 index can theoretically go stale or corrupt; pi-vcc reads raw JSONL directly
+- **No documented lineage awareness** — pi-vcc's `scope:"all"` explicitly handles pi's `/tree` branching; UniPi compactor docs don't mention it
+- **Less transparent merge semantics** — per-section merge policy not spelled out the way pi-vcc's is
+- **No visible quality-iteration history** — pi-vcc's release notes show specific fixes like "reduce junk in compacted summaries"; UniPi compactor has no equivalent public trail
+
+**Verdict:** Genuinely more capable than pi-vcc on two axes — state continuity (XML resume) and natural-language recall (BM25). Worth the migration if we find ourselves wishing the agent retained behavioral state across compactions or if regex recall fails us. But it's also ~4× less-used, newer, and comes with a lot of adjacent surface area we wouldn't use. Revisit if pi-vcc proves lossy in practice.
 
 ### pi-agentic-compaction (Evaluated, Not Installed)
 
