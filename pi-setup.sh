@@ -47,7 +47,7 @@ pi install npm:@the-forge-flow/camoufox-pi@0.2.1
 pi install npm:pi-code-previews
 pi install npm:@tintinweb/pi-tasks
 pi install npm:pi-multiloop
-pi install npm:@lhl/pi-vertex
+pi install https://github.com/lhl/pi-vertex
 pi install npm:@sting8k/pi-vcc
 
 # pi-vcc: make it handle /compact and auto-threshold compactions (not just /pi-vcc).
