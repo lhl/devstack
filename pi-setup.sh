@@ -44,9 +44,26 @@ pi install npm:pi-boomerang
 pi install npm:pi-web-access
 pi install npm:pi-smart-fetch
 pi install npm:@the-forge-flow/camoufox-pi@0.2.1
-pi install npm:pi-continue
 pi install npm:pi-code-previews
 pi install npm:pi-multiloop
+pi install npm:@sting8k/pi-vcc
+
+# pi-vcc: make it handle /compact and auto-threshold compactions (not just /pi-vcc).
+# Default is false, which only runs pi-vcc on the explicit /pi-vcc command.
+# We override because pi's built-in single-pass summarizer can 400 on large spans.
+mkdir -p "$HOME/.pi/agent"
+PI_VCC_CONFIG="$HOME/.pi/agent/pi-vcc-config.json"
+if [ ! -f "$PI_VCC_CONFIG" ]; then
+  cat > "$PI_VCC_CONFIG" <<'JSON'
+{
+  "overrideDefaultCompaction": true,
+  "debug": false
+}
+JSON
+  echo "Wrote $PI_VCC_CONFIG with overrideDefaultCompaction=true"
+else
+  echo "Preserving existing $PI_VCC_CONFIG (edit manually if needed)"
+fi
 
 # My UI
 pi install https://github.com/lhl/pi-zentui

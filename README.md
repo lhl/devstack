@@ -37,7 +37,7 @@ For saving tokens.
 - [MasuRii/pi-rtk-optimizer](https://github.com/MasuRii/pi-rtk-optimizer) - the most mature/complete `rtk` plugin (`rtk` is a standalone rust binary that dynamically filters and compresses command outputs before they reach LLM context for huge token savings)
   - [rtk](https://github.com/rtk-ai/rtk) — if you pay for tokens or have a quota, I've found this to be the easiest way to reduce token consumption
 - [nicobailon/pi-boomerang](https://github.com/nicobailon/pi-boomerang) - this allows launching subagents for tasks that deliver just summarized outputs to your harness 
-- [Tiziano-AI/pi-continue](https://github.com/Tiziano-AI/pi-continue) - Pi has good compaction OOTB (the plugins I looked at weren't unambiguous improvements) but this is one nice add-on that helps with the corner case where you run out of context mid-run
+- [sting8k/pi-vcc](https://github.com/sting8k/pi-vcc) - zero-LLM algorithmic compaction. Replaces pi's default single-pass LLM summarization with deterministic extraction (goal / files / commits / outstanding / preferences + rolling transcript). We install this with `overrideDefaultCompaction: true` (see `pi-setup.sh`) because pi core's default compaction can fail with `400 status code (no body)` when the summarization span exceeds the summarizer LLM's input window; pi-vcc never makes that LLM call. Prior history stays searchable via `vcc_recall` / `/pi-vcc-recall`. Evaluation and alternatives (`pi-grounded-compaction`, `@pi-unipi/compactor`, `pi-agentic-compaction`) documented in [`wiki/tools/pi-agent.md`](wiki/tools/pi-agent.md#compaction-landscape).
 
 ### UX
 
