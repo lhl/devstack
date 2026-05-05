@@ -56,6 +56,16 @@ For saving tokens.
 
 Pi supports a number of providers OOTB including most first-party frontier model providers as well as Bedrock, Vertex, and HuggingFace and OpenRouter.
 
+### Custom Providers
+
+- [`@lhl/pi-vertex`](https://github.com/lhl/pi-vertex) — Google Vertex AI provider with Gemini, Claude, Llama, DeepSeek, Qwen, Mistral, and 20+ other MaaS models. Forked from `@ssweens/pi-vertex` with added tests, CI, and linting.
+  ```bash
+  pi install npm:@lhl/pi-vertex
+  export GOOGLE_CLOUD_PROJECT=your-project-id
+  export GOOGLE_APPLICATION_CREDENTIALS=/path/to/key.json
+  pi --provider vertex --model claude-opus-4-6
+  ```
+
 My current best coding models:
 - GPT-5.5 xhigh
 - GPT-5.4 xhigh

@@ -4,6 +4,41 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-05-05 — Forked and hardened pi-vertex provider
+
+**What:** Filtered `@ssweens/pi-vertex` from its monorepo into a standalone `lhl/pi-vertex` fork, then added tests, CI, linting, and real npm scripts.
+
+- Compared five pi Vertex AI provider plugins: `pi-provider-vertex-anthropic`, `@twogiants/pi-anthropic-vertex`, `@carze/pi-vertex-claude`, `@isaacraja/pi-vertex-claude`, `@ssweens/pi-vertex`. `@ssweens/pi-vertex` was the clear winner on feature breadth (43 models: Gemini + Claude + Llama + 20 MaaS) but had no tests, no CI, placeholder npm scripts (`echo 'nothing to check'`), and a closed issue tracker.
+- Created `https://github.com/lhl/pi-vertex` from `git filter-repo --path pi-vertex/ --path-rename pi-vertex/:` on the `lhl/pi-packages` fork, preserving 71 commits of upstream history.
+- Renamed package to `@lhl/pi-vertex`, added `repository` field, updated README and CHANGELOG.
+- Added Biome (`biome.json`) for linting/formatting, Vitest (`vitest.config.ts`) for testing, and a GitHub Actions CI workflow (type-check, lint, test with coverage upload).
+- Replaced placeholder scripts in `package.json` with real `build` (`tsc --noEmit`), `check` (`biome check`), `test`, `test:coverage`, and `clean`.
+- Added `.npmrc` with `legacy-peer-deps=true` so `npm install` works despite `@mariozechner/pi-ai` and `@mariozechner/pi-coding-agent` peer dependencies.
+- Wrote 46 unit tests across 4 files:
+  - `tests/utils.test.ts` — `sanitizeText`, `retainThoughtSignature`, `mapStopReason`, `calculateCost`, `convertTools`, `convertToolsForGemini`
+  - `tests/auth.test.ts` — `resolveProjectId`, `resolveLocation`, `hasAdcCredentials`, `getAuthConfig`, `buildBaseUrl` (with mocked `node:fs` and `../config.js`)
+  - `tests/config.test.ts` — `getConfigPath`, `loadConfig` (with mocked `node:fs` and dynamic imports to defeat module-level cache)
+  - `tests/models.test.ts` — model count, required fields, ID uniqueness, publisher correctness, `getModelById`, `getModelsByEndpointType`
+- Fixed minor TypeScript strictness issues in upstream source (`index.ts`, `utils.ts` implicit `any` parameters) so `tsc --noEmit` passes cleanly.
+- Updated `pi-setup.sh` to install `@lhl/pi-vertex`.
+- Updated `README.md` Models section with a new Custom Providers subsection documenting the Vertex provider.
+- Updated `wiki/tools/pi-agent.md` Installed Extensions table to list `pi-vertex` (v1.1.5, forked from ssweens).
+- Committed upstream sync + tooling + tests as a single logical unit in `lhl/pi-vertex`.
+
+**Decisions:**
+- Filtered to standalone repo rather than keeping inside `lhl/pi-packages` monorepo. Rationale: `pi-vertex` has no sibling dependencies in the monorepo, a focused repo makes CI/test iteration faster, and version tags can be repo-level instead of directory-level.
+- Used Biome instead of ESLint/Prettier. Rationale: upstream `pi-leash/` in the same monorepo already uses Biome; single-tool lint+format is faster. Kept `noExplicitAny` as `warn` rather than `error` because the upstream streaming code genuinely needs `any[]` for the Google GenAI SDK response shape.
+- Set `noInferrableTypes` to safe-auto-fix in Biome, which cleaned up `defaultLocation: string = "us-central1"` to `defaultLocation = "us-central1"`.
+- Did NOT add integration tests for `streaming/gemini.ts` or `streaming/maas.ts`. These require mocking `@google/genai` and `@anthropic-ai/vertex-sdk`; marked as next step in `TEST_COVERAGE.md`.
+
+**Next:**
+- Add integration tests for streaming handlers (mock SDK clients, assert correct Pi event stream output).
+- Add `convertToGeminiMessages` unit tests — this is the most complex untested function (~120 lines of message format conversion).
+- Set up `np` or similar for automated publishing to npm when ready to release.
+- Watch `ssweens/pi-packages` for upstream fixes to cherry-pick (set a monthly reminder).
+
+---
+
 ## 2026-05-05 — Compaction: switched from pi default to pi-vcc
 
 **What:** Pi's default auto-compaction started failing with `400 status code (no body)` after one compact-and-retry on long sessions, blocking progress. Evaluated alternatives and switched to `@sting8k/pi-vcc` as the override compactor.
