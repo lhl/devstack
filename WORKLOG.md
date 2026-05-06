@@ -4,6 +4,22 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-05-06 — Aligned pi-multiloop widget markers
+
+**What:** Tweaked the `~/pi-multiloop` startup resume widget markers for more stable alignment.
+
+- Changed the resume command marker from `→` to `❯`.
+- Replaced the loop row `↳` marker with ASCII `-` to avoid ambiguous-width rendering issues.
+- Updated tests for the new markers.
+- Verified `npx tsc --noEmit` and `npx vitest run` (109 tests).
+- Committed `~/pi-multiloop` commit `05b6f50 style: align multiloop resume widget markers`.
+
+**Decisions:**
+- Use ASCII for loop rows where alignment matters; keep the decorative `❯` only on the command line.
+
+**Next:**
+- Reload an interactive Pi session to eyeball marker alignment in the terminal.
+
 ## 2026-05-06 — Tuned pi-multiloop widget colors
 
 **What:** Adjusted the `~/pi-multiloop` startup resume widget theme token mapping.
