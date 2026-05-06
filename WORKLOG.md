@@ -4,6 +4,22 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-05-06 — Fixed repeated pi-multiloop compaction resume
+
+**What:** Diagnosed and fixed the local `~/pi-multiloop` compaction resume hook after repeated auto-compactions.
+
+- Found that Pi threshold auto-compaction emits `session_compact` after the extension `agent_end` hook, so the first implementation could arm a resume for the wrong future turn and fail to re-fire reliably.
+- Updated `~/pi-multiloop` to classify compactions at `session_before_compact`, send a resume after post-`agent_end` auto-compaction, and still defer to `agent_end` if compaction happens during an active turn.
+- Added tests for resume timing decisions and verified `npx tsc --noEmit`, `npx vitest run` (107 tests), and a local pi smoke load.
+- Committed `~/pi-multiloop` commit `b4603b0 fix: rearm resume after repeated compactions`.
+
+**Decisions:**
+- Keep testing from the local checkout before publishing; installed source did not change.
+- Use input timing to avoid duplicate resumes for pre-prompt compaction where the submitted prompt will continue normally.
+
+**Next:**
+- Reload the open pi session and retest repeated auto-compaction in an active multiloop.
+
 ## 2026-05-06 — Switched pi-multiloop install to local test checkout
 
 **What:** Made the active pi install use the local `~/pi-multiloop` checkout for compaction-resume testing.
