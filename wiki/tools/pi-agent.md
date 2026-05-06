@@ -34,7 +34,7 @@ Pi (pi.dev) is a minimal, extensible terminal coding harness by Mario Zechner (b
 | **camoufox-pi** | `npm:@the-forge-flow/camoufox-pi` | Stealth web access via Camoufox (C++-level anti-fingerprinting Firefox fork) | ✅ Installed (v0.2.1) |
 | **pi-zentui** | `npm:pi-zentui` | Starship-inspired status line + Opencode-style TUI (footer with git/runtime, bordered editor, accent rail) | ✅ Installed (v0.1.2) |
 | **pi-codex-status** | `npm:pi-codex-status` ([source](https://github.com/lhl/pi-codex-status)) | ChatGPT Codex quota/status CLI + `/status` extension (5h, weekly, credits, JSON/statusline export) | ✅ Installed (v0.1.0) |
-| **pi-vertex** | `npm:@lhl/pi-vertex` | Google Vertex AI provider — Gemini, Claude, Llama, DeepSeek, Qwen, Mistral, and 20+ other MaaS models | ✅ Installed (v1.1.6, forked from ssweens) |
+| **pi-vertex** | `npm:@lhl/pi-vertex` ([source](https://github.com/lhl/pi-vertex)) | Google Vertex AI provider — Gemini, Claude, Llama, DeepSeek, Qwen, Mistral, and 20+ other MaaS models | ✅ Installed (v1.1.8, forked from ssweens) |
 
 **Install commands:**
 ```bash

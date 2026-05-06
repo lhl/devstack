@@ -4,6 +4,24 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-05-06 — Published pi-vertex v1.1.8 to npm
+
+**What:** Completed the first registry release for the `lhl/pi-vertex` fork.
+
+- Tagged and pushed `v1.1.8` at `96f4a04 readme tweaks`.
+- Created GitHub release `v1.1.8`: https://github.com/lhl/pi-vertex/releases/tag/v1.1.8
+- Confirmed `@lhl/pi-vertex@1.1.8` on npm after registry propagation and verified a temp npm install.
+- Switched local pi install source from `https://github.com/lhl/pi-vertex` to `npm:@lhl/pi-vertex`.
+- Restored a normal development checkout at `~/pi-vertex` after removing the pi-managed GitHub install clone.
+- Verified pi startup with the npm-installed package; it loads and reports the expected missing-project guidance when `GOOGLE_CLOUD_PROJECT` is unset.
+- Updated `pi-setup.sh`, `README.md`, `wiki/tools/pi-agent.md`, and `wiki/log.md` for the npm install source and v1.1.8 status.
+
+**Decisions:**
+- Use the npm package as the default pi install source now that v1.1.8 is published; keep the GitHub repo as the source/provenance link.
+
+**Next:**
+- Optional: run `/reload` in any open pi sessions to pick up the npm-installed package.
+
 ## 2026-05-06 — Polished pi-vertex npm publish metadata
 
 **What:** Prepared `lhl/pi-vertex` for README review before possible npm publish.

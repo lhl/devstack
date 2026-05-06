@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-05-06] update | pi-agent — pi-vertex npm publish
+- Tagged and pushed `lhl/pi-vertex` `v1.1.8`, created the GitHub release, and verified `@lhl/pi-vertex@1.1.8` on npm after registry propagation.
+- Switched the local pi install source and setup docs from the GitHub repo URL to `npm:@lhl/pi-vertex`.
+- Verified `npm info @lhl/pi-vertex version`, a temp npm install, local pi package install, and pi startup with the npm-installed package.
+- Pages updated: README.md (custom provider entry), pi-setup.sh, wiki/tools/pi-agent.md (installed table source/version).
+
 ## [2026-05-06] update | pi-agent — pi-codex-status npm publish
 - Published `pi-codex-status@0.1.0` to npm and created the GitHub release/tag `v0.1.0`.
 - Switched the local pi install source and setup docs from the GitHub repo URL to `npm:pi-codex-status`.

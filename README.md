@@ -59,7 +59,7 @@ Pi supports a number of providers OOTB including most first-party frontier model
 
 ### Custom Providers
 
-- [`@lhl/pi-vertex`](https://github.com/lhl/pi-vertex) — Google Vertex AI provider with Gemini, Claude, Llama, DeepSeek, Qwen, Mistral, and 20+ other MaaS models. Forked from `@ssweens/pi-vertex` with added tests, CI, and linting.
+- [`@lhl/pi-vertex`](https://www.npmjs.com/package/@lhl/pi-vertex) — Google Vertex AI provider with Gemini, Claude, Llama, DeepSeek, Qwen, Mistral, and 20+ other MaaS models. Forked from `@ssweens/pi-vertex` with added tests, CI, and linting; source: [lhl/pi-vertex](https://github.com/lhl/pi-vertex).
   ```bash
   pi install npm:@lhl/pi-vertex
   export GOOGLE_CLOUD_PROJECT=your-project-id
