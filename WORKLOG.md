@@ -4,6 +4,24 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-05-06 — Prepared pi-codex-status v0.1.0 publish candidate
+
+**What:** Updated the public `lhl/pi-codex-status` package for first npm publish review.
+
+- Reworked README into a user-facing structure modeled after `pi-multiloop`: why, features, install, quick start, commands, CLI, auth/cache, development, and license.
+- Folded all unpublished changelog entries into `0.1.0`.
+- Moved `@mariozechner/pi-tui` to runtime dependencies so clean production installs can import the extension renderer.
+- Normalized the npm bin path, set author metadata to `Leonard Lin <lhl@randomfoo.net>`, and kept only the status CLI name.
+- Verified `npm run check`, `npm test`, clean production import simulation, `npm pack --dry-run`, and `npm publish --dry-run`.
+- Updated `wiki/tools/pi-agent.md` to reflect that the published package exposes only the status CLI name.
+
+**Decisions:**
+- Did not tag or publish; README is ready for manual review/tweaks first.
+- Left historical append-only logs untouched; added current-state correction in the wiki log instead.
+
+**Next:**
+- Review/tweak README, then tag `v0.1.0`, push, publish to npm, and create the GitHub release.
+
 ## 2026-05-06 — Themed pi-codex-status slash output
 
 **What:** Improved `pi-codex-status` interactive `/status` rendering.

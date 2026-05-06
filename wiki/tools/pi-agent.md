@@ -124,7 +124,7 @@ cron_create cron="0 * * * *" prompt="hourly check"
 /codex-status        # Alias if another extension claims /status
 ```
 
-**CLI:** `pi-codex-status`, `pi-codex-status statusline`, `pi-codex-status json`. `pi-codex-usage` remains a backwards-compatible alias.
+**CLI:** `pi-codex-status`, `pi-codex-status statusline`, `pi-codex-status json`. The package now exposes only the status CLI name to keep published usage unambiguous.
 
 **Key feature:** Gives idle-time visibility into ChatGPT Codex usage limits without waiting for a 429. It reads existing OAuth credentials from `~/.pi/agent/auth.json` first, falls back to `~/.codex/auth.json`, calls ChatGPT's private Codex usage endpoint, and self-caches to `~/.cache/pi-codex-status/usage.json` for statusline use. The pi extension also parses `x-codex-*` response headers when available to refresh the cache opportunistically.
 

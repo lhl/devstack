@@ -1,5 +1,10 @@
 # Wiki Log
 
+## [2026-05-06] update | pi-agent — pi-codex-status publish preflight
+- Prepared the v0.1.0 publish candidate in the public status repo: user-facing README, v0.1.0 changelog fold, runtime TUI dependency, and npm publish dry-run.
+- Confirmed the current package exposes only `pi-codex-status` as its CLI name.
+- Pages updated: wiki/tools/pi-agent.md (CLI description).
+
 ## [2026-05-06] update | pi-agent — published Codex status extension
 - Published `pi-codex-status` as a public GitHub repo: https://github.com/lhl/pi-codex-status
 - Switched local pi install and setup docs from `~/pi-codex-usage` to the public GitHub source.
