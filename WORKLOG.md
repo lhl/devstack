@@ -4,6 +4,27 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-05-06 — Added pi-codex-status agent and publish docs
+
+**What:** Copied/adapted the project hygiene docs pattern from `~/pi-multiloop` into `~/pi-codex-usage` / `pi-codex-status`.
+
+- Read `~/pi-multiloop/AGENTS.md`, `CLAUDE.md` symlink, and `docs/PUBLISH.md`.
+- Added `AGENTS.md` tailored to `pi-codex-status` architecture, auth secrecy constraints, committed `dist/` policy, verification commands, and git discipline.
+- Added `CLAUDE.md -> AGENTS.md` symlink.
+- Added `docs/PUBLISH.md` with preflight, verification, review, build artifact, tag, npm publish, GitHub release, and post-publish checks.
+- Added `CHANGELOG.md` scaffold with `Unreleased` and `0.1.0` sections.
+- Updated `README.md` to link the publish checklist and fixed the pi install wording.
+- Updated `package.json` to include `CHANGELOG.md` in npm package contents and added `status` / `pi` keywords.
+- Verified `npm test` and `npm pack --dry-run`.
+- Committed and pushed `lhl/pi-codex-status` commit `8a7e022 docs: add agent and publish guides`.
+
+**Decisions:**
+- Kept `dist/` committed and documented as required because direct GitHub pi installs should not require a TypeScript build step.
+- Did not include `AGENTS.md` or `docs/PUBLISH.md` in npm `files`; release consumers need runtime package contents, while contributor docs remain in GitHub.
+
+**Next:**
+- Add CI before npm publishing, or at minimum follow `docs/PUBLISH.md` manually for the first registry release.
+
 ## 2026-05-06 — Published pi-codex-status
 
 **What:** Renamed and published the Codex quota extension as a public GitHub repo.
