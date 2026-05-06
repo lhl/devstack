@@ -4,6 +4,21 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-05-06 — Reviewed pi-multiloop compaction nudging
+
+**What:** Reviewed the local `~/pi-multiloop` checkout to summarize current compaction-aware resume and active-loop nudging behavior.
+
+- Read `~/pi-multiloop/extensions/pi-multiloop/index.ts`, relevant tests, and Pi extension/compaction docs.
+- Confirmed the local checkout is two commits ahead of upstream `origin/main` with the compaction resume changes.
+- Verified the current checkout with `npx vitest run tests/index.test.ts` and `npx tsc --noEmit`.
+- Identified edge cases around very recent manual `/compact`, canceled compactions leaving stale timing, and resume send races.
+
+**Decisions:**
+- Made no plugin code changes in this review pass.
+
+**Next:**
+- Decide whether to harden the compaction classifier before publishing the local `pi-multiloop` changes.
+
 ## 2026-05-06 — Fixed repeated pi-multiloop compaction resume
 
 **What:** Diagnosed and fixed the local `~/pi-multiloop` compaction resume hook after repeated auto-compactions.
