@@ -4,6 +4,20 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-05-06 — Cleaned local pi-codex-status workspace naming
+
+**What:** Aligned local workspace artifacts with the published package name.
+
+- Renamed the local checkout to `~/pi-codex-status`.
+- Re-linked the global `pi-codex-status` CLI after the directory move.
+- Removed the stale legacy CLI symlink and old cache directory.
+
+**Decisions:**
+- Kept the GitHub pi install source unchanged until the reviewed README commit is pushed/tagged.
+
+**Next:**
+- Review/tweak README before tagging and publishing.
+
 ## 2026-05-06 — Prepared pi-codex-status v0.1.0 publish candidate
 
 **What:** Updated the public `lhl/pi-codex-status` package for first npm publish review.
