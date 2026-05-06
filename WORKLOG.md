@@ -4,6 +4,18 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-05-06 — Correction: pi-codex-status README commit hash
+
+**What:** Correcting the previous WORKLOG entry's pushed commit hash.
+
+- Previous entry says the `lhl/pi-codex-status` README update was commit `a4477ee`; the actual pushed commit is `3c3d800 docs: explain codex provider setup and status math`.
+
+**Decisions:**
+- Added a correction entry instead of editing the prior WORKLOG entry to preserve append-only history.
+
+**Next:**
+- None.
+
 ## 2026-05-06 — Documented pi-codex-status provider setup and status math
 
 **What:** Updated `lhl/pi-codex-status` README to better explain setup and status calculation.
