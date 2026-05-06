@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-05-06] update | pi-agent — published Codex status extension
+- Published `pi-codex-status` as a public GitHub repo: https://github.com/lhl/pi-codex-status
+- Switched local pi install and setup docs from `~/pi-codex-usage` to the public GitHub source.
+- Package/CLI renamed to `pi-codex-status`; `pi-codex-usage` remains a backwards-compatible CLI alias.
+- Pages updated: wiki/tools/pi-agent.md (installed table, install command, usage section), README.md (UX entry), pi-setup.sh.
+
 ## [2026-05-06] update | pi-agent — installed local Codex quota status extension
 - Created and installed local `~/pi-codex-usage` pi package for ChatGPT Codex quota visibility.
 - Documents `/status`, `/codex-status`, `pi-codex-usage statusline`, normalized JSON output, and the private Codex usage endpoint caveat.

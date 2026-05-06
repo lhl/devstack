@@ -4,6 +4,24 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-05-06 — Published pi-codex-status
+
+**What:** Renamed and published the Codex quota extension as a public GitHub repo.
+
+- Renamed package metadata and primary CLI from `pi-codex-usage` to `pi-codex-status`; kept `pi-codex-usage` as a backwards-compatible bin alias.
+- Added repository metadata for `https://github.com/lhl/pi-codex-status` and committed built `dist/` files so `pi install https://github.com/lhl/pi-codex-status` works without a local TypeScript build step.
+- Created public GitHub repo `lhl/pi-codex-status`, pushed `main`, and added topics: `pi-package`, `pi`, `codex`, `chatgpt`, `quota`, `status`.
+- Switched the local pi package install from `/home/lhl/pi-codex-usage` to `https://github.com/lhl/pi-codex-status`.
+- Updated `pi-setup.sh`, `README.md`, `wiki/tools/pi-agent.md`, and `wiki/log.md` to reference the public source.
+- Verified `pi-codex-status statusline` and `pi --no-session --no-context-files --no-tools -p "/status statusline"`.
+
+**Decisions:**
+- Chose `pi-codex-status` for the public name because the user-facing command is `/status` and the main use case is quota/status visibility, not general usage analytics.
+- Committed `dist/` despite this being TypeScript so direct pi GitHub installs are usable; pi package installs run dependency install but should not require dev build tooling.
+
+**Next:**
+- Optionally publish to npm after a little more real-world usage.
+
 ## 2026-05-06 — Fixed delayed pi-codex-usage `/status` rendering
 
 **What:** Fixed `/status` in the local `~/pi-codex-usage` pi extension so it renders immediately in interactive sessions.

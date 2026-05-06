@@ -50,15 +50,7 @@ pi install npm:pi-multiloop
 pi install https://github.com/lhl/pi-vertex
 pi install npm:@sting8k/pi-vcc
 
-# Local Codex quota/status extension. The package lives outside devstack so it can be
-# developed and installed as a normal pi package while still exposing a global CLI.
-PI_CODEX_USAGE_DIR="$HOME/pi-codex-usage"
-if [ -d "$PI_CODEX_USAGE_DIR" ]; then
-  (cd "$PI_CODEX_USAGE_DIR" && npm install && npm run build && npm link)
-  pi install "$PI_CODEX_USAGE_DIR"
-else
-  echo "Skipping pi-codex-usage: $PI_CODEX_USAGE_DIR not found"
-fi
+pi install https://github.com/lhl/pi-codex-status
 
 # pi-vcc: make it handle /compact and auto-threshold compactions (not just /pi-vcc).
 # Default is false, which only runs pi-vcc on the explicit /pi-vcc command.
