@@ -4,6 +4,24 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-05-06 — Added pi-multiloop compaction-aware resume
+
+**What:** Integrated a loop-aware continuation hook into `~/pi-multiloop` for active loops interrupted by pi context compaction.
+
+- Added `session_compact` tracking plus an `agent_end` hook: when compaction happens during an active multiloop turn and the turn ends, pi-multiloop injects a resume prompt grounded in active `.multiloop/` state.
+- The resume prompt includes active loop context, verify/guard commands, and explicit instructions to continue with `multiloop_iterate`, `multiloop_measure`, and `multiloop_decide`/`multiloop_log` rather than starting a new loop.
+- Avoids restarting after manual idle `/compact` by checking whether the agent is running/idle at compaction time.
+- Updated `README.md`, `CHANGELOG.md`, `AGENTS.md`, and added tests for the resume prompt helper.
+- Verified `npx tsc --noEmit`, `npx vitest run` (102 tests), and a local extension smoke load.
+- Committed `~/pi-multiloop` commit `5c40bca fix: resume multiloops after compaction`.
+
+**Decisions:**
+- Built this into pi-multiloop instead of installing generic `pi-auto-continue`; the resume message needs lane/run state and `.multiloop/` context.
+- Did not switch the installed pi package source or publish yet; this is staged in the repo for review/testing first.
+
+**Next:**
+- If behavior looks good, publish a pi-multiloop patch release and update devstack setup/docs if the installed version/source changes.
+
 ## 2026-05-06 — Published pi-vertex v1.1.8 to npm
 
 **What:** Completed the first registry release for the `lhl/pi-vertex` fork.
