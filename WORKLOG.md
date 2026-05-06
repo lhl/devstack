@@ -4,6 +4,20 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-05-06 — Tuned pi-multiloop widget colors
+
+**What:** Adjusted the `~/pi-multiloop` startup resume widget theme token mapping.
+
+- Set the title to `mdHeading`, separators/arrows to `mdHr`, status segments to `mdLink`, run ids/placeholders to `accent`, goals to `text`, badges to `muted`, and `/multiloop resume` to `syntaxFunction`.
+- Verified `npx tsc --noEmit` and `npx vitest run` (109 tests).
+- Committed `~/pi-multiloop` commit `206a66d style: tune multiloop widget colors`.
+
+**Decisions:**
+- Keep the current layout and only tune colors per the requested theme-token mapping.
+
+**Next:**
+- Reload an interactive Pi session to eyeball the updated color balance.
+
 ## 2026-05-06 — Polished pi-multiloop resume widget
 
 **What:** Styled the passive startup resume widget in `~/pi-multiloop`.
