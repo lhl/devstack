@@ -4,6 +4,23 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-05-06 — Polished pi-vertex npm publish metadata
+
+**What:** Prepared `lhl/pi-vertex` for README review before possible npm publish.
+
+- Reset the dirty `package-lock.json` in the pi-installed clone.
+- Updated README install examples to use `pi install npm:@lhl/pi-vertex`.
+- Corrected README counts/details for 88 tests, 39 models, and current stream/Gemini bug fixes.
+- Set package author metadata to `Leonard Lin <lhl@randomfoo.net>` and added `homepage` / `bugs` links.
+- Verified in a clean temp copy: `npm run build`, `npm run check`, `npm test` (88 tests), and `npm publish --dry-run --access public`.
+- Committed `lhl/pi-vertex` commit `ff84858 docs: polish npm publish metadata`.
+
+**Decisions:**
+- Did not tag or publish; README is ready for manual review first.
+
+**Next:**
+- Review/tweak `~/.pi/agent/git/github.com/lhl/pi-vertex/README.md`, then publish `@lhl/pi-vertex@1.1.8` if approved.
+
 ## 2026-05-06 — Published pi-codex-status v0.1.0 to npm
 
 **What:** Completed the first registry release for `lhl/pi-codex-status`.
