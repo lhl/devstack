@@ -4,6 +4,26 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-05-07 — Prepared pi-multiloop v0.2.0 release
+
+**What:** Bumped `~/pi-multiloop` for a minor release after the compaction/resume and startup notice changes.
+
+- Updated `~/pi-multiloop/package.json` from `0.1.1` to `0.2.0`.
+- Moved CHANGELOG Unreleased notes under `0.2.0 - 2026-05-07`.
+- Updated `~/pi-multiloop/docs/TODO.md` current version to `0.2.0`.
+- Verified `npx tsc --noEmit`, `npx vitest run` (110 tests), and `npm pack --dry-run`.
+- Amended the release-prep commit to `ad56481 chore: bump version to v0.2.0`.
+- Retagged the release locally from `v0.1.2` to `v0.2.0` before anything was pushed.
+
+**Decisions:**
+- Use a minor release (`0.2.0`) because the behavior changes are substantial enough to be more than a patch.
+- Do not run `npm publish` from this session; leave final push/publish to the next explicit release step.
+
+**Next:**
+- Push `~/pi-multiloop` main and tag: `git push && git push origin v0.2.0`.
+- Publish: `npm publish`.
+- Create the GitHub release from the `0.2.0` changelog section.
+
 ## 2026-05-07 — Colored pi-multiloop startup resume notice
 
 **What:** Matched the `~/pi-codex-status` custom-message rendering pattern for the `~/pi-multiloop` startup resume notice.
