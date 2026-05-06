@@ -4,6 +4,21 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-05-07 — Published pi-multiloop v0.2.0
+
+**What:** Completed the `~/pi-multiloop` v0.2.0 release.
+
+- Confirmed npm registry now serves `pi-multiloop@0.2.0` with `latest` pointing at `0.2.0`.
+- Confirmed `origin/main` and tag `v0.2.0` point at `ad56481 chore: bump version to v0.2.0`.
+- Created GitHub Release `v0.2.0`: https://github.com/lhl/pi-multiloop/releases/tag/v0.2.0
+- Verified `~/pi-multiloop` working tree is clean after publish/release.
+
+**Decisions:**
+- Release notes used the `0.2.0` CHANGELOG section.
+
+**Next:**
+- Test a fresh install with `pi install npm:pi-multiloop` in a separate Pi session if desired.
+
 ## 2026-05-07 — Prepared pi-multiloop v0.2.0 release
 
 **What:** Bumped `~/pi-multiloop` for a minor release after the compaction/resume and startup notice changes.
