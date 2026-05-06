@@ -11,11 +11,13 @@ Append-only session log. Each entry records what was done, why, and what's next.
 - Wrote `~/pi-multiloop/docs/STATE.md` covering registry state, snapshot state, runtime attachment, Pi turn lifecycle, command/tool transitions, startup behavior, and compaction behavior.
 - Documented missing state: no explicit loop-turn ownership, no persisted iteration-in-progress marker, no extension-level compaction reason, and no reliable built-in `/compact` input record.
 - Captured the manual compaction edge case and the possible last-user-submission sanity check, including the caveat that bare built-in `/compact` likely bypasses extension `input` today.
-- Committed `~/pi-multiloop` commit `d733049 docs: document multiloop lifecycle state`.
+- Added a best-fix section recommending an upstream Pi extension API change to expose compaction `reason` on `session_before_compact` and `session_compact`.
+- Committed `~/pi-multiloop` commits `d733049 docs: document multiloop lifecycle state` and `fa0ee7e docs: note upstream compaction reason fix`.
 
 **Decisions:**
 - Keep this pass documentation-only; no compaction state-machine changes yet.
 - Prefer future compaction policy based on explicit loop-turn ownership and Pi-exposed compaction reason rather than a wall-clock heuristic.
+- Treat exposing compaction `reason` upstream as the clean solution; monkeypatching Pi internals is only suitable for local experiments.
 
 **Next:**
 - Decide and implement the compaction resume state-machine changes in `~/pi-multiloop`.
