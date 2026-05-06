@@ -4,6 +4,25 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-05-06 — Themed pi-codex-status slash output
+
+**What:** Improved `pi-codex-status` interactive `/status` rendering.
+
+- Added a custom `registerMessageRenderer` for `codex-status` messages so output no longer appears under the default `[codex-status]` custom-message label or inside a markdown code block.
+- Uses pi theme colors for borders, title, labels, dim help text, named-limit headings, and green/yellow/red limit bars based on remaining percentage.
+- Kept print/CLI output plain text for scripts.
+- Added defensive stale-context handling for background footer refreshes that complete after session shutdown/reload.
+- Added `@mariozechner/pi-tui` as a peer/dev dependency for the `Text` component.
+- Updated README and CHANGELOG.
+- Verified `npm test`, `npm pack --dry-run`, local `pi --no-extensions -e /home/lhl/pi-codex-usage --no-session --no-context-files --no-tools -p "/status"`, then `pi update https://github.com/lhl/pi-codex-status` and print-mode statusline.
+- Committed and pushed `lhl/pi-codex-status` commit `9f89dfb feat: render status with themed message`.
+
+**Decisions:**
+- Kept the same boxed text layout but moved presentation into a custom TUI renderer. This preserves copyable/session-persisted content while avoiding the default custom-message wrapper in interactive pi.
+
+**Next:**
+- Run `/reload` in open interactive pi sessions to pick up the updated installed package.
+
 ## 2026-05-06 — Correction: pi-codex-status README commit hash
 
 **What:** Correcting the previous WORKLOG entry's pushed commit hash.
