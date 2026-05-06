@@ -4,6 +4,22 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-05-07 — Documented pi-multiloop lifecycle state
+
+**What:** Added lifecycle/state documentation for `~/pi-multiloop` compaction and running-loop semantics.
+
+- Wrote `~/pi-multiloop/docs/STATE.md` covering registry state, snapshot state, runtime attachment, Pi turn lifecycle, command/tool transitions, startup behavior, and compaction behavior.
+- Documented missing state: no explicit loop-turn ownership, no persisted iteration-in-progress marker, no extension-level compaction reason, and no reliable built-in `/compact` input record.
+- Captured the manual compaction edge case and the possible last-user-submission sanity check, including the caveat that bare built-in `/compact` likely bypasses extension `input` today.
+- Committed `~/pi-multiloop` commit `d733049 docs: document multiloop lifecycle state`.
+
+**Decisions:**
+- Keep this pass documentation-only; no compaction state-machine changes yet.
+- Prefer future compaction policy based on explicit loop-turn ownership and Pi-exposed compaction reason rather than a wall-clock heuristic.
+
+**Next:**
+- Decide and implement the compaction resume state-machine changes in `~/pi-multiloop`.
+
 ## 2026-05-06 — Aligned pi-multiloop widget markers
 
 **What:** Tweaked the `~/pi-multiloop` startup resume widget markers for more stable alignment.
