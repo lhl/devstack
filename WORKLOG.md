@@ -4,6 +4,25 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-05-07 — Fixed pi-multiloop startup resume notice
+
+**What:** Changed `~/pi-multiloop` startup resumable-loop display from a persistent widget to chat-history output.
+
+- Replaced the `multiloop-resume` startup `ctx.ui.setWidget` rendering with a passive `pi.sendMessage` notice that scrolls with chat history.
+- Kept a defensive `setWidget("multiloop-resume", undefined)` clear so stale widgets disappear after reload/update.
+- Renamed the builder/test from `buildResumableLoopsWidget` to `buildResumableLoopsNotice`.
+- Updated `~/pi-multiloop` README, CHANGELOG, `docs/STATE.md`, and `docs/TODO.md`.
+- Added TODO note for a future one-line active-loop TUI element above the prompt.
+- Verified `npx tsc --noEmit` and `npx vitest run` (109 tests).
+- Committed `~/pi-multiloop` commit `d960ad9 fix: make startup resume notice scroll`.
+
+**Decisions:**
+- Startup resumable-loop info should be a scrollback/history notice, not a pinned floating widget.
+- A persistent above-prompt TUI element is still interesting for actively attached/running loops, but should be a separate future feature.
+
+**Next:**
+- Continue with compaction resume state-machine design and manual compaction edge cases.
+
 ## 2026-05-07 — Documented pi-multiloop lifecycle state
 
 **What:** Added lifecycle/state documentation for `~/pi-multiloop` compaction and running-loop semantics.
