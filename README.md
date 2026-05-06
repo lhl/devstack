@@ -46,6 +46,7 @@ For saving tokens.
 ### UX
 
 - [lhl/pi-zentui](https://github.com/lhl/pi-zentui) - my personal fork of a status-line that fits my preferences
+- `~/pi-codex-usage` - local CLI + pi extension for ChatGPT Codex quota visibility (`/status`, `pi-codex-usage statusline`, normalized JSON export)
 - [mattleong/pi-code-previews](https://github.com/mattleong/pi-code-previews) - for better syntax-highlighting from tool calls
 
 ### Skills

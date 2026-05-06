@@ -4,6 +4,27 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-05-06 — Added local pi-codex-usage quota status extension
+
+**What:** Built and installed `~/pi-codex-usage`, a local CLI + pi package for ChatGPT Codex quota visibility.
+
+- Implemented a Node/TypeScript package with `pi-codex-usage status`, `statusline`, `json`, and `raw` commands.
+- Added a pi extension registering `/status` and `/codex-status`; it renders a Codex-style quota box, normalized JSON, raw backend output, or compact statusline.
+- Reads existing OAuth credentials from `~/.pi/agent/auth.json` first and falls back to `~/.codex/auth.json`; refreshes tokens when needed.
+- Fetches `https://chatgpt.com/backend-api/codex/usage` for idle-time 5h/weekly limit, credits, and additional named/per-model limits; also parses `x-codex-*` headers from provider responses to refresh the cache opportunistically.
+- Stores self-cached status data in `~/.cache/pi-codex-usage/usage.json` for statusline use.
+- Added tests for bar rendering, reset formatting, statusline formatting, and `x-codex-*` header parsing. `npm test` passes.
+- Installed with `npm link` and `pi install /home/lhl/pi-codex-usage`.
+- Updated `pi-setup.sh`, `README.md`, `wiki/tools/pi-agent.md`, `wiki/index.md`, and `wiki/log.md` to document the new local package.
+
+**Decisions:**
+- Used the Codex usage endpoint rather than relying only on `x-codex-*` headers/events because endpoint data is available while idle and includes credits plus additional named limits. Headers are still parsed as a low-cost cache refresh path after real provider calls.
+- Registered `/status` for convenience and `/codex-status` as a collision-proof alias.
+- Kept the package in `~/pi-codex-usage` rather than vendoring into devstack; `pi-setup.sh` builds/installs it if that local directory exists and skips with a message otherwise.
+
+**Next:**
+- Optionally publish `pi-codex-usage` to GitHub/npm so `pi-setup.sh` can install from a stable source instead of a local home-directory path.
+
 ## 2026-05-05 — Forked and hardened pi-vertex provider
 
 **What:** Filtered `@ssweens/pi-vertex` from its monorepo into a standalone `lhl/pi-vertex` fork, then added tests, CI, linting, and real npm scripts.

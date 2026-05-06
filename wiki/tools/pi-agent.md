@@ -33,7 +33,8 @@ Pi (pi.dev) is a minimal, extensible terminal coding harness by Mario Zechner (b
 | **pi-smart-fetch** | `npm:pi-smart-fetch` | Browser-like TLS fingerprints + Defuddle extraction for bot-defended pages | ✅ Installed (v0.2.35) |
 | **camoufox-pi** | `npm:@the-forge-flow/camoufox-pi` | Stealth web access via Camoufox (C++-level anti-fingerprinting Firefox fork) | ✅ Installed (v0.2.1) |
 | **pi-zentui** | `npm:pi-zentui` | Starship-inspired status line + Opencode-style TUI (footer with git/runtime, bordered editor, accent rail) | ✅ Installed (v0.1.2) |
-| **pi-vertex** | `npm:@lhl/pi-vertex` | Google Vertex AI provider — Gemini, Claude, Llama, DeepSeek, Qwen, Mistral, and 20+ MaaS models | ✅ Installed (v1.1.6, forked from ssweens) |
+| **pi-codex-usage** | `~/pi-codex-usage` | Local ChatGPT Codex quota/usage CLI + `/status` extension (5h, weekly, credits, JSON/statusline export) | ✅ Installed (v0.1.0, local) |
+| **pi-vertex** | `npm:@lhl/pi-vertex` | Google Vertex AI provider — Gemini, Claude, Llama, DeepSeek, Qwen, Mistral, and 20+ other MaaS models | ✅ Installed (v1.1.6, forked from ssweens) |
 
 **Install commands:**
 ```bash
@@ -55,6 +56,10 @@ pi install npm:@the-forge-flow/camoufox-pi
 
 # Status bar
 pi install npm:pi-zentui
+
+# Codex quota/status (local package + global CLI)
+(cd ~/pi-codex-usage && npm install && npm run build && npm link)
+pi install ~/pi-codex-usage
 
 # camoufox-pi also needs its ~500MB browser binary (one-time):
 # npx camoufox fetch && chmod -R 755 ~/.cache/camoufox/
@@ -108,6 +113,23 @@ cron_create cron="0 * * * *" prompt="hourly check"
 ```
 
 **Key feature:** Replaces full turn history with compact handoff summary — same outcome, fraction of tokens. Good for 15+ iteration runs.
+
+### pi-codex-usage
+
+```
+/status              # Boxed ChatGPT Codex quota summary
+/status refresh      # Bypass the local cache
+/status json         # Normalized JSON for scripts/extensions
+/status raw          # Raw ChatGPT backend usage response
+/status statusline   # Compact one-line output
+/codex-status        # Alias if another extension claims /status
+```
+
+**CLI:** `pi-codex-usage`, `pi-codex-usage statusline`, `pi-codex-usage json`.
+
+**Key feature:** Gives idle-time visibility into ChatGPT Codex usage limits without waiting for a 429. It reads existing OAuth credentials from `~/.pi/agent/auth.json` first, falls back to `~/.codex/auth.json`, calls ChatGPT's private Codex usage endpoint, and self-caches to `~/.cache/pi-codex-usage/usage.json` for statusline use. The pi extension also parses `x-codex-*` response headers when available to refresh the cache opportunistically.
+
+**Caveat:** The usage endpoint is private/reverse-engineered and may change. The official fallback is `https://chatgpt.com/codex/settings/usage`.
 
 ### pi-continue
 

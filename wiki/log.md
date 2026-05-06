@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-05-06] update | pi-agent — installed local Codex quota status extension
+- Created and installed local `~/pi-codex-usage` pi package for ChatGPT Codex quota visibility.
+- Documents `/status`, `/codex-status`, `pi-codex-usage statusline`, normalized JSON output, and the private Codex usage endpoint caveat.
+- Pages updated: wiki/tools/pi-agent.md (installed table, install commands, usage section), wiki/index.md (tools summary)
+- Repo changes (committed separately): `pi-setup.sh` local package build/install hook and README UX entry.
+
 ## [2026-05-05] update | Compaction decision: install pi-vcc with overrideDefaultCompaction
 - Trigger: pi default auto-compaction failing with `400 status code (no body)` after one compact-and-retry, blocking long sessions. Persisted after pi-continue was removed from settings.
 - Root cause: pi's single-pass summarization hands the whole span to the summarizer LLM; when span + prompt exceeds the summarizer's input window the provider rejects with 400.
