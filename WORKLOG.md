@@ -4,6 +4,22 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-05-06 — Fixed delayed pi-codex-usage `/status` rendering
+
+**What:** Fixed `/status` in the local `~/pi-codex-usage` pi extension so it renders immediately in interactive sessions.
+
+- Root cause: the extension used `pi.sendMessage(..., { deliverAs: "nextTurn" })`, which queues the custom message for the next user prompt instead of emitting it immediately while idle.
+- Changed `src/extension.ts` to call `pi.sendMessage(...)` without delivery options for UI sessions; print/no-UI mode still writes to stdout.
+- Rebuilt and ran `npm test`; all tests pass.
+- Verified `pi --no-session --no-context-files --no-tools -p "/status statusline"` still prints statusline output.
+- Committed fix in `~/pi-codex-usage` as `50c00d8 fix: render status command immediately`.
+
+**Decisions:**
+- Kept slash-command output as a custom message rather than a notification so boxed/JSON output remains copyable and persisted in the session.
+
+**Next:**
+- Run `/reload` in any already-open pi session so it picks up the rebuilt `dist/extension.js`.
+
 ## 2026-05-06 — Added local pi-codex-usage quota status extension
 
 **What:** Built and installed `~/pi-codex-usage`, a local CLI + pi package for ChatGPT Codex quota visibility.
