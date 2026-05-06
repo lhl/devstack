@@ -4,6 +4,23 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-05-06 — Added passive pi-multiloop startup list
+
+**What:** Added a safe startup affordance to `~/pi-multiloop` after removing auto-attach.
+
+- Reintroduced `session_start` only as a passive UI widget that lists registry-active loops available to resume.
+- The startup widget does not mutate `activeStates`, does not attach loops, and does not inject loop state into the model context.
+- Excludes loops already attached in the current runtime and updates the widget after multiloop status changes.
+- Updated `~/pi-multiloop` README, CHANGELOG, AGENTS.md, and tests.
+- Verified `npx tsc --noEmit` and `npx vitest run` (109 tests).
+- Committed `~/pi-multiloop` commit `1afcbf7 feat: show resumable multiloops on startup`.
+
+**Decisions:**
+- Startup should surface resumable work in UI only; explicit `/multiloop resume <lane/run-tag>` remains required to reactivate a loop.
+
+**Next:**
+- Continue reviewing compaction classification edge cases before publishing the local `pi-multiloop` changes.
+
 ## 2026-05-06 — Removed pi-multiloop auto-attach context injection
 
 **What:** Fixed the local `~/pi-multiloop` checkout so loops only become active in the current session after explicit start or resume.
