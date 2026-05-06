@@ -4,6 +4,25 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-05-06 — Removed pi-multiloop auto-attach context injection
+
+**What:** Fixed the local `~/pi-multiloop` checkout so loops only become active in the current session after explicit start or resume.
+
+- Removed `session_start` auto-loading of persisted active loops from `.multiloop/registry.json`.
+- Removed global `before_agent_start` system-prompt injection of every active loop.
+- Changed `/multiloop resume <lane/run-tag>` to send an explicit loop-aware resume prompt after reconstructing state.
+- Kept compaction resume scoped to loops active in the current extension runtime and queued its prompt as a follow-up to avoid streaming races.
+- Updated `~/pi-multiloop` README, CHANGELOG, AGENTS.md, and tests.
+- Verified `npx tsc --noEmit` and `npx vitest run` (108 tests).
+- Committed `~/pi-multiloop` commit `426da38 fix: require explicit multiloop resume`.
+
+**Decisions:**
+- New Pi sessions must not auto-attach to existing `.multiloop` entries; explicit `/multiloop resume` is required.
+- Active loop state should be supplied in explicit start/resume/compaction prompts, not injected into unrelated user turns.
+
+**Next:**
+- Continue reviewing compaction classification edge cases before publishing the local `pi-multiloop` changes.
+
 ## 2026-05-06 — Reviewed pi-multiloop compaction nudging
 
 **What:** Reviewed the local `~/pi-multiloop` checkout to summarize current compaction-aware resume and active-loop nudging behavior.
