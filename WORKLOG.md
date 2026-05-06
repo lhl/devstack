@@ -4,6 +4,22 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-05-06 — Documented pi-codex-status provider setup and status math
+
+**What:** Updated `lhl/pi-codex-status` README to better explain setup and status calculation.
+
+- Added link to Pi's `openai-codex` provider docs and explained that users can run `/login` in pi with a ChatGPT Plus/Pro account.
+- Added a "How it works" section describing the private Codex usage endpoint, server-reported `used_percent`, local `leftPercent = 100 - used_percent`, reset timestamp conversion, credits display, additional limits, and opportunistic `x-codex-*` header parsing.
+- Updated `CHANGELOG.md` Unreleased entries.
+- Verified `npm run check` and `npm pack --dry-run`.
+- Committed and pushed `lhl/pi-codex-status` commit `a4477ee docs: explain codex provider setup and status math`.
+
+**Decisions:**
+- Kept the endpoint caveat explicit and linked the official ChatGPT Codex usage settings fallback.
+
+**Next:**
+- Continue polish passes before first npm publish.
+
 ## 2026-05-06 — Added pi-codex-status agent and publish docs
 
 **What:** Copied/adapted the project hygiene docs pattern from `~/pi-multiloop` into `~/pi-codex-usage` / `pi-codex-status`.
