@@ -4,6 +4,22 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-05-06 — Published pi-codex-status v0.1.0 to npm
+
+**What:** Completed the first registry release for `lhl/pi-codex-status`.
+
+- Confirmed npm auth as `lhl`, created/pushed tag `v0.1.0`, and published `pi-codex-status@0.1.0` to npm.
+- Created GitHub release `v0.1.0`: https://github.com/lhl/pi-codex-status/releases/tag/v0.1.0
+- Switched local pi install source from the GitHub repo URL to `npm:pi-codex-status`.
+- Verified `npm info pi-codex-status version`, global `pi-codex-status statusline`, and `pi --no-session --no-context-files --no-tools -p "/status statusline"` through the npm-installed package.
+- Updated `pi-setup.sh`, `README.md`, `wiki/tools/pi-agent.md`, and `wiki/log.md` for the npm install source.
+
+**Decisions:**
+- Use the npm package as the default pi install source now that `v0.1.0` is published; keep the GitHub repo as source/provenance link.
+
+**Next:**
+- Optional: update any open interactive pi sessions with `/reload`.
+
 ## 2026-05-06 — Cleaned local pi-codex-status workspace naming
 
 **What:** Aligned local workspace artifacts with the published package name.

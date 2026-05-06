@@ -50,7 +50,7 @@ pi install npm:pi-multiloop
 pi install https://github.com/lhl/pi-vertex
 pi install npm:@sting8k/pi-vcc
 
-pi install https://github.com/lhl/pi-codex-status
+pi install npm:pi-codex-status
 
 # pi-vcc: make it handle /compact and auto-threshold compactions (not just /pi-vcc).
 # Default is false, which only runs pi-vcc on the explicit /pi-vcc command.
