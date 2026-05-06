@@ -4,6 +4,23 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-05-06 — Polished pi-multiloop resume widget
+
+**What:** Styled the passive startup resume widget in `~/pi-multiloop`.
+
+- Changed the startup widget to the proposed header/badge/command layout with a trailing blank line.
+- Added theme colors for the title, run id, badges, goal text, arrow, and resume placeholder.
+- Kept the widget passive: it still does not attach loops or inject model context.
+- Updated tests and CHANGELOG.
+- Verified `npx tsc --noEmit` and `npx vitest run` (109 tests).
+- Committed `~/pi-multiloop` commit `35c02e2 style: polish multiloop resume widget`.
+
+**Decisions:**
+- Use the user-proposed layout and Pi theme colors instead of a heavier custom bordered component.
+
+**Next:**
+- Reload an interactive Pi session to eyeball final spacing/colors.
+
 ## 2026-05-06 — Added passive pi-multiloop startup list
 
 **What:** Added a safe startup affordance to `~/pi-multiloop` after removing auto-attach.
