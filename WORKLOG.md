@@ -4,6 +4,23 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-05-07 — Colored pi-multiloop startup resume notice
+
+**What:** Matched the `~/pi-codex-status` custom-message rendering pattern for the `~/pi-multiloop` startup resume notice.
+
+- Added a `multiloop-resume` `registerMessageRenderer` that renders the notice as a themed `Text` component instead of Pi's default purple custom-message box.
+- Reused the previous theme token mapping for title/rules/status/loop ids/badges/goal/command.
+- Added a unit test for notice colorization.
+- Updated CHANGELOG.
+- Verified `npx tsc --noEmit` and `npx vitest run` (110 tests).
+- Committed `~/pi-multiloop` commit `8923e67 fix: color startup resume notice`.
+
+**Decisions:**
+- Keep the notice as chat-history output that scrolls away, but use a custom renderer for color/styling.
+
+**Next:**
+- Reload Pi to visually confirm the startup notice is colored and no longer rendered in the default custom-message box.
+
 ## 2026-05-07 — Fixed pi-multiloop startup resume notice
 
 **What:** Changed `~/pi-multiloop` startup resumable-loop display from a persistent widget to chat-history output.
