@@ -4,6 +4,20 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-05-06 — Switched pi-multiloop install to local test checkout
+
+**What:** Made the active pi install use the local `~/pi-multiloop` checkout for compaction-resume testing.
+
+- Removed `npm:pi-multiloop` from local pi packages and installed `/home/lhl/pi-multiloop`.
+- Smoke-loaded the local extension with `pi --no-session --no-context-files --no-tools -p "/multiloop status"`; it loaded without errors.
+- Updated `pi-setup.sh`, `README.md`, `wiki/tools/pi-agent.md`, and `wiki/log.md` to reflect the temporary local test source.
+
+**Decisions:**
+- Keep devstack pointed at the local checkout until we validate the compaction-aware resume behavior in an interactive session.
+
+**Next:**
+- Run `/reload` in open pi sessions, test an active multiloop through compaction, then publish/revert install source based on the result.
+
 ## 2026-05-06 — Added pi-multiloop compaction-aware resume
 
 **What:** Integrated a loop-aware continuation hook into `~/pi-multiloop` for active loops interrupted by pi context compaction.

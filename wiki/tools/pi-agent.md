@@ -27,6 +27,7 @@ Pi (pi.dev) is a minimal, extensible terminal coding harness by Mario Zechner (b
 | **pi-rtk-optimizer** | `npm:pi-rtk-optimizer` | Token optimization via RTK command rewriting + output compaction | ✅ Installed |
 | **pi-schedule-prompt** | `npm:pi-schedule-prompt` | Natural language scheduling, cron, per-task model | ✅ Installed |
 | **pi-boomerang** | `npm:pi-boomerang` | Token-efficient autonomous loops — summarize between iterations | ✅ Installed |
+| **pi-multiloop** | `/home/lhl/pi-multiloop` ([source](https://github.com/lhl/pi-multiloop), npm: `pi-multiloop`) | Multi-lane autoloop/autoresearch extension with lane-isolated `.multiloop/` state | 🧪 Local test (post-v0.1.1 compaction-aware resume) |
 | **pi-continue** | `git:pi-continue` | Mid-run context compaction with Continuation Ledger | ❌ Disabled (v0.6.0, local) |
 | **pi-code-previews** | `git:pi-code-previews` | Shiki syntax-highlighted tool output rendering in TUI | ✅ Installed (v0.1.14, local) |
 | **pi-web-access** | `npm:pi-web-access` | Web search, content extraction, video/YT understanding, GitHub cloning, PDF | ✅ Installed (v0.10.7) |
@@ -48,6 +49,9 @@ pi install npm:pi-schedule-prompt
 # pi install -l does NOT run npm install — must install deps manually:
 # (cd .pi/git/pi-continue && npm install)
 # (cd .pi/git/pi-code-previews && npm install)
+
+# Autoloop / workflow
+pi install /home/lhl/pi-multiloop
 
 # Web fetch & search
 pi install npm:pi-web-access

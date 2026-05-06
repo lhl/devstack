@@ -1,5 +1,10 @@
 # Wiki Log
 
+## [2026-05-06] update | pi-agent — local pi-multiloop compaction resume test
+- Switched local pi install source for `pi-multiloop` from npm to `/home/lhl/pi-multiloop` to test the post-v0.1.1 compaction-aware resume fix before publishing.
+- Verified the local package installs and the extension loads without errors in a print-mode smoke run.
+- Pages updated: README.md (automation entry), pi-setup.sh, wiki/tools/pi-agent.md (installed table and install command).
+
 ## [2026-05-06] update | pi-agent — pi-vertex npm publish
 - Tagged and pushed `lhl/pi-vertex` `v1.1.8`, created the GitHub release, and verified `@lhl/pi-vertex@1.1.8` on npm after registry propagation.
 - Switched the local pi install source and setup docs from the GitHub repo URL to `npm:@lhl/pi-vertex`.
