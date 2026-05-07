@@ -11,12 +11,12 @@ install_rtk() {
 install_pi() {
   if command -v npm &>/dev/null; then
     echo "Installing pi via npm..."
-    npm install -g @mariozechner/pi-coding-agent
+    npm install -g @earendil-works/pi-coding-agent
   else
     echo "npm not found. Installing via curl..."
     local tmp_dir
     tmp_dir=$(mktemp -d)
-    curl -fsSL https://raw.githubusercontent.com/badlogic/pi-mono/main/packages/coding-agent/install.sh \
+    curl -fsSL https://raw.githubusercontent.com/earendil-works/pi/main/packages/coding-agent/install.sh \
       -o "$tmp_dir/install-pi.sh"
     bash "$tmp_dir/install-pi.sh"
     rm -rf "$tmp_dir"
@@ -46,11 +46,12 @@ pi install npm:pi-smart-fetch
 pi install npm:@the-forge-flow/camoufox-pi@0.2.1
 pi install npm:pi-code-previews
 pi install npm:@tintinweb/pi-tasks
-pi install /home/lhl/pi-multiloop
+pi install npm:pi-multiloop
 pi install npm:@lhl/pi-vertex
 pi install npm:@sting8k/pi-vcc
 
 pi install npm:pi-codex-status
+pi install npm:pi-skill-dollar
 
 # pi-vcc: make it handle /compact and auto-threshold compactions (not just /pi-vcc).
 # Default is false, which only runs pi-vcc on the explicit /pi-vcc command.
