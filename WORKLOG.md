@@ -4,6 +4,24 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-05-08 — Documented pi-codex-conversion extension on pi wiki
+
+**What:** Analyzed IgorWarzocha's `pi-codex-conversion` extension and documented it on the pi-agent wiki page.
+
+- Fetched the full repo and read the transport-layer source (`openai-codex-custom-provider.ts`, `openai-responses-shared.ts`).
+- Summarized the dual-transport architecture: WebSocket preferred with session caching + smart continuation, SSE fallback with manual parser.
+- Documented the tool-swap behavior, prompt delta approach, native tool rewriting (web_search / image_generation → OpenAI Responses payload), passive UI status indicator, and key source files.
+- Added evaluated entry to the Installed Extensions table on `wiki/tools/pi-agent.md`.
+
+**Decisions:**
+- Documented as "evaluated (not installed)" rather than installed — we analyzed it for reference but have not added it to the active pi setup.
+- Emphasized the transport architecture since that was the focus of the research question.
+
+**Next:**
+- Nothing immediate; reference is available if we later decide to install or compare against other Codex adapters.
+
+---
+
 ## 2026-05-07 — Published pi-multiloop v0.2.0
 
 **What:** Completed the `~/pi-multiloop` v0.2.0 release.

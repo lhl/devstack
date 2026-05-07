@@ -1,5 +1,10 @@
 # Wiki Log
 
+## [2026-05-08] update | pi-agent — document pi-codex-conversion extension
+- Fetched and analyzed https://github.com/IgorWarzocha/pi-codex-conversion for SSE/WebSocket handling.
+- Added evaluated entry to the Installed Extensions table and a detailed section covering tool-swap behavior, prompt delta, native tool rewriting, passive status indicator, and the dual-transport architecture (WebSocket preferred + SSE fallback, session caching, smart continuation, retry logic, shared stream processing).
+- Pages updated: wiki/tools/pi-agent.md (frontmatter link, table row, new section).
+
 ## [2026-05-06] update | pi-agent — local pi-multiloop compaction resume test
 - Switched local pi install source for `pi-multiloop` from npm to `/home/lhl/pi-multiloop` to test the post-v0.1.1 compaction-aware resume fix before publishing.
 - Verified the local package installs and the extension loads without errors in a print-mode smoke run.

@@ -14,6 +14,7 @@ links:
   - https://github.com/nicobailon/pi-web-access
   - https://github.com/Thinkscape/agent-smart-fetch
   - https://github.com/MonsieurBarti/camoufox-pi
+  - https://github.com/IgorWarzocha/pi-codex-conversion
 ---
 
 # Pi Coding Agent
@@ -37,6 +38,7 @@ Pi (pi.dev) is a minimal, extensible terminal coding harness by Mario Zechner (b
 | **pi-codex-status** | `npm:pi-codex-status` ([source](https://github.com/lhl/pi-codex-status)) | ChatGPT Codex quota/status CLI + `/status` extension (5h, weekly, credits, JSON/statusline export) | ✅ Installed (v0.1.0) |
 | **pi-live-terminal** | `npm:pi-live-terminal` ([source](https://github.com/tanishqkancharla/pi-live-terminal)) | tmux-based live terminal widget for interactive/long-running commands | ✅ Installed (v0.2.0) |
 | **pi-vertex** | `npm:@lhl/pi-vertex` ([source](https://github.com/lhl/pi-vertex)) | Google Vertex AI provider — Gemini, Claude, Llama, DeepSeek, Qwen, Mistral, and 20+ other MaaS models | ✅ Installed (v1.1.8, forked from ssweens) |
+| **pi-codex-conversion** | `npm:@howaboua/pi-codex-conversion` ([source](https://github.com/IgorWarzocha/pi-codex-conversion)) | Codex-oriented adapter: tool-swap, WS/SSE dual transport, native Codex web_search/image_generation | 📋 Evaluated (not installed) |
 
 **Install commands:**
 ```bash
@@ -173,6 +175,74 @@ Then `/reload` inside pi.
 **Key feature:** Gives idle-time visibility into ChatGPT Codex usage limits without waiting for a 429. It reads existing OAuth credentials from `~/.pi/agent/auth.json` first, falls back to `~/.codex/auth.json`, calls ChatGPT's private Codex usage endpoint, and self-caches to `~/.cache/pi-codex-status/usage.json` for statusline use. The pi extension also parses `x-codex-*` response headers when available to refresh the cache opportunistically.
 
 **Caveat:** The usage endpoint is private/reverse-engineered and may change. The official fallback is `https://chatgpt.com/codex/settings/usage`.
+
+### pi-codex-conversion
+
+**Repo:** [IgorWarzocha/pi-codex-conversion](https://github.com/IgorWarzocha/pi-codex-conversion) | **npm:** `npm:@howaboua/pi-codex-conversion`
+
+Codex-oriented adapter for Pi that replaces the default Codex/GPT experience with a narrower Codex-like surface while staying close to Pi's own runtime and prompt construction. Targets Pi `0.74.x` / the `@earendil-works/*` package scope.
+
+**What it changes:**
+- **Tool set swap** — active tools become `exec_command`, `write_stdin`, `apply_patch`, `view_image`, plus native OpenAI Codex Responses `web_search` and `image_generation` (only on `openai-codex` provider)
+- **No dedicated `read`, `edit`, or `write` tools** — file inspection goes through `exec_command`, edits through `apply_patch`
+- **Prompt delta** — keeps Pi's composed system prompt but rewrites the top-level role framing to Codex-style wording and adds a small Codex delta to the Guidelines section
+- **Rendering** — Codex-style command labels, `Added`/`Edited`/`Deleted` diff blocks, background-terminal labels for `write_stdin` polling
+- **Native tool rewriting** — `web_search` and `image_generation` are not executed locally; they're rewritten into the native OpenAI Responses payload (`type: "web_search"`, `type: "image_generation", output_format: "png"`)
+- **Image output handling** — saves generated images to `.pi/openai-codex-images/` at the workspace root, with the newest mirrored to `latest.png`
+- **Auto-activation** — activates automatically for OpenAI `gpt*` and `codex*` models; restores previous tool set when switching away
+
+**Passive status indicator:** Unlike `pi-codex-status`, this extension has **no `/status` command or slash-command interface**. It sets a UI status bar indicator (`Codex adapter` in blue) automatically via `ctx.ui.setStatus()` when a Codex-like model is selected. The indicator clears on model switch.
+
+#### SSE / WebSocket Transport Architecture
+
+The custom provider (`src/providers/openai-codex-custom-provider.ts`, ~1750 lines) implements **dual transport support** with WebSocket preferred and SSE as fallback. This is the most technically interesting part of the extension.
+
+**Transport selection logic:**
+```
+auto (default) → try WebSocket → if fails before first event, fall back to SSE
+websocket / websocket-cached → WebSocket only; fail hard
+sse → SSE only
+```
+
+**WebSocket path (primary):**
+- Uses the ChatGPT backend WebSocket endpoint (`wss://chatgpt.com/backend-api/codex/responses`)
+- Requires `OpenAI-Beta: responses_websockets=2026-02-06`
+- **Session-scoped socket cache** — sockets keyed by `sessionId`, reused across turns with a 5-minute idle TTL
+- **Smart continuation / delta requests** (`websocket-cached` mode) — instead of resending the full conversation history on every turn, the provider computes an input delta against the cached `lastRequestBody` and sends only new messages via `previous_response_id`
+- **Message parsing** — event-driven async generator with serialized message chain (`Promise`) for ordering; detects terminal events (`response.completed`, `response.done`, `response.incomplete`); supports string, ArrayBuffer, ArrayBufferView, and Blob-like data
+- **Retry logic** — one retry on a fresh socket if the WebSocket fails before emitting the first event; "message too big" close code (`1009`) is non-retryable; after retry failure, `auto` falls back to SSE
+- **Graceful cleanup** — `closeOpenAICodexWebSocketSessions()` for global shutdown, idle expiry, per-release `keep` decision
+
+**SSE path (fallback):**
+- Manual SSE parser using `ReadableStream.getReader()` + `TextDecoder` with `{ stream: true }`
+- Normalizes line endings, splits on `\n\n`, extracts `data:` lines, parses JSON
+- Ignores `[DONE]` markers
+- 3 retries with exponential backoff (`BASE_DELAY_MS * 2^attempt`)
+- Proper cleanup: `reader.cancel()` + `reader.releaseLock()` in `finally`
+
+**Shared stream processing:** Both transports feed into a unified `StreamEventShape` async iterable consumed by `processResponsesStream()` (in `openai-responses-shared.ts`). This maps OpenAI Responses events to Pi's internal message format:
+
+| OpenAI Event | Pi Action |
+|---|---|
+| `response.created` | Sets `output.responseId` |
+| `response.output_item.added` (reasoning) | Emits `thinking_start` |
+| `response.output_item.added` (message) | Emits `text_start` |
+| `response.output_item.added` (function_call) | Emits `toolcall_start` |
+| `response.output_text.delta` | Emits `text_delta` |
+| `response.function_call_arguments.delta` | Emits `toolcall_delta` |
+| `response.output_item.done` | Emits `thinking_end` / `text_end` / `toolcall_end` |
+| `response.completed` | Finalizes usage, cost, stop reason |
+
+**Key implementation files:**
+- `src/providers/openai-codex-custom-provider.ts` — transport, retry, caching, image saving, web search activity surfacing
+- `src/providers/openai-responses-shared.ts` — message conversion, tool conversion, stream event processing
+- `src/index.ts` — extension entrypoint, model gating, tool-set swapping, prompt transformation
+- `src/tools/` — `exec_command`/`write_stdin` PTY session manager, `apply_patch`, image generation display
+- `src/shell/` — shell tokenization, parsing, exploration summaries
+- `src/patch/` — patch parsing, path policy, execution
+- `src/prompt/` — Codex delta transformer over Pi's composed prompt
+
+**When to consider it:** If you want the Codex CLI experience (command-centric tool use, `apply_patch` for edits, native web search and image generation) inside Pi's framework, without losing Pi's runtime, prompt construction, or TUI.
 
 ### pi-continue
 
