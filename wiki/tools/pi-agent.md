@@ -35,6 +35,7 @@ Pi (pi.dev) is a minimal, extensible terminal coding harness by Mario Zechner (b
 | **camoufox-pi** | `npm:@the-forge-flow/camoufox-pi` | Stealth web access via Camoufox (C++-level anti-fingerprinting Firefox fork) | ✅ Installed (v0.2.1) |
 | **pi-zentui** | `npm:pi-zentui` | Starship-inspired status line + Opencode-style TUI (footer with git/runtime, bordered editor, accent rail) | ✅ Installed (v0.1.2) |
 | **pi-codex-status** | `npm:pi-codex-status` ([source](https://github.com/lhl/pi-codex-status)) | ChatGPT Codex quota/status CLI + `/status` extension (5h, weekly, credits, JSON/statusline export) | ✅ Installed (v0.1.0) |
+| **pi-live-terminal** | `npm:pi-live-terminal` ([source](https://github.com/tanishqkancharla/pi-live-terminal)) | tmux-based live terminal widget for interactive/long-running commands | ✅ Installed (v0.2.0) |
 | **pi-vertex** | `npm:@lhl/pi-vertex` ([source](https://github.com/lhl/pi-vertex)) | Google Vertex AI provider — Gemini, Claude, Llama, DeepSeek, Qwen, Mistral, and 20+ other MaaS models | ✅ Installed (v1.1.8, forked from ssweens) |
 
 **Install commands:**
@@ -63,6 +64,9 @@ pi install npm:pi-zentui
 
 # Codex quota/status
 pi install npm:pi-codex-status
+
+# Live terminal widget (tmux required)
+pi install npm:pi-live-terminal
 
 # camoufox-pi also needs its ~500MB browser binary (one-time):
 # npx camoufox fetch && chmod -R 755 ~/.cache/camoufox/
@@ -116,6 +120,42 @@ cron_create cron="0 * * * *" prompt="hourly check"
 ```
 
 **Key feature:** Replaces full turn history with compact handoff summary — same outcome, fraction of tokens. Good for 15+ iteration runs.
+
+### pi-live-terminal
+
+**Repo:** [tanishqkancharla/pi-live-terminal](https://github.com/tanishqkancharla/pi-live-terminal) | **npm:** `npm:pi-live-terminal` | v0.2.0
+
+Runs interactive or long-running commands in detached tmux sessions with a live widget above the pi editor. Survives pi restarts (reattaches automatically).
+
+**Commands:**
+```
+/live-terminal:run <command>      # Start a command in a live terminal
+/live-terminal:attach <target>    # Attach widget to existing tmux session
+/live-terminal:focus              # Focus the tmux session in a full-screen modal
+/live-terminal:close              # Close widget (pass --kill to also kill session)
+```
+
+**Shortcuts:**
+| Shortcut | Action |
+|---|---|
+| `ctrl+shift+l` | Focus the tmux session in a large interactive modal |
+| `ctrl+shift+x` | Detach widget and kill the tmux session |
+| `ctrl+shift+h` | Detach widget without killing (or close if completed) |
+
+**Ghostty / Linux hotkey conflict:** The extension's default shortcuts (`ctrl+shift+f` for focus, `ctrl+shift+v` for detach) conflict with Ghostty's find (`ctrl+shift+f`) and paste (`ctrl+shift+v`). If you use Ghostty on Linux, rebind in the installed extension source:
+
+Edit `~/.config/nvm/24.7.0/lib/node_modules/pi-live-terminal/pi-live-terminal.ts`:
+- Replace `Key.ctrlShift("f")` → `Key.ctrlShift("l")`
+- Replace `Key.ctrlShift("v")` → `Key.ctrlShift("h")`
+- Update the hint strings (`ctrl+shift+f` → `ctrl+shift+l`, `ctrl+shift+v` → `ctrl+shift+h`)
+
+Then `/reload` inside pi.
+
+**Requirements:** `tmux` must be installed (`which tmux`).
+
+**When to use:** Interactive TTY apps (htop, vim, less), watch-mode builds, dev servers, long-running tests — anything where you want to see live output and optionally interact.
+
+---
 
 ### pi-codex-status
 
