@@ -51,6 +51,7 @@ pi install npm:@lhl/pi-vertex
 pi install npm:@sting8k/pi-vcc
 
 pi install npm:pi-codex-status
+pi install npm:@victor-software-house/pi-multicodex
 pi install npm:pi-skill-dollar
 
 # pi-vcc: make it handle /compact and auto-threshold compactions (not just /pi-vcc).
