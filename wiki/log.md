@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-05-08] update | pi-agent — installed pi-multicodex extension
+- Installed `@victor-software-house/pi-multicodex` (v2.3.1) for automatic ChatGPT Codex account rotation.
+- Added to the Installed Extensions table and documented `/multicodex` commands.
+- Pages updated: wiki/tools/pi-agent.md (table row, install command, new usage section), wiki/index.md (tools summary updated).
+- Repo changes (committed separately): `pi-setup.sh` install command, `README.md` "Account & Quota Management" section.
+
 ## [2026-05-08] update | pi-agent — document pi-codex-conversion extension
 - Fetched and analyzed https://github.com/IgorWarzocha/pi-codex-conversion for SSE/WebSocket handling.
 - Added evaluated entry to the Installed Extensions table and a detailed section covering tool-swap behavior, prompt delta, native tool rewriting, passive status indicator, and the dual-transport architecture (WebSocket preferred + SSE fallback, session caching, smart continuation, retry logic, shared stream processing).
