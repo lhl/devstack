@@ -27,9 +27,28 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 **Decisions:**
 - Grouped `pi-multicodex` and `pi-codex-status` under a new "Account & Quota Management" section in `README.md` as they both relate to ChatGPT Codex limits.
+- Chose Victor's version over kim0's after a code comparison in `/tmp`.
 
 **Next:**
 - None immediate.
+
+---
+
+## 2026-05-08 — Compared pi-multicodex implementations
+
+**What:** Downloaded and compared `kim0/pi-multicodex` and `victor-software-house/pi-multicodex`.
+
+- Downloaded both to `/tmp/multicodex-compare`.
+- Analyzed the architecture: kim0 is a single-file script, Victor is a modular project with TUI integration.
+- Victor's version includes a real-time status bar, interactive settings, and more robust rotation (handles auth failures mid-stream).
+- Added a comparison table to `wiki/tools/pi-agent.md`.
+
+**Decisions:**
+- Standardize on Victor's version as it is more evolved and reliable.
+- Documented the comparison to justify the choice in the wiki.
+
+**Next:**
+- Cleanup `/tmp/multicodex-compare`.
 
 ---
 
