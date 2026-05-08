@@ -1004,6 +1004,30 @@ Append-only session log. Each entry records what was done, why, and what's next.
 **Next:**
 - Send `pi-backtask/HANDOFF.md` to reviewers alongside the branch/commit range.
 
+## 2026-05-09 — Created Session Traces and Stats wiki page
+
+**What:** Created a new wiki page cataloging tools for session trace viewing, cost tracking, and analytics.
+
+- Researched toaster, pi-sessions-viewer, agentsview, and ccusage — fetched all GitHub repos and docs
+- Created `wiki/tools/session-traces.md` with per-tool deep dives, comparison table, use-case guide
+- Added Session Location Reference table (22 agents' default directories) from agentsview's auto-discovery
+- Added Multi-machine aggregation pattern (rsync-based) for consolidating sessions from multiple hosts
+- Added token economics auditing pattern (SQLite-cached multi-agent cost analysis)
+- Added DIY Script-Based Analysis section with real-world examples:
+  - vibecheck hackathon stats (`analyze_sessions.py`)
+  - claude-code#42796 thinking quality regression analysis (6,852 sessions, 234K tool calls)
+  - Release-line efficiency stats: phase-level metrics, wall vs active time, agent tool split analysis, release-over-release churn trending
+- Updated `wiki/index.md` with entry under Tools
+- Updated `wiki/log.md` with ingest entry
+
+**Decisions:**
+- Created as a single page rather than per-tool pages since the tools share a domain and are better compared side-by-side
+- Put the Session Location Reference at the top because it's the most frequently useful reference
+- Included DIY examples to show what's possible beyond off-the-shelf tools
+
+**Next:**
+- None immediate.
+
 ## 2026-05-09 — Documented optional pi-codex-fast extension
 
 **What:** Added `@calesennett/pi-codex-fast` to the Pi Agent wiki as an optional/local evaluation extension.

@@ -1,5 +1,10 @@
 # Wiki Log
 
+## [2026-05-09] ingest | Session Traces and Stats tools
+- Source: research via GitHub repos
+- Pages created: wiki/tools/session-traces.md
+- Pages updated: wiki/index.md
+
 ## [2026-05-09] update | pi-agent — document optional pi-codex-fast extension
 - Installed `@calesennett/pi-codex-fast` locally for evaluation and documented it as optional/not default.
 - Captured behavior: `/codex-fast`, `pi --fast`, OpenAI/OpenAI Codex-only `service_tier: "priority"` injection, settings persistence, and status indicator.
