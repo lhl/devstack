@@ -39,6 +39,11 @@ For saving tokens.
 - [nicobailon/pi-boomerang](https://github.com/nicobailon/pi-boomerang) - this allows launching subagents for tasks that deliver just summarized outputs to your harness 
 - [sting8k/pi-vcc](https://github.com/sting8k/pi-vcc) - zero-LLM algorithmic compaction. Replaces pi's default single-pass LLM summarization with deterministic extraction (goal / files / commits / outstanding / preferences + rolling transcript). We install this with `overrideDefaultCompaction: true` (see `pi-setup.sh`) because pi core's default compaction can fail with `400 status code (no body)` when the summarization span exceeds the summarizer LLM's input window; pi-vcc never makes that LLM call. Prior history stays searchable via `vcc_recall` / `/pi-vcc-recall`. Evaluation and alternatives (`pi-grounded-compaction`, `@pi-unipi/compactor`, `pi-agentic-compaction`) documented in [`wiki/tools/pi-agent.md`](wiki/tools/pi-agent.md#compaction-landscape).
 
+### Account & Quota Management
+
+- [victor-software-house/pi-multicodex](https://github.com/victor-software-house/pi-multicodex) - automatic ChatGPT Codex account rotation when quota limits or rate limits are hit
+- [pi-codex-status](https://www.npmjs.com/package/pi-codex-status) - CLI + pi extension for ChatGPT Codex quota visibility (`/status`, `pi-codex-status statusline`, normalized JSON export); source: [lhl/pi-codex-status](https://github.com/lhl/pi-codex-status)
+
 ### Task Management
 
 - [tintinweb/pi-tasks](https://github.com/tintinweb/pi-tasks) - Claude Code-style task tracking with 7 LLM-callable tools, dependency management, and a persistent visual widget
@@ -47,7 +52,6 @@ For saving tokens.
 
 - [lhl/pi-skill-dollar](https://github.com/lhl/pi-skill-dollar) - `$` autocomplete shortcut that triggers skill suggestions in the input area
 - [lhl/pi-zentui](https://github.com/lhl/pi-zentui) - my personal fork of a status-line that fits my preferences
-- [pi-codex-status](https://www.npmjs.com/package/pi-codex-status) - CLI + pi extension for ChatGPT Codex quota visibility (`/status`, `pi-codex-status statusline`, normalized JSON export); source: [lhl/pi-codex-status](https://github.com/lhl/pi-codex-status)
 - [mattleong/pi-code-previews](https://github.com/mattleong/pi-code-previews) - for better syntax-highlighting from tool calls
 
 ### Skills
