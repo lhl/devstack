@@ -36,6 +36,7 @@ Pi (pi.dev) is a minimal, extensible terminal coding harness by Mario Zechner (b
 | **camoufox-pi** | `npm:@the-forge-flow/camoufox-pi` | Stealth web access via Camoufox (C++-level anti-fingerprinting Firefox fork) | ✅ Installed (v0.2.1) |
 | **pi-zentui** | `npm:pi-zentui` | Starship-inspired status line + Opencode-style TUI (footer with git/runtime, bordered editor, accent rail) | ✅ Installed (v0.1.2) |
 | **pi-codex-status** | `npm:pi-codex-status` ([source](https://github.com/lhl/pi-codex-status)) | ChatGPT Codex quota/status CLI + `/status` extension (5h, weekly, credits, JSON/statusline export) | ✅ Installed (v0.1.0) |
+| **pi-multicodex** | `npm:@victor-software-house/pi-multicodex` | Automatic ChatGPT Codex account rotation on quota/rate limits | ✅ Installed (v2.3.1) |
 | **pi-live-terminal** | `npm:pi-live-terminal` ([source](https://github.com/tanishqkancharla/pi-live-terminal)) | tmux-based live terminal widget for interactive/long-running commands | ✅ Installed (v0.2.0) |
 | **pi-vertex** | `npm:@lhl/pi-vertex` ([source](https://github.com/lhl/pi-vertex)) | Google Vertex AI provider — Gemini, Claude, Llama, DeepSeek, Qwen, Mistral, and 20+ other MaaS models | ✅ Installed (v1.1.8, forked from ssweens) |
 | **pi-codex-conversion** | `npm:@howaboua/pi-codex-conversion` ([source](https://github.com/IgorWarzocha/pi-codex-conversion)) | Codex-oriented adapter: tool-swap, WS/SSE dual transport, native Codex web_search/image_generation | 📋 Evaluated (not installed) |
@@ -66,6 +67,7 @@ pi install npm:pi-zentui
 
 # Codex quota/status
 pi install npm:pi-codex-status
+pi install npm:@victor-software-house/pi-multicodex
 
 # Live terminal widget (tmux required)
 pi install npm:pi-live-terminal
@@ -175,6 +177,19 @@ Then `/reload` inside pi.
 **Key feature:** Gives idle-time visibility into ChatGPT Codex usage limits without waiting for a 429. It reads existing OAuth credentials from `~/.pi/agent/auth.json` first, falls back to `~/.codex/auth.json`, calls ChatGPT's private Codex usage endpoint, and self-caches to `~/.cache/pi-codex-status/usage.json` for statusline use. The pi extension also parses `x-codex-*` response headers when available to refresh the cache opportunistically.
 
 **Caveat:** The usage endpoint is private/reverse-engineered and may change. The official fallback is `https://chatgpt.com/codex/settings/usage`.
+
+### pi-multicodex
+
+```
+/multicodex accounts      # List configured accounts
+/multicodex use <id>      # Switch to a specific account
+/multicodex show          # Show current account details
+/multicodex refresh       # Refresh current account session
+/multicodex rotation      # Toggle automatic rotation
+/multicodex verify        # Verify account credentials
+```
+
+**Key feature:** Manages multiple ChatGPT Codex OAuth accounts and automatically rotates between them when quota or rate limits are hit. Intercepts the standard `openai-codex-responses` API for transparent switching.
 
 ### pi-codex-conversion
 
