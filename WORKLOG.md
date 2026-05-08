@@ -4,6 +4,35 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+**Decisions:**
+- Chose `@victor-software-house/pi-multicodex` (v2.3.1) as the plugin to install.
+- Added a new "Account & Quota Management" section to `README.md` to house `pi-multicodex` and `pi-codex-status`.
+- Followed commit discipline: committed setup, docs, and wiki changes separately.
+
+**Next:**
+- Monitor for quota hits to verify automatic rotation behavior in an interactive session.
+
+---
+
+## 2026-05-08 — Installed pi-multicodex plugin
+
+**What:** Installed and documented the `pi-multicodex` plugin for ChatGPT Codex account rotation.
+
+- Researched and confirmed the plugin name: `@victor-software-house/pi-multicodex`.
+- Installed the plugin via `pi install npm:@victor-software-house/pi-multicodex`.
+- Updated `pi-setup.sh` to include the installation command.
+- Updated `README.md` by adding a new "Account & Quota Management" section and moving `pi-codex-status` there alongside the new `pi-multicodex`.
+- Updated `wiki/tools/pi-agent.md` with installation status, install commands, and a new usage section for `/multicodex` commands.
+- Committed changes in logical units: setup (`feat:`), README (`docs:`), and wiki (`wiki:`).
+
+**Decisions:**
+- Grouped `pi-multicodex` and `pi-codex-status` under a new "Account & Quota Management" section in `README.md` as they both relate to ChatGPT Codex limits.
+
+**Next:**
+- None immediate.
+
+---
+
 ## 2026-05-08 — Documented pi-codex-conversion extension on pi wiki
 
 **What:** Analyzed IgorWarzocha's `pi-codex-conversion` extension and documented it on the pi-agent wiki page.
