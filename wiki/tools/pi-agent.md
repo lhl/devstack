@@ -191,6 +191,22 @@ Then `/reload` inside pi.
 
 **Key feature:** Manages multiple ChatGPT Codex OAuth accounts and automatically rotates between them when quota or rate limits are hit. Intercepts the standard `openai-codex-responses` API for transparent switching.
 
+#### Implementation Comparison: kim0 vs Victor
+
+Two implementations of `pi-multicodex` exist. We have switched to the **Victor (victor-software-house)** version as it represents a significant modular evolution of the concept.
+
+| Feature | kim0 (v1.0.2) | Victor (v2.3.1) |
+| :--- | :--- | :--- |
+| **Architecture** | Single-file (`index.ts`, ~900 LOC) | Modular (20+ files, ~100 KB total) |
+| **Status Display** | Passive `/multicodex-status` list | **Interactive TUI Status Bar** with auto-refresh |
+| **Auto-Rotation** | Retry on 429 quota errors | Retry on 429 + **Auth failure recovery** |
+| **UX / UI** | Basic slash commands | TUI settings panel, account picker, previewer |
+| **Reliability** | Basic retry loop | Handles refresh races, concurrent requests |
+
+**Verdict:** Victor's version is effectively "Version 2.0". It hardens the rotation logic (handling mid-rotation auth refreshes) and integrates much more deeply with the Pi TUI, including a real-time usage footer that eliminates the need for separate status-polling extensions.
+
+---
+
 ### pi-codex-conversion
 
 **Repo:** [IgorWarzocha/pi-codex-conversion](https://github.com/IgorWarzocha/pi-codex-conversion) | **npm:** `npm:@howaboua/pi-codex-conversion`
