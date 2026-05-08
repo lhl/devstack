@@ -982,3 +982,18 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 **Next:**
 - Send `pi-backtask/HANDOFF.md` to reviewers alongside the branch/commit range.
+
+## 2026-05-09 — Documented optional pi-codex-fast extension
+
+**What:** Added `@calesennett/pi-codex-fast` to the Pi Agent wiki as an optional/local evaluation extension.
+
+- Installed `npm:@calesennett/pi-codex-fast` locally for evaluation.
+- Documented `/codex-fast`, `pi --fast`, OpenAI/OpenAI Codex-only `service_tier: "priority"` injection, settings persistence, and status indicator in `wiki/tools/pi-agent.md`.
+- Updated `wiki/index.md` and prepended `wiki/log.md` per wiki update rules.
+
+**Decisions:**
+- Do not add `pi-codex-fast` to `pi-setup.sh` as a default install because there is no simple default smoke test proving whether the priority service tier is accepted and desirable for the current account/plan.
+- Treat the local install as evaluation-only and revisit if a reliable verification path emerges.
+
+**Next:**
+- If we keep using it, test against OpenAI/OpenAI Codex requests with observable headers/account behavior before promoting to the default plugin stack.

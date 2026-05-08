@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-05-09] update | pi-agent — document optional pi-codex-fast extension
+- Installed `@calesennett/pi-codex-fast` locally for evaluation and documented it as optional/not default.
+- Captured behavior: `/codex-fast`, `pi --fast`, OpenAI/OpenAI Codex-only `service_tier: "priority"` injection, settings persistence, and status indicator.
+- Decision: do not add to `pi-setup.sh` by default until there is a simple verification path proving the priority service tier is accepted and desirable for the current account/plan.
+- Pages updated: wiki/tools/pi-agent.md (frontmatter links, table row, new section), wiki/index.md (tools summary updated).
+
 ## [2026-05-08] update | pi-agent — installed pi-multicodex extension
 - Installed `@victor-software-house/pi-multicodex` (v2.3.1) for automatic ChatGPT Codex account rotation.
 - Added to the Installed Extensions table and documented `/multicodex` commands.

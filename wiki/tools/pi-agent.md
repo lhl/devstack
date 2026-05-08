@@ -15,6 +15,8 @@ links:
   - https://github.com/Thinkscape/agent-smart-fetch
   - https://github.com/MonsieurBarti/camoufox-pi
   - https://github.com/IgorWarzocha/pi-codex-conversion
+  - https://github.com/calesennett/pi-codex-fast
+  - https://www.npmjs.com/package/@calesennett/pi-codex-fast
 ---
 
 # Pi Coding Agent
@@ -37,6 +39,7 @@ Pi (pi.dev) is a minimal, extensible terminal coding harness by Mario Zechner (b
 | **pi-zentui** | `npm:pi-zentui` | Starship-inspired status line + Opencode-style TUI (footer with git/runtime, bordered editor, accent rail) | ✅ Installed (v0.1.2) |
 | **pi-codex-status** | `npm:pi-codex-status` ([source](https://github.com/lhl/pi-codex-status)) | ChatGPT Codex quota/status CLI + `/status` extension (5h, weekly, credits, JSON/statusline export) | ✅ Installed (v0.1.0) |
 | **pi-multicodex** | `npm:@victor-software-house/pi-multicodex` | Automatic ChatGPT Codex account rotation on quota/rate limits | ✅ Installed (v2.3.1) |
+| **pi-codex-fast** | `npm:@calesennett/pi-codex-fast` ([source](https://github.com/calesennett/pi-codex-fast)) | Optional OpenAI/OpenAI Codex priority service-tier toggle (`service_tier: "priority"`) | 🧪 Local evaluation; not in default `pi-setup.sh` |
 | **pi-live-terminal** | `npm:pi-live-terminal` ([source](https://github.com/tanishqkancharla/pi-live-terminal)) | tmux-based live terminal widget for interactive/long-running commands | ✅ Installed (v0.2.0) |
 | **pi-vertex** | `npm:@lhl/pi-vertex` ([source](https://github.com/lhl/pi-vertex)) | Google Vertex AI provider — Gemini, Claude, Llama, DeepSeek, Qwen, Mistral, and 20+ other MaaS models | ✅ Installed (v1.1.8, forked from ssweens) |
 | **pi-codex-conversion** | `npm:@howaboua/pi-codex-conversion` ([source](https://github.com/IgorWarzocha/pi-codex-conversion)) | Codex-oriented adapter: tool-swap, WS/SSE dual transport, native Codex web_search/image_generation | 📋 Evaluated (not installed) |
@@ -204,6 +207,29 @@ Two implementations of `pi-multicodex` exist. We have switched to the **Victor (
 | **Reliability** | Basic retry loop | Handles refresh races, concurrent requests |
 
 **Verdict:** Victor's version is effectively "Version 2.0". It hardens the rotation logic (handling mid-rotation auth refreshes) and integrates much more deeply with the Pi TUI, including a real-time usage footer that eliminates the need for separate status-polling extensions.
+
+---
+
+### pi-codex-fast
+
+**Repo:** [calesennett/pi-codex-fast](https://github.com/calesennett/pi-codex-fast) | **npm:** `npm:@calesennett/pi-codex-fast` | v0.1.0
+
+Small fast-mode extension that injects `service_tier: "priority"` into OpenAI/OpenAI Codex request payloads when enabled.
+
+**Usage:**
+```bash
+/codex-fast   # toggle inside pi
+pi --fast     # start pi with fast mode enabled
+```
+
+**Behavior:**
+- Applies only when fast mode is enabled and the active provider is `openai` or `openai-codex`.
+- Leaves other providers untouched.
+- Skips injection if the payload already has a `service_tier` field.
+- Persists state in pi settings under `pi-codex-fast.enabled`.
+- Shows a status item: `⚡ OpenAI fast mode` when active on OpenAI/OpenAI Codex, or `⚡ fast (inactive)` on unsupported providers.
+
+**Current decision:** optional/local evaluation only. Do **not** add to `pi-setup.sh` by default yet because there is no simple default smoke test proving whether `service_tier=priority` is accepted and changing request priority may have account/cost/plan implications.
 
 ---
 
