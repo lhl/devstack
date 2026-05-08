@@ -700,7 +700,7 @@ The extension source was modified locally to fix crashes and tailor the UI. Chan
 | File | Change |
 |---|---|
 | `ui.ts` | Fixed `theme.fg()` hex crash → `colorize()`; rail `█` → `▌` (U+258C left half block); extracted `RAIL` constant so editor and user message rail are consistent; removed extra editor line spacing |
-| `index.ts` | Fixed `setWidget` factory API crash; rewrote meta widget (right-aligned, provider dim, model/`(thinking)` muted teal via `syntaxType` theme token, org prefix stripped) |
+| `index.ts` | Fixed `setWidget` factory API crash; rewrote meta widget (right-aligned, provider dim, model/`(thinking)` muted teal via `syntaxType` theme token, org prefix stripped); replaces dollar cost with Codex quota remaining (`5h:82% · 7d:41% ↺2d4h`) for `openai-codex`/`multicodex`, using `pi-multicodex` footer status first and `pi-codex-status` cache as fallback |
 
 **User config (color preferences):**
 

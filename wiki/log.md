@@ -6,6 +6,12 @@
 - Decision: do not add to `pi-setup.sh` by default until there is a simple verification path proving the priority service tier is accepted and desirable for the current account/plan.
 - Pages updated: wiki/tools/pi-agent.md (frontmatter links, table row, new section), wiki/index.md (tools summary updated).
 
+## [2026-05-08] update | pi-agent — pi-zentui Codex quota footer
+- Updated `lhl/pi-zentui` so the footer replaces dollar cost with Codex quota remaining when the active model is `openai-codex` or `multicodex`.
+- Display format: `5h:82% · 7d:41% ↺2d4h`; only the percentage values change color (green normally, yellow under 50%, orange under 25%, red under 5%).
+- Data source priority: `pi-multicodex` status footer first, then `pi-codex-status` cache (`~/.cache/pi-codex-status/usage.json`).
+- Pages updated: wiki/tools/pi-agent.md (pi-zentui local customizations).
+
 ## [2026-05-08] update | pi-agent — installed pi-multicodex extension
 - Installed `@victor-software-house/pi-multicodex` (v2.3.1) for automatic ChatGPT Codex account rotation.
 - Added to the Installed Extensions table and documented `/multicodex` commands.

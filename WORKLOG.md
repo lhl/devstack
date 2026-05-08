@@ -4,6 +4,27 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-05-08 — Updated pi-zentui Codex quota footer
+
+**What:** Changed `lhl/pi-zentui` so Codex sessions show quota remaining instead of misleading dollar cost.
+
+- Updated `/home/lhl/github/lhl/pi-zentui` to replace the footer cost slot for `openai-codex` and `multicodex` models.
+- New display format: `5h:82% · 7d:41% ↺2d4h`.
+- Color thresholds apply only to percentage values: green normally, yellow under 50%, orange under 25%, red under 5%.
+- Reads `pi-multicodex` footer status first and falls back to `~/.cache/pi-codex-status/usage.json` / legacy `pi-codex-usage` cache.
+- Verified `biome check`, `tsc --noEmit`, `vitest run`, pushed `lhl/pi-zentui`, and ran `pi update https://github.com/lhl/pi-zentui`.
+- Smoke-loaded pi with `pi --no-session --no-context-files --no-tools -p "noop"`.
+- Updated `wiki/tools/pi-agent.md` and `wiki/log.md` to document the footer behavior.
+
+**Decisions:**
+- Do not duplicate Codex usage API logic in zentui; consume existing extension status/cache data.
+- Keep normal dollar-cost display for non-Codex providers.
+
+**Next:**
+- Run `/reload` in existing interactive pi sessions to pick up the updated zentui package.
+
+---
+
 **Decisions:**
 - Chose `@victor-software-house/pi-multicodex` (v2.3.1) as the plugin to install.
 - Added a new "Account & Quota Management" section to `README.md` to house `pi-multicodex` and `pi-codex-status`.
