@@ -76,6 +76,17 @@ pi install https://github.com/lhl/pi-zentui
 
 
 # install camoufox
+# camoufox-js depends on better-sqlite3 (native addon). Prebuilt binaries may
+# not exist for the current Node ABI; rebuild from source so "bindings" can
+# locate build/Release/better_sqlite3.node at runtime.
+echo "Rebuilding native deps for camoufox-pi (better-sqlite3)..."
+(npm root -g | while read -r root; do
+  bsdir="$root/@the-forge-flow/camoufox-pi/node_modules/better-sqlite3"
+  if [ -d "$bsdir" ]; then
+    (cd "$bsdir" && npm run build-release)
+    break
+  fi
+done)
 PIP_REQUIRE_HASHES=0 pip install -U camoufox[geoip]
 camoufox fetch
 
