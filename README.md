@@ -14,6 +14,18 @@ cd devstack
 ./pi-setup.sh
 ```
 
+## Why Pi Is Neat
+
+- **extensions**: built to be customized/extended. anything you don't like? tell pi to change itself. Almost everything can be refreshed with `/reload` without a restart — see my list for how w/ minimal yak-shaving, you can customize something to be *very* specific to your preferences
+- **models**: scope your model list to your fav providers, check out new/free stuff on openrouter, swap between different models
+- **non-blocking**: unlike Claude Code/Codex, most UI/commands (switching models, effort, getting status) are *not* blocked while the model is running. this is obvious and how it should be???
+- **advanced history**: I don't know if other harnesses have these, but pi makes it easy to time-travel, fork, clone your sessions/rollouts which is very convenient (`/tree`, `/fork`, `/clone`)
+- **caveat**: Pi moves relatively fast and there have been a lot of breaking changes — you sort of need to be on top of things with updates. The upside is that maintenance can be handled mostly by your coding agent and all the source is available, so you don't get Claude Code-style breaking where you're stuck (e.g., Claude got dumb for a month and you get gaslit by Anthropic about it)
+
+## My Pi Extensions
+
+Oftentimes there are multiple options for a feature; these are the ones I've picked. My preference is for composability (doing one thing well). Some things don't exist and I've made my own; some are unmaintained or part of monorepos and in those cases I've forked for maintainability/updatability.
+
 ### Web Access
 
 This is probably the biggest feature you're going to need. `pi-web-access` is the most popular and robust plugin, and the others augment the capabilities with better data extraction or more robust browsing
@@ -57,13 +69,6 @@ For saving tokens.
 ### Skills
 
 - `outline-edit` — CLI for Outline knowledge base with local markdown cache (pip, mambaforge)
-
-## Why Pi Is Neat
-
-- **extensions**: built to be customized/extended. anything you don't like? tell pi to change itself. Almost everything can be refreshed with `/reload` without a restart — see my list for how w/ minimal yak-shaving, you can customize something to be *very* specific to your preferences
-- **models**: scope your model list to your fav providers, check out new/free stuff on openrouter, swap between different models
-- **non-blocking**: unlike Claude Code/Codex, most UI/commands (switching models, effort, getting status) are *not* blocked while the model is running. this is obvious and how it should be???
-- **advanced history**: I don't know if other harnesses have these, but pi makes it easy to time-travel, fork, clone your sessions/rollouts which is very convenient (`/tree`, `/fork`, `/clone`)
 
 ## Models (as of May 2026)
 
