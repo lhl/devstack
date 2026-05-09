@@ -104,6 +104,8 @@ I haven't used enough of the latest open models but these should be good (Sonnet
 
 ### Local Models
 
+(The open models above can also be run locally if you have hundreds of GB of memory; these are the ones that actually fit on a consumer GPU.)
+
 - Qwen 3.6 27B/35B-A3B (2026-05-09) — 20GB for Q4 quants, community favorite, but thinking token usage out of control; dense model much smarter but much slower
 - Gemini 4 31B/26B-A4B (2026-05-09) — 20GB for Q4 quants, also quite good, way more reasonable tokens, smart even w/o reasoning, less benchmaxxed, but lots of tool call issue reports
 
