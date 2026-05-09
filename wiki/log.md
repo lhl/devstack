@@ -20,6 +20,12 @@
 - Pages updated: `wiki/tools/pi-agent.md` (Installed Extensions table, usage section, Extensions section now points to pruning-and-compaction page; Compaction Landscape cross-link), `wiki/index.md` (new tools entry; rtk entry annotated with current status).
 - Repo changes (committed in same logical unit per AGENTS.md): `pi-setup.sh` (removed `pi install npm:pi-rtk-optimizer`, added `pi install npm:pi-context-prune` + config bootstrap, updated rtk binary install comment), `README.md` (Context Management section now leads with pi-context-prune; rtk entry historicized with link to wiki page).
 
+## [2026-05-10] update | pi-agent — document message queue keybindings
+- Added Keybindings section to wiki/tools/pi-agent.md covering the default `Alt+Enter` (queue follow-up) and `Alt+Up` (restore queued messages) bindings.
+- Documented remapping recipe to match ChatGPT Codex-style `Tab` / `Shift+Tab` in `~/.pi/agent/keybindings.json`, with `/reload` to apply.
+- Included comparison table: Submit (Enter), Queue follow-up (Alt+Enter / Tab), Restore queued (Alt+Up / Shift+Tab).
+- Pages updated: wiki/tools/pi-agent.md (new Keybindings section before Open Questions).
+
 ## [2026-05-09] ingest | Session Traces and Stats tools
 - Source: research via GitHub repos
 - Pages created: wiki/tools/session-traces.md

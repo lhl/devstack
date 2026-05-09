@@ -1124,6 +1124,34 @@ Then run `/reload` inside pi — the extension caches launch state at load time,
 
 ---
 
+## Keybindings
+
+Pi supports queuing follow-up messages while a turn is streaming, then restoring them back into the editor to edit and send. These are the default bindings under **Display and Message Queue**:
+
+| Action | Default Binding | Description |
+|---|---|---|
+| Submit / Steer now | `Enter` | Sends the current editor content immediately |
+| Queue follow-up | `Alt+Enter` | Queues the current message for sending after the current turn completes |
+| Restore queued messages | `Alt+Up` | Pops queued messages back into the editor for editing |
+
+This is the same concept as ChatGPT Codex's *tab-to-queue* workflow — just with different default bindings.
+
+### Remapping to match Codex (Tab / Shift-Tab)
+
+If `Alt+Enter` or `Alt+Up` conflict with your terminal multiplexer or window manager (e.g., byobu, full-screen bindings), remap them in `~/.pi/agent/keybindings.json`:
+
+```json
+{
+  "tui.input.submit": ["enter"],
+  "app.message.followUp": ["tab"],
+  "app.message.dequeue": ["shift+tab"]
+}
+```
+
+After editing, run `/reload` inside pi to apply without restarting the session.
+
+---
+
 ## Open Questions
 
 - How does pi's compaction compare to Claude Code's automatic compression in practice?
