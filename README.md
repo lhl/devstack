@@ -53,7 +53,7 @@ For saving tokens.
 
 ### Account & Quota Management
 
-- [victor-software-house/pi-multicodex](https://github.com/victor-software-house/pi-multicodex) - automatic ChatGPT Codex account rotation when quota limits or rate limits are hit
+- [lhl/pi-multicodex](https://github.com/lhl/pi-multicodex) — fork of victor-software-house/pi-multicodex with fixes; automatic ChatGPT Codex account rotation when quota limits or rate limits are hit
 - [pi-codex-status](https://www.npmjs.com/package/pi-codex-status) - CLI + pi extension for ChatGPT Codex quota visibility (`/status`, `pi-codex-status statusline`, normalized JSON export); source: [lhl/pi-codex-status](https://github.com/lhl/pi-codex-status)
 
 ### Task Management
