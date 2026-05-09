@@ -27,7 +27,8 @@ Pi (pi.dev) is a minimal, extensible terminal coding harness by Mario Zechner (b
 
 | Extension | npm | Purpose | Status |
 |---|---|---|---|
-| **pi-rtk-optimizer** | `npm:pi-rtk-optimizer` | Token optimization via RTK command rewriting + output compaction | ✅ Installed |
+| **pi-context-prune** | `npm:pi-context-prune` ([source](https://github.com/championswimmer/pi-context-prune)) | Summarizes completed tool-call batches; prunes originals from future LLM context with `context_tree_query` recovery | ✅ Installed (v0.9.1, replaced pi-rtk-optimizer 2026-05-10) |
+| ~~pi-rtk-optimizer~~ | `npm:pi-rtk-optimizer` | Token optimization via RTK command rewriting + output compaction | ❌ Removed (2026-05-10) — see [[tools/pruning-and-compaction]] |
 | **pi-schedule-prompt** | `npm:pi-schedule-prompt` | Natural language scheduling, cron, per-task model | ✅ Installed |
 | **pi-boomerang** | `npm:pi-boomerang` | Token-efficient autonomous loops — summarize between iterations | ✅ Installed |
 | **pi-multiloop** | `/home/lhl/pi-multiloop` ([source](https://github.com/lhl/pi-multiloop), npm: `pi-multiloop`) | Multi-lane autoloop/autoresearch extension with lane-isolated `.multiloop/` state | 🧪 Local test (post-v0.1.1 compaction-aware resume) |
@@ -82,14 +83,36 @@ pi install npm:pi-live-terminal
 
 ## Installed Extension Usage
 
-### pi-rtk-optimizer
+### pi-context-prune
 
 ```
-/rtk              # Open interactive TUI settings modal
-/rtk stats        # Show compaction metrics for session
-/rtk verify       # Check if rtk binary is available
-/rtk reset        # Reset to defaults
+/pruner           # Open interactive settings modal (pruneOn mode, summarizer, etc.)
+/pruner now       # Force-flush pending batches and summarize/prune immediately
+/pruner show      # Show pending batches and last prune stats
 ```
+
+LLM-callable tools added by the extension:
+- `context_tree_query` — retrieve the full original output of any pruned tool call by id, so the agent can recover detail it later realizes it needs.
+- `context_prune` — only registered when `pruneOn === "agentic-auto"`; lets the model trigger pruning when it judges the context has grown large.
+
+Config: `~/.pi/agent/context-prune/settings.json`
+```json
+{
+  "enabled": true,
+  "pruneOn": "agent-message",
+  "summarizerModel": "default",
+  "summarizerThinking": "default",
+  "remindUnprunedCount": true,
+  "showPruneStatusLine": true,
+  "batchingMode": "turn"
+}
+```
+
+`pruneOn: "agent-message"` is the recommended default. It batches all tool-calling turns inside a single user→final-agent-reply span and prunes once at the end, which preserves prompt-prefix caching far better than `every-turn` (which busts cache on every tool round). See [[tools/pruning-and-compaction]] for the full analysis of why we picked this over rtk-class bash-output compressors.
+
+### pi-rtk-optimizer (Removed 2026-05-10)
+
+We ran `pi-rtk-optimizer` (rtk auto-rewrite + output compaction) from install through 2026-05-10 and removed it after auditing rtk-binary failure modes (piped/redirected output corruption, schema-collapse of `curl` JSON, dropped `gh ... --comments`, Playwright locator stripping, double-aggregation of test output via the extension's own `aggregateTestOutput`). Full analysis, including what pi-rtk-optimizer sidestepped vs propagated, alternatives surveyed (lean-ctx, snip, caveman, headroom, pi-dynamic-context-pruning), and the lossless-vs-lossy transform framework, is in [[tools/pruning-and-compaction]].
 
 ### pi-schedule-prompt
 
@@ -360,6 +383,8 @@ When this happens, pi-core throws `"Compaction cancelled"` and the session canno
 Or remove `"npm:pi-continue"` from `~/.pi/agent/settings.json` packages array. Pi's built-in compaction then takes over and works fine.
 
 ## Compaction Landscape
+
+> See also [[tools/pruning-and-compaction]] for the broader token-management framework (per-command output summarizers vs context-level dedup/pruning, lossless-vs-lossy transform table, the rtk audit). This section focuses specifically on session-level / `/compact`-time strategies.
 
 Pi has built-in auto-compaction (enabled by default, triggers at `contextWindow - reserveTokens`). Several extensions modify or replace this behavior:
 
@@ -839,78 +864,15 @@ Full docs in the repo at `packages/coding-agent/docs/`:
 
 ## Extensions
 
-### RTK Optimizer (Recommended)
+### Token / Context Optimization
 
-[pi-rtk-optimizer](https://github.com/MasuRii/pi-rtk-optimizer) (`npm:pi-rtk-optimizer`) provides token optimization through two mechanisms:
+Full landscape analysis lives at [[tools/pruning-and-compaction]] — architectural framework (per-command output summarizers vs context-level dedup/pruning), lossless-vs-lossy transform table, rtk failure-mode audit, alternatives surveyed (lean-ctx, snip, caveman, headroom, pi-dynamic-context-pruning), and our reasoning for landing on **pi-context-prune** as the only context/token-management extension installed by default.
 
-**1. Command Rewriting** — Delegates to [[tools/rtk]] binary
-- Automatically rewrites bash commands to their `rtk` equivalents
-- Delegates rewrite logic to the `rtk` binary (source of truth)
-- Falls back to original command if rtk is unavailable
-- Supports both agent `bash` tool and user `!<cmd>` commands
-
-**2. Output Compaction Pipeline**
-Multi-stage filtering for tool output:
-- ANSI stripping (removes color codes)
-- Test aggregation (summarizes pass/fail counts)
-- Build filtering (extracts errors/warnings only)
-- Git compaction (condenses status, log, diff)
-- Linter aggregation (groups by rule)
-- Search grouping (groups grep results by file)
-- Source code filtering (`none` | `minimal` | `aggressive`)
-- Smart truncation (preserves file boundaries)
-- Hard truncation (character limits)
-
-**Installation:**
-```bash
-pi install npm:pi-rtk-optimizer
-# Requires rtk binary on PATH for command rewriting:
-# brew install rtk-ai/rtk/rtk  # or cargo install rtk-ai-rtk
-```
-
-**Usage:**
-- `/rtk` — Open interactive TUI settings modal
-- `/rtk stats` — Show compaction metrics for session
-- `/rtk verify` — Check if rtk binary is available
-- `/rtk reset` — Reset to defaults
-
-**Configuration:** `~/.pi/agent/extensions/pi-rtk-optimizer/config.json`
-
-Key settings:
-- `mode`: `"rewrite"` (auto) or `"suggest"` (notify only)
-- `outputCompaction.readCompaction.enabled`: defaults `false` (code reads stay exact)
-- `outputCompaction.sourceCodeFiltering`: `"none"` | `"minimal"` | `"aggressive"`
-- `outputCompaction.truncate.maxChars`: default 12000
-
-**Version:** 0.7.0 (as of 2026-05-03)
-
-### RTK Extension Comparison
-
-| Package | Version | Command Rewriting | Output Compaction | TUI Settings | Dependencies | 
-|---------|---------|-------------------|-------------------|--------------|---------------|
-| **MasuRii/pi-rtk-optimizer** | 0.7.0 | ✅ Via `rtk` binary | ✅ Full pipeline | ✅ /rtk modal | rtk binary (opt) |
-| sherif-fanous/pi-rtk | 0.3.0 | ✅ Via `rtk` binary | ❌ | ❌ | rtk binary (req) |
-| mcowger/pi-rtk | 0.1.4 | ❌ | ✅ Limited | ❌ CLI only | None |
-
-| Feature | pi-rtk-optimizer | sherif-fanous | mcowger |
-|---------|:---:|:---:|:---:|
-| ANSI stripping | ✅ | — | ✅ |
-| Test aggregation | ✅ | — | ✅ |
-| Build filtering | ✅ | — | ✅ |
-| Git compaction | ✅ | — | ✅ |
-| Linter aggregation | ✅ | — | ✅ |
-| Search grouping | ✅ | — | ✅ |
-| Source code filtering | ✅ (3 levels) | — | ✅ (2 levels) |
-| Smart truncation | ✅ | — | ✅ |
-| Hard truncation | ✅ | — | ✅ |
-| Streaming sanitization | ✅ | ❌ | ❌ |
-| Skill-read preservation | ✅ | ❌ | ❌ |
-| Windows compatibility | ✅ | ❌ | ❌ |
-| Metrics tracking | ✅ | ❌ | ✅ |
-
-**Recommendation:** MasuRii/pi-rtk-optimizer — most active development, feature-complete, clean architecture that delegates rewrite rules to rtk binary rather than duplicating logic.
-
-**Minimal alternative:** sherif-fanous if only command rewriting needed (~60 LOC, trivial footprint)
+Quick decision summary:
+- **Installed:** `pi-context-prune` (conversation-level: summarize tool-call batches + retrievable originals).
+- **Installed and complementary, different layer:** `@sting8k/pi-vcc` (session-level compaction), `pi-boomerang` (subagent-level summarization).
+- **Removed (2026-05-10):** `pi-rtk-optimizer` and the per-command rtk auto-rewrite path — see [[tools/pruning-and-compaction]] for the failure-mode catalog.
+- **Surveyed, not installed:** `lean-ctx`, `snip`, `caveman`, `headroom`, `pi-dynamic-context-pruning`, `sherif-fanous/pi-rtk`, `mcowger/pi-rtk`, `pi-context-pruning`. Comparison details in the same wiki page.
 
 ---
 

@@ -1,5 +1,13 @@
 # Wiki Log
 
+## [2026-05-10] update | Token reduction landscape — removed pi-rtk-optimizer, installed pi-context-prune
+- Audited the pi-rtk-optimizer / rtk stack against documented failure modes (rtk #690 Playwright, #1282 pipe corruption, #720 gh comments, #1152 curl JSON, #1080 npx, #1335 exclude_commands, #640 auto-allow injection); confirmed via `pi-rtk-optimizer` 0.7.1 source review (npm pack) that v0.6.0 removed local bypass tables in favor of pure delegation to `rtk rewrite`, so the binary's bugs propagate; documented what the pi extension *did* sidestep (auto-allow #640, read-tool source-filter destruction) vs what it didn't (Linux pipe corruption, Playwright, gh comments, curl JSON).
+- Surveyed alternatives: lean-ctx, snip, caveman, headroom, pi-dynamic-context-pruning, pi-context-pruning, hermes-context-manager. Established two-category framework (per-command output summarizers vs context-level dedup/pruning) and a lossless-vs-lossy transform table; cited third-party benchmarks (implicator.ai's caveman audit, vexp.dev manual-vs-automated, lean-ctx 'fix inflated savings' release).
+- Installed `pi-context-prune` 0.9.1, bootstrapped `~/.pi/agent/context-prune/settings.json` with `enabled: true`, `pruneOn: "agent-message"`, default summarizer/thinking. Reasoning: recoverable transform via `context_tree_query`, prompt-cache-friendly batching, no bash data-path interception. Removed `pi-rtk-optimizer` via `pi remove`; left rtk binary on PATH for explicit `rtk proxy`/`rtk gain` use.
+- Pages created: `wiki/tools/pruning-and-compaction.md` (full landscape analysis, audit, alternatives, decision rationale, operational details, open questions, provenance).
+- Pages updated: `wiki/tools/pi-agent.md` (Installed Extensions table, usage section, Extensions section now points to pruning-and-compaction page; Compaction Landscape cross-link), `wiki/index.md` (new tools entry; rtk entry annotated with current status).
+- Repo changes (committed in same logical unit per AGENTS.md): `pi-setup.sh` (removed `pi install npm:pi-rtk-optimizer`, added `pi install npm:pi-context-prune` + config bootstrap, updated rtk binary install comment), `README.md` (Context Management section now leads with pi-context-prune; rtk entry historicized with link to wiki page).
+
 ## [2026-05-09] ingest | Session Traces and Stats tools
 - Source: research via GitHub repos
 - Pages created: wiki/tools/session-traces.md

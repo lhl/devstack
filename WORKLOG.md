@@ -4,6 +4,30 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-05-10 — Removed pi-rtk-optimizer, installed pi-context-prune
+
+**What:** Replaced the rtk auto-rewrite + output-compaction stack with conversation-level batch pruning. Captured the full landscape analysis as a new wiki page.
+
+- Audited `pi-rtk-optimizer` 0.7.1 directly from npm tarball (`src/index.ts`, `src/command-rewriter.ts`, `src/output-compactor.ts`, `src/rewrite-pipeline-safety.ts`, `src/runtime-guard.ts`, `src/techniques/*`). Confirmed v0.6.0's Breaking change removed local bypass/rewrite tables in favor of pure delegation to `rtk rewrite`, so the binary's bugs propagate one-for-one. Confirmed `rewrite-pipeline-safety.ts` only fixes pipe/redirect issues on `process.platform === "win32"` (no-op on Linux/macOS).
+- Cross-checked the rtk failure-mode catalog against upstream issues (#690 Playwright, #1282 pipe corruption, #720 gh comments, #1152 curl JSON, #1080 npx, #1335 exclude_commands, #1418 ls regression, #640 auto-allow injection). Confirmed our `rtk gain` of 75.8% across 776 commands matches user-reported 75–90% range; confirmed the 99.6% on `rtk curl -sf http://l...` is the schema-conversion mode kicking in.
+- Surveyed alternatives. Established two-category architectural framework: Cat A (per-command output summarizers — rtk, lean-ctx, snip, caveman) all share the same #690-shape failure mode; Cat B (context-level dedup/pruning — pi-context-prune, pi-dynamic-context-pruning, headroom, hermes-context-manager) has fundamentally different (recoverable) failure profile.
+- Installed `pi-context-prune` 0.9.1 via `pi install npm:pi-context-prune`. Bootstrapped `~/.pi/agent/context-prune/settings.json` with `enabled: true` (default ships as `false`), `pruneOn: "agent-message"` (recommended; one prune per work batch, prompt-cache-friendly), default summarizer/thinking.
+- Removed `pi-rtk-optimizer` via `pi remove npm:pi-rtk-optimizer`. Left the rtk binary install in `pi-setup.sh` (binary still useful for explicit `rtk proxy <cmd>` and `rtk gain`); annotated the install function comment to make this explicit. The leftover config dir at `~/.pi/agent/extensions/pi-rtk-optimizer/` is harmless and left in place.
+
+**Decisions:**
+- pi-context-prune over pi-dynamic-context-pruning because the latter's open issue #5 on unbounded compression-block growth was unresolved at audit; pi-context-prune's `context_tree_query` retrieval tool is the right primitive for our use case (recoverable, not lossy).
+- `pruneOn: "agent-message"` over `every-turn` because the latter busts prompt-prefix cache after every tool round, which can cost more than tokens saved despite shrinking raw context.
+- Kept `rtk` binary install. Removing wholesale was tempting but `rtk proxy <cmd>` remains the documented escape hatch for any future `rtk`-binary use, and `rtk gain` may still be useful for one-off investigations. Cleanup is a separate decision.
+- Output-side compressors (caveman) ruled out on architectural grounds: third-party benchmark from implicator.ai shows output tokens are 0.6–2.5% of a typical bill, capping savings at 1–3% even if the headline numbers were honest (they aren't — measured median is 12–23% vs claimed 65–75%).
+
+**Next:**
+- Run a few real autoloop sessions and compare `pi-context-prune` summaries against `context_tree_query` retrievals to validate summarization quality. If summaries miss critical state, raise `summarizerThinking` or pin a larger `summarizerModel`.
+- Verify whether `rtk` 0.38's `exclude_commands` actually works (`rtk rewrite curl <something>` after configuring should return original / exit 1). If it does, the documented escape hatch is real; if not, the binary is genuinely only useful for explicit invocations.
+- Watch for cross-extension interactions during compaction (pi-context-prune rewrites future-request context; pi-vcc overrides `/compact`). If state loss after `/compact` shows up, this is the first place to look.
+- Decision pending: whether to remove the `rtk` binary entirely from `pi-setup.sh`. Keep until we've used `rtk proxy` or `rtk gain` deliberately at least once, then revisit.
+
+---
+
 ## 2026-05-08 — Updated pi-zentui Codex quota footer
 
 **What:** Changed `lhl/pi-zentui` so Codex sessions show quota remaining instead of misleading dollar cost.

@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 set -e
 
-# Install rtk (token-optimizing CLI proxy; pairs with pi-rtk-optimizer below)
+# Install rtk (token-optimizing CLI proxy). We no longer install pi-rtk-optimizer
+# (the auto-rewrite pi extension) — see wiki/tools/pruning-and-compaction.md for
+# the failure-mode analysis. The rtk binary itself is kept around so commands
+# like `rtk proxy <cmd>` and `rtk gain` remain available for explicit use.
+# Comment out this block if you want to fully remove rtk.
 install_rtk() {
   echo "Installing rtk..."
   curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh
@@ -38,7 +42,10 @@ fi
 pi --version
 
 # Install plugin stack
-pi install npm:pi-rtk-optimizer
+# Context/token management: pi-context-prune (conversation-level pruning with
+# retrievable originals) replaced pi-rtk-optimizer (rtk auto-rewrite wrapper)
+# on 2026-05-10. See wiki/tools/pruning-and-compaction.md for rationale.
+pi install npm:pi-context-prune
 pi install npm:pi-schedule-prompt
 pi install npm:pi-boomerang
 pi install npm:pi-web-access
@@ -53,6 +60,29 @@ pi install npm:@sting8k/pi-vcc
 pi install npm:pi-codex-status
 pi install npm:@victor-software-house/pi-multicodex
 pi install npm:pi-skill-dollar
+
+# pi-context-prune: enable the extension and use the recommended `agent-message`
+# prune trigger (batches one prune per user→final-agent-message span, much
+# friendlier to provider prompt caching than per-turn pruning). Default is
+# enabled=false on first install, so we bootstrap an opt-in config.
+mkdir -p "$HOME/.pi/agent/context-prune"
+PI_CONTEXT_PRUNE_CONFIG="$HOME/.pi/agent/context-prune/settings.json"
+if [ ! -f "$PI_CONTEXT_PRUNE_CONFIG" ]; then
+  cat > "$PI_CONTEXT_PRUNE_CONFIG" <<'JSON'
+{
+  "enabled": true,
+  "showPruneStatusLine": true,
+  "summarizerModel": "default",
+  "summarizerThinking": "default",
+  "pruneOn": "agent-message",
+  "remindUnprunedCount": true,
+  "batchingMode": "turn"
+}
+JSON
+  echo "Wrote $PI_CONTEXT_PRUNE_CONFIG with enabled=true, pruneOn=agent-message"
+else
+  echo "Preserving existing $PI_CONTEXT_PRUNE_CONFIG (edit manually or via /pruner)"
+fi
 
 # pi-vcc: make it handle /compact and auto-threshold compactions (not just /pi-vcc).
 # Default is false, which only runs pi-vcc on the explicit /pi-vcc command.
