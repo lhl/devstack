@@ -1,3 +1,18 @@
 [submodule "projects/pi-multiloop"]
 	path = projects/pi-multiloop
 	url = https://github.com/lhl/pi-multiloop.git
+[submodule "projects/pi-vertex"]
+	path = projects/pi-vertex
+	url = https://github.com/lhl/pi-vertex.git
+[submodule "projects/pi-skill-dollar"]
+	path = projects/pi-skill-dollar
+	url = https://github.com/lhl/pi-skill-dollar.git
+[submodule "projects/pi-codex-status"]
+	path = projects/pi-codex-status
+	url = https://github.com/lhl/pi-codex-status.git
+[submodule "projects/pi-zentui"]
+	path = projects/pi-zentui
+	url = https://github.com/lhl/pi-zentui.git
+[submodule "projects/pi-multicodex"]
+	path = projects/pi-multicodex
+	url = https://github.com/lhl/pi-multicodex.git
