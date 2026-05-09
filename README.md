@@ -39,7 +39,7 @@ This is probably the biggest feature you're going to need. `pi-web-access` is th
 
 There are also a bajillion sub-agent extensions, I mostly would rather start new sessions or control my sub-agents rather than having them spawned willy-nilly, but if I find a good extension I actually use, I'll add it here.
 
-- [lhl/pi-multiloop](https://github.com/lhl/pi-multiloop) - my autoloop. A from-scratch implementation from the things I learned from my [codex-autoresearch](https://github.com/lhl/codex-autoresearch/) fork and from my experience working with autoloops since mid-2025. Published to npm and installed via `npm:pi-multiloop`.
+- [lhl/pi-multiloop](https://github.com/lhl/pi-multiloop) - my autoloop. If you want your agent to grind away for days on something, this is what I've personally been extensively battle-testing and am actively improving. A from-scratch implementation from the things I learned from my [codex-autoresearch](https://github.com/lhl/codex-autoresearch/) fork and from my experience working with autoloops since mid-2025. Published to npm and installed via `npm:pi-multiloop`.
 - [tintinweb/pi-schedule-prompt](https://github.com/tintinweb/pi-schedule-prompt) - if you just want an easy heartbeat (recurring cron-like tasks, or one-shot tasks) this does the job 
 
 ### Context Management 
