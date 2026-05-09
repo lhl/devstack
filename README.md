@@ -16,7 +16,7 @@ cd devstack
 
 ## Why Pi Is Neat
 
-- **extensions**: built to be customized/extended. anything you don't like? tell pi to change itself. Almost everything can be refreshed with `/reload` without a restart — see my list for how w/ minimal yak-shaving, you can customize something to be *very* specific to your preferences
+- **extensibility**: it's not *just* open source (Codex and OpenCode are too) — pi is expressly designed to be easily customized. anything you don't like? tell pi to change itself. Almost everything can be refreshed with `/reload` without a restart — see my list for how w/ minimal yak-shaving, you can customize something to be *very* specific to your preferences
 - **models**: scope your model list to your fav providers, check out new/free stuff on openrouter, swap between different models
 - **non-blocking**: unlike Claude Code/Codex, most UI/commands (switching models, effort, getting status) are *not* blocked while the model is running. this is obvious and how it should be???
 - **advanced history**: I don't know if other harnesses have these, but pi makes it easy to time-travel, fork, clone your sessions/rollouts which is very convenient (`/tree`, `/fork`, `/clone`)
