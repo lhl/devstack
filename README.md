@@ -87,20 +87,25 @@ Pi supports a number of providers OOTB including most first-party frontier model
   pi --provider vertex --model claude-opus-4-6
   ```
 
-My current best coding models:
-- GPT-5.5 xhigh
-- GPT-5.4 xhigh
-- Opus-4.7 xhigh
-- Opus-4.6 max
-- GPT-5.3-codex xhigh
-- GPT-5.2 xhigh
+My current best coding models (date is last time I looked at/updated the model):
+- GPT-5.5 xhigh (2026-05-09) — brand new, better personality to talk to than 5.3/5.4, the best coder, still can be myopic
+- GPT-5.4 xhigh (2026-05-09) — previous best coder, all-around good, terrible writer, meh design skills, very detail oriented/rules stickler
+- Opus-4.7 xhigh (2026-05-09) — unpleasant to talk to, upgrade as code reviewer, frontier analysis, way more expensive than 4.6 (2x+ token cost usually) and basically a prick
+- Opus-4.6 max (2026-05-09) — my overall fav planner/analyst/swiss army frontier model
+- GPT-5.3-codex xhigh (2026-05-09) — coder aspie
+- GPT-5.2 xhigh (2026-05-09) — non-code specialist and it shows, oftentimes OOTB, step back thinker makes it useful, very slow
 
 I haven't used enough of the latest open models but these should be good (Sonnet 4.x level?):
-- DeepSeek V4 Pro
-- MiniMax M2.7
-- Kimi K2.6
+- DeepSeek V4 Pro (2026-05-09) — capable, easy to work with, but sort of feels undone/undertrained? HF served, has tokenizer/DSML tool issues, maybe bad provider quant
+- MiniMax M2.7 (2026-05-09) — OK, fast, but not frontier
+- Kimi K2.6 (2026-05-09) — of the non-frontier models the most dependable/easiest to work with? Also somehow a monster at GPU kernel optimization
 - MiMo V2.5 Pro
 - Qwen3.6 Max Preview
+
+### Local Models
+
+- Qwen 3.6 27B/35B-A3B (2026-05-09) — 20GB for Q4 quants, community favorite, but thinking token usage out of control; dense model much smarter but much slower
+- Gemini 4 31B/26B-A4B (2026-05-09) — 20GB for Q4 quants, also quite good, way more reasonable tokens, smart even w/o reasoning, less benchmaxxed, but lots of tool call issue reports
 
 
 ## Guides & Writeups
