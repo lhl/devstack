@@ -68,7 +68,10 @@ For saving tokens.
 
 ### Skills
 
-- `outline-edit` — CLI for Outline knowledge base with local markdown cache (pip, mambaforge)
+Combo skill + CLI tool (both a pi skill and a standalone command-line tool):
+
+- [`outline-edit`](https://github.com/lhl/outline-edit) — CLI for Outline knowledge base with local markdown cache (pip, mambaforge)
+- [`realitycheck`](https://github.com/lhl/realitycheck) — rigorous source analysis workflow: fetch, analyze, extract claims, register, and validate
 
 ## Models (as of May 2026)
 
