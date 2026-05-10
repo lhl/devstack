@@ -1101,3 +1101,19 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 **Next:**
 - If we keep using it, test against OpenAI/OpenAI Codex requests with observable headers/account behavior before promoting to the default plugin stack.
+
+## 2026-05-11 — Switched pi-tasks setup to lhl fork
+
+**What:** Updated the devstack Pi plugin setup/docs to use the GitHub fork `lhl/pi-tasks` instead of upstream `@tintinweb/pi-tasks`.
+
+- Changed `pi-setup.sh` to remove `npm:@tintinweb/pi-tasks` if present, then install `https://github.com/lhl/pi-tasks`.
+- Updated `README.md` Task Management to link to `lhl/pi-tasks` and describe prompt-queued execution and batch task creation.
+- Updated `wiki/tools/pi-agent.md`, `wiki/index.md`, and `wiki/log.md` with the fork decision and behavior differences.
+- Verified `pi-setup.sh` syntax with `bash -n`.
+
+**Decisions:**
+- Install from the GitHub fork URL rather than npm so setup tracks the current forked behavior before any package rename/publish.
+- Keep an explicit removal of the old upstream package in setup to avoid duplicate package entries.
+
+**Next:**
+- If the fork is later renamed or published under an `@lhl`/`lhl` npm package, update `pi-setup.sh` and docs from GitHub URL to the package spec.

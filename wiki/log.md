@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-05-11] update | pi-agent — switched pi-tasks install to lhl fork
+- Updated the pi-agent extension record to install task management from `https://github.com/lhl/pi-tasks` instead of upstream `npm:@tintinweb/pi-tasks`.
+- Documented fork-specific behavior: no system-reminder context injection, prompt-queued `TaskExecute`, `TaskCreateMany`, and auto-continue-with-prompts rather than subagent launches.
+- Pages updated: `wiki/tools/pi-agent.md`, `wiki/index.md`.
+- Repo changes in same logical unit: `pi-setup.sh` removes the legacy upstream package before installing the fork; `README.md` Task Management now links to `lhl/pi-tasks`.
+
 ## [2026-05-10] update | DELEGATE-52 harness comparison expanded with pi, Codex, Claude Code
 - Source: local Codex CLI snapshot (`/home/lhl/github/other/codex`), local Claude Code analysis snapshot (`/home/lhl/github/lhl/claudecode-codex-analysis/src`), plus pi edit-tool diff implementation.
 - Pages updated: `wiki/papers/delegate52-document-corruption.md`, `wiki/index.md`.

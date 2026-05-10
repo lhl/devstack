@@ -52,7 +52,10 @@ pi install npm:pi-web-access
 pi install npm:pi-smart-fetch
 pi install npm:@the-forge-flow/camoufox-pi@0.2.1
 pi install npm:pi-code-previews
-pi install npm:@tintinweb/pi-tasks
+# Task management: use lhl's fork for prompt-queued execution and batch creation.
+# Remove the legacy upstream package first so setup does not leave duplicate entries.
+pi remove npm:@tintinweb/pi-tasks >/dev/null 2>&1 || true
+pi install https://github.com/lhl/pi-tasks
 pi install npm:pi-multiloop
 pi install npm:@lhl/pi-vertex
 pi install npm:@sting8k/pi-vcc

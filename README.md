@@ -61,7 +61,7 @@ For saving tokens.
 
 ### Task Management
 
-- [tintinweb/pi-tasks](https://github.com/tintinweb/pi-tasks) - Claude Code-style task tracking with 7 LLM-callable tools, dependency management, and a persistent visual widget
+- [lhl/pi-tasks](https://github.com/lhl/pi-tasks) - my fork of tintinweb/pi-tasks for Claude Code-style task tracking, prompt-queued task execution, batch task creation, dependency management, and a persistent visual widget
 
 ### UX
 

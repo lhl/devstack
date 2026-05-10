@@ -10,6 +10,7 @@ links:
   - https://github.com/ifiokjr/oh-pi
   - https://github.com/ArtemisAI/pi-loop
   - https://github.com/tintinweb/pi-schedule-prompt
+  - https://github.com/lhl/pi-tasks
   - https://github.com/Tiziano-AI/pi-continue
   - https://github.com/nicobailon/pi-web-access
   - https://github.com/Thinkscape/agent-smart-fetch
@@ -30,6 +31,7 @@ Pi (pi.dev) is a minimal, extensible terminal coding harness by Mario Zechner (b
 | **pi-context-prune** | `npm:pi-context-prune` ([source](https://github.com/championswimmer/pi-context-prune)) | Summarizes completed tool-call batches; prunes originals from future LLM context with `context_tree_query` recovery | ✅ Installed (v0.9.1, replaced pi-rtk-optimizer 2026-05-10) |
 | ~~pi-rtk-optimizer~~ | `npm:pi-rtk-optimizer` | Token optimization via RTK command rewriting + output compaction | ❌ Removed (2026-05-10) — see [[tools/pruning-and-compaction]] |
 | **pi-schedule-prompt** | `npm:pi-schedule-prompt` | Natural language scheduling, cron, per-task model | ✅ Installed |
+| **pi-tasks** | `https://github.com/lhl/pi-tasks` ([fork](https://github.com/lhl/pi-tasks)) | Claude Code-style task tracking with prompt-queued execution, batch task creation, dependencies, and a persistent widget | ✅ Installed (lhl fork, switched 2026-05-11) |
 | **pi-boomerang** | `npm:pi-boomerang` | Token-efficient autonomous loops — summarize between iterations | ✅ Installed |
 | **pi-multiloop** | `/home/lhl/pi-multiloop` ([source](https://github.com/lhl/pi-multiloop), npm: `pi-multiloop`) | Multi-lane autoloop/autoresearch extension with lane-isolated `.multiloop/` state | 🧪 Local test (post-v0.1.1 compaction-aware resume) |
 | **pi-continue** | `git:pi-continue` | Mid-run context compaction with Continuation Ledger | ❌ Disabled (v0.6.0, local) |
@@ -60,6 +62,10 @@ pi install npm:pi-schedule-prompt
 
 # Autoloop / workflow
 pi install /home/lhl/pi-multiloop
+
+# Task management
+pi remove npm:@tintinweb/pi-tasks 2>/dev/null || true
+pi install https://github.com/lhl/pi-tasks
 
 # Web fetch & search
 pi install npm:pi-web-access
@@ -129,6 +135,26 @@ We ran `pi-rtk-optimizer` (rtk auto-rewrite + output compaction) from install th
 schedule_wakeup delaySeconds=300
 cron_create cron="0 * * * *" prompt="hourly check"
 ```
+
+### pi-tasks
+
+**Repo:** [lhl/pi-tasks](https://github.com/lhl/pi-tasks) — fork of [tintinweb/pi-tasks](https://github.com/tintinweb/pi-tasks). Install from the GitHub fork, not the upstream npm package:
+
+```bash
+pi remove npm:@tintinweb/pi-tasks 2>/dev/null || true
+pi install https://github.com/lhl/pi-tasks
+```
+
+**Key feature:** Claude Code-style task tracking inside pi: structured task list, dependencies, ownership/status updates, widget, and LLM-callable task tools.
+
+**Fork changes selected 2026-05-11:**
+- Removed system-reminder context injection.
+- Replaced subagent/RPC launches with follow-up prompt queueing in the current session.
+- `TaskExecute` now queues task prompts instead of launching agents.
+- Added `TaskCreateMany` for batch creation.
+- Added auto-continue-with-prompts setting for picking up the next unblocked task without spawning subagents.
+
+**LLM-callable tools:** `TaskCreate`, `TaskCreateMany`, `TaskList`, `TaskGet`, `TaskUpdate`, `TaskExecute`.
 
 ### pi-boomerang
 
