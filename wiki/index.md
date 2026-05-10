@@ -7,7 +7,7 @@
 
 ## Papers
 
-- [[papers/delegate52-document-corruption]] — DELEGATE-52 paper analysis: long-horizon document corruption, weak agentic harness baseline, and comparison to pi-style surgical editing workflows
+- [[papers/delegate52-document-corruption]] — DELEGATE-52 paper analysis: long-horizon document corruption, weak agentic harness baseline, and comparison to pi, Codex CLI, and Claude Code editing workflows
 
 ## Practices
 

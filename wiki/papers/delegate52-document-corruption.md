@@ -1,6 +1,6 @@
 ---
 title: "DELEGATE-52 — document corruption under delegated LLM editing"
-tags: [papers, llm-evaluation, document-editing, agent-harnesses, reliability, pi-agent]
+tags: [papers, llm-evaluation, document-editing, agent-harnesses, reliability, pi-agent, codex, claude-code]
 sources:
   - sources/papers/laban-2026-delegate52.pdf
   - sources/papers/laban-2026-delegate52-arxiv-html.html
@@ -14,12 +14,39 @@ sources:
   - sources/repos/pi-coding-agent/VERSION
   - sources/repos/pi-coding-agent/README.md
   - sources/repos/pi-coding-agent/dist-core-tools/edit.js
+  - sources/repos/pi-coding-agent/dist-core-tools/edit-diff.js
+  - sources/repos/codex/COMMIT
+  - sources/repos/codex/codex-rs/core/prompt_with_apply_patch_instructions.md
+  - sources/repos/codex/codex-rs/core/src/tools/spec_plan.rs
+  - sources/repos/codex/codex-rs/core/src/tools/handlers/apply_patch_spec.rs
+  - sources/repos/codex/codex-rs/core/src/tools/handlers/apply_patch.rs
+  - sources/repos/codex/codex-rs/core/src/tools/handlers/shell_spec.rs
+  - sources/repos/codex/codex-rs/tools/src/tool_config.rs
+  - sources/repos/codex/codex-rs/tools/src/tool_spec.rs
+  - sources/repos/codex/codex-rs/apply-patch/apply_patch_tool_instructions.md
+  - sources/repos/codex/codex-rs/apply-patch/src/lib.rs
+  - sources/repos/claudecode-codex-analysis/COMMIT
+  - sources/repos/claudecode-codex-analysis/src/constants/prompts.ts
+  - sources/repos/claudecode-codex-analysis/src/tools/FileEditTool/prompt.ts
+  - sources/repos/claudecode-codex-analysis/src/tools/FileEditTool/FileEditTool.ts
+  - sources/repos/claudecode-codex-analysis/src/tools/FileEditTool/types.ts
+  - sources/repos/claudecode-codex-analysis/src/tools/FileEditTool/utils.ts
+  - sources/repos/claudecode-codex-analysis/src/tools/FileReadTool/prompt.ts
+  - sources/repos/claudecode-codex-analysis/src/tools/FileReadTool/FileReadTool.ts
+  - sources/repos/claudecode-codex-analysis/src/tools/FileWriteTool/prompt.ts
+  - sources/repos/claudecode-codex-analysis/src/tools/FileWriteTool/FileWriteTool.ts
+  - sources/repos/claudecode-codex-analysis/src/tools/BashTool/prompt.ts
+  - sources/repos/claudecode-codex-analysis/src/tools/GrepTool/prompt.ts
+  - sources/repos/claudecode-codex-analysis/src/tools/GlobTool/prompt.ts
+  - sources/repos/claudecode-codex-analysis/src/tools/NotebookEditTool/prompt.ts
 links:
   - https://arxiv.org/abs/2604.15597
   - https://github.com/microsoft/delegate52
   - https://github.com/microsoft/delegate52/blob/main/model_agentic.py
   - https://news.ycombinator.com/item?id=48073246
   - https://platform.claude.com/docs/en/agents-and-tools/tool-use/text-editor-tool
+  - https://github.com/openai/codex
+  - https://docs.anthropic.com/en/docs/claude-code
   - https://pi.dev
 ---
 
@@ -27,7 +54,7 @@ links:
 
 ## One-line read
 
-The DELEGATE-52 paper is a good benchmark for long-horizon *document-preservation under delegated edits*, but its "agentic tool use did not help" result is narrow: the published harness mostly offers whole-file read/write plus optional Python, not the surgical edit/patch/validation workflow used by real coding harnesses such as [[tools/pi-agent]].
+The DELEGATE-52 paper is a good benchmark for long-horizon *document-preservation under delegated edits*, but its "agentic tool use did not help" result is narrow: the published harness mostly offers whole-file read/write plus optional Python, not the surgical edit/patch/validation workflows used by real coding harnesses such as [[tools/pi-agent]], Codex CLI, and Claude Code.
 
 ## What the paper measures
 
@@ -118,55 +145,81 @@ The counterpoints are also worth preserving:
 
 The deeper point is not "`str_replace` always beats full rewrite." It is that serious document/code editing systems should avoid asking the model to reproduce unchanged authoritative text unless the task genuinely requires it.
 
-## Comparison: DELEGATE-52 harness vs pi-style coding harness
+## Harness comparison: DELEGATE-52 vs pi, Codex, and Claude Code
 
-| Dimension | DELEGATE-52 agentic harness | Pi-style coding workflow |
-| --- | --- | --- |
-| File inspection | `read_file` returns whole file contents. | `read` can inspect files with offsets/limits; `bash`, grep/find/ls-style tools can narrow scope. |
-| Primary edit primitive | `write_file(filename, content)` overwrites full file; `run_python` is optional. | `edit` does exact targeted replacements; `write` is mainly for new files or full rewrites; `bash` enables scripted transforms. |
-| Unchanged text | Often regenerated when the model uses `write_file`. | Usually not regenerated for small/local edits; unchanged spans remain byte-identical because the tool replaces only matched regions. |
-| Ambiguity handling | `write_file` accepts whatever full content the model emits. | Pi's built-in edit tool requires targeted `oldText` matches to be unique/non-overlapping, and rejects missing/ambiguous edits. |
-| Diff/audit loop | Harness logs operations, but there is no mandatory diff review before `finish()`. | Normal workflow uses `git status`, `git diff`, tests/builds, and explicit commits after logical units. |
-| Validation | No required parser/test/format check in the agent loop. | Coding tasks routinely run tests, type checks, linters, parsers, or domain-specific commands. |
-| Session model | Each benchmark edit is independent except for the document state. | Interactive sessions retain task context, user steering, repo instructions, WORKLOG, git state, and compaction/recall. |
-| User role | Autonomous benchmark run. | Human can steer, inspect diffs, interrupt, and require commits/checkpoints. |
-| Model settings | OpenAI calls use `temperature=1.0` in the published code path. | Real harnesses often tune model choice/thinking/settings for editing; exact defaults vary by provider/session. |
+Local source snapshots make the harness gap more concrete. The paper's basic agent is not merely "less polished" than production coding agents; it has a different edit data path.
 
-The key structural difference is that pi's edit tool changes the *data path*. With full rewrite, the model must faithfully re-emit unchanged content. With exact replacement, unchanged content is copied by the tool/runtime, not regenerated by the model.
+| Dimension | DELEGATE-52 basic agent | Pi coding harness | Codex CLI | Claude Code |
+| --- | --- | --- | --- | --- |
+| Read/search surface | `read_file` returns a whole file; no range read or search primitive. | `read` supports offsets/limits; `bash` and other tools support grep/find-style narrowing. | Shell/unified exec is the main read/search surface; models use `rg`, `sed`, `python`, tests, and other commands. | Dedicated `Read` supports offsets/limits and line numbers; dedicated `Glob` and `Grep` replace shell search. |
+| Primary edit primitive | `write_file(filename, content)` overwrites full files; `run_python` is optional. | `edit` applies one or more targeted `oldText` to `newText` replacements; `write` is available for new files or full rewrites. | `apply_patch` is a grammar-constrained freeform tool with add/update/delete file hunks; shell scripts can also transform files. | `Edit` applies exact `old_string` to `new_string` replacements with optional `replace_all`; `Write` is for creates or complete rewrites; `NotebookEdit` handles cells. |
+| Unchanged text path | Usually regenerated when the model uses `write_file`. | Usually copied by the runtime outside edited spans. | Usually copied by the patch runtime outside patch hunks, or by deterministic shell/Python code. | Usually copied by the runtime outside the selected replacement string. |
+| Ambiguity handling | Whole-file overwrite accepts whatever text the model emits. | Edits must match unique, non-overlapping regions; missing/duplicate/overlapping edits fail. | Patch application verifies expected context/old lines against current files and fails when they cannot be found. | `old_string` must be unique unless `replace_all` is set; missing or multiple matches fail. |
+| Staleness and concurrency | No read-after-write or stale-file guard beyond workspace state. | File mutation queue serializes edits; exact current-file matching catches many stale-target cases. | Patch verification runs against current filesystem state; sandbox/approval flow mediates mutation. | Existing-file edits/writes require prior non-partial `Read`; modified-since-read files are rejected unless content is unchanged. |
+| Diff/audit surface | Operation logs exist, but no mandatory diff preview before `finish()`. | `edit` computes/render diffs; normal workflow uses `git status`, `git diff`, tests, and commits. | `apply_patch` produces structured patch/update events; shell/git diff remains available. | Edit/write results include structured patches; file history, IDE/LSP notifications, and git diff paths exist. |
+| Tool-choice nudge | Weak: "programmatically or directly by writing files." | Tool prompt says use `edit` for precise changes and `write` for new/full rewrites. | Prompt says the agent can run terminal commands and apply patches; current tool plan registers `apply_patch` when enabled. | System prompt says use `Read`, `Edit`, `Write`, `Glob`, and `Grep` instead of shell equivalents; `Write` prompt explicitly prefers `Edit` for existing files. |
+| Validator loop | None required in the agent loop. | Harness exposes shell/tests; repo instructions often require verification and commits. | Shell/test execution is first-class; no generic mandatory validator. | Bash/test execution is available; no generic mandatory validator, but LSP notifications and file history improve feedback. |
+| Residual full-rewrite risk | High, because full rewrite is the main mutation path. | Medium: `write` and broad replacement blocks can still round-trip too much text. | Medium: shell heredocs or broad patches can still rewrite files. | Medium-low for local edits; `Write` still fully overwrites when chosen. |
 
-That does not make pi immune to document corruption:
+### Pi harness notes
 
-- A model can choose `write` or a broad `edit` block and still cause collateral changes.
-- A bad `oldText`/`newText` patch can implement the wrong transformation perfectly.
-- Non-code documents often lack tests, parsers, or reviewers.
-- Long context and distractors can still cause the model to miss instructions or edit the wrong region.
+- Pi's built-in `edit` tool accepts an array of replacements, and each `oldText` is matched against the original file, not incrementally after prior edits.
+- The implementation rejects empty, missing, duplicate, and overlapping replacements, then applies the matched edits in reverse order so offsets remain stable.
+- The implementation normalizes line endings, strips/restores byte order marks, and has a fuzzy fallback for trailing whitespace, smart quotes, Unicode dashes, and special spaces.
+- The tool renders a diff preview/result and uses a per-file mutation queue, so the user and harness see patches rather than only final file contents.
+- Pi still has a `write` tool and shell access, so it is not immune to full rewrites. The difference is that normal coding-agent workflow strongly favors targeted edits, git diffs, tests, and explicit commits.
 
-But it explains why large-scale coding-agent use often does not resemble the paper's failure mode. Most coding edits are local, tool-mediated, diff-reviewed, and mechanically validated; many DELEGATE-52 edits ask a model to transform and then reconstruct entire semi-structured documents.
+### Codex CLI notes
 
-## Why our pi experience is not a formal counterexample
+- Codex's open-source harness is terminal-first: shell/unified-exec tools are the main way to read/search files and run validators.
+- Codex adds an `apply_patch` tool when the environment supports it. The tool is a freeform grammar, not JSON, with explicit add-file, delete-file, update-file, and move operations.
+- Patch application parses hunks, reads the current file, searches for expected context/old lines, and returns correctness errors when expected lines cannot be found.
+- Codex also intercepts `apply_patch` invocations sent through shell-like tools and tells the model to use the dedicated `apply_patch` tool instead.
+- Compared with DELEGATE-52, Codex is a patch/programmatic harness, not a read/write harness. Compared with pi and Claude Code, it leans more on shell discipline for file reads/searches rather than dedicated file-read/search functions.
 
-Our operational experience in pi — many code/doc edits through `read`, `edit`, `write`, `bash`, git diffs, tests, and commits — is evidence that a real harness can avoid obvious full-file-round-trip corruption in daily coding work. It is not a controlled measurement against DELEGATE-52.
+### Claude Code notes
 
-Reasons it differs from the benchmark:
+- Claude Code exposes dedicated `Read`, `Edit`, `Write`, `Glob`, `Grep`, `Bash`, and `NotebookEdit`-style tools in the inspected source.
+- `Read` returns line-numbered content and supports offset/limit. `Edit` instructions require a prior `Read`; the implementation rejects edits when the file has not been read or when only a partial view was read.
+- `Edit` replaces an exact `old_string` with `new_string`, requires uniqueness unless `replace_all` is true, and rejects stale files modified since the read unless the content is unchanged.
+- `Write` is still a full-content overwrite, but its prompt says to prefer `Edit` for modifying existing files and to use `Write` only for new files or complete rewrites; existing-file writes also require a prior read.
+- The system prompt explicitly tells the model to use `Read` instead of `cat`/`head`/`tail`/`sed`, `Edit` instead of `sed`/`awk`, `Write` instead of heredocs/echo redirection, and `Glob`/`Grep` instead of `find`/`grep`/`rg`.
+- This matches the Hacker News nuance: Claude Code here does not need the Anthropic text-editor `insert` command to avoid whole-file round-tripping; its core protection is exact replacement plus read/staleness/diff rails.
+
+### Cross-harness takeaways
+
+- The key safety property is not the name `str_replace`; it is whether unchanged authoritative text travels through the model output channel. Pi, Codex, and Claude Code all provide normal mutation paths where unchanged text is copied by tooling rather than regenerated by the model.
+- The strongest production harnesses combine multiple layers: targeted edit primitives, search/range reads, shell/programmatic transforms, diff display, stale-file checks or exact current-file matching, and tests/parsers outside the model.
+- DELEGATE-52's `run_python` tool is the most promising part of its basic agent, but the prompt does not strongly prefer parse-transform-emit scripts, and the average result suggests models often fell back to manual writing.
+- A fair "agentic editing" benchmark should compare named harness designs, not just "with tools" vs "without tools": basic read/write, exact replacement, grammar patches, programmatic-first transforms, and validator-in-the-loop workflows are different systems.
+- Production coding harnesses still cannot guarantee document preservation. They reduce one failure mode: collateral corruption caused by asking the model to reproduce unchanged text.
+
+## Why real-world harness experience is not a formal counterexample
+
+Our operational experience in pi — many code/doc edits through `read`, `edit`, `write`, `bash`, git diffs, tests, and commits — is evidence that a real harness can avoid obvious full-file-round-trip corruption in daily coding work. The Codex and Claude Code sources show the same general product direction: production coding agents invest in patches, exact replacements, search/range reads, shell execution, diff surfaces, and permission/staleness rails.
+
+That is not a controlled measurement against DELEGATE-52. Reasons production coding workflows differ from the benchmark:
 
 - Coding repos have strong external checks: syntax, tests, type systems, linters, formatters, and runtime smoke tests.
-- We usually inspect small ranges and apply small patches; the benchmark often requires full-document structural transformations.
-- We use git as a persistent audit/rollback layer; benchmark scoring happens after autonomous relays.
+- Agents usually inspect targeted ranges or search results, then apply small patches; the benchmark often requires full-document structural transformations.
+- Git provides a persistent audit/rollback layer; benchmark scoring happens after autonomous relays.
 - Human oversight catches many mistakes that an automated benchmark would count.
-- Pi sessions include repository instructions and accumulated context; DELEGATE-52 intentionally isolates each edit step.
+- Long-running sessions include repository instructions, accumulated context, and workflow conventions; DELEGATE-52 intentionally isolates each edit step.
+- Production harnesses still expose escape hatches (`write`, shell heredocs, broad patches), so the advantage depends on tool choice and prompting, not mere tool availability.
 
-So the right conclusion is not "the paper is wrong." It is: **the paper measures an unsafe delegation pattern and a weak agentic baseline; a pi-like harness is a different system that should be benchmarked separately.**
+So the right conclusion is not "the paper is wrong." It is: **the paper measures an unsafe delegation pattern and a weak agentic baseline; production coding harnesses are different systems that should be benchmarked separately.**
 
 ## What a stronger harness ablation should test
 
-A useful follow-up would rerun DELEGATE-52 with harness variants:
+A useful follow-up would rerun DELEGATE-52 with named harness variants:
 
 1. **Direct full rewrite** — the paper's baseline.
 2. **Current basic agent** — `read_file`, `write_file`, `delete_file`, `run_python`, `finish`.
-3. **Patch harness** — range read/view, search, exact `str_replace`, insert, delete range, diff preview, undo.
-4. **Programmatic-first harness** — strongly prefer parse-transform-emit scripts; require justification before whole-file rewrite.
-5. **Validator-in-the-loop harness** — domain parsers, schema checks, syntax checks, and round-trip-specific invariants before finish.
-6. **Pi-like workflow harness** — exact replacements, shell tools, git diff, tests/parsers, commit/checkpoint semantics, and explicit retry on validation failure.
+3. **Pi-style exact replacement** — offset/limit reads, multi-replacement `edit`, diff preview, shell tests/parsers, git checkpoints.
+4. **Codex-style grammar patch** — shell/unified exec for exploration and validators, plus `apply_patch` add/update/delete hunks.
+5. **Claude-Code-style dedicated tools** — `Read`, `Edit`, `Write`, `Glob`, `Grep`, `NotebookEdit`, read-before-edit, uniqueness, staleness checks, structured patches.
+6. **Programmatic-first harness** — strongly prefer parse-transform-emit scripts; require justification before whole-file rewrite.
+7. **Validator-in-the-loop harness** — domain parsers, schema checks, syntax checks, and round-trip-specific invariants before finish.
 
 Metrics to log beyond RS@20:
 

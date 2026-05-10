@@ -4,6 +4,24 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-05-10 — Expanded DELEGATE-52 harness comparison
+
+**What:** Updated the DELEGATE-52 wiki analysis with source-backed comparisons to pi, Codex CLI, and Claude Code editing harnesses.
+
+- Archived relevant local Codex CLI source snapshots under `sources/repos/codex/`, including tool registry, shell tool specs, `apply_patch` specs/handler, and apply-patch runtime code.
+- Archived relevant local Claude Code analysis source snapshots under `sources/repos/claudecode-codex-analysis/`, including `Read`, `Edit`, `Write`, `Glob`, `Grep`, `Bash`, `NotebookEdit`, and system prompt guidance.
+- Added `sources/repos/pi-coding-agent/dist-core-tools/edit-diff.js` so pi's exact/fuzzy matching and non-overlap logic is traceable.
+- Expanded `wiki/papers/delegate52-document-corruption.md` with a four-way harness table and individual notes on pi, Codex CLI, and Claude Code.
+- Updated `wiki/index.md` and `wiki/log.md` for the expanded paper analysis.
+
+**Decisions:**
+- Treat real coding harnesses as distinct systems rather than a generic "tool use" condition: exact replacement, grammar patching, and dedicated read/search/edit/write workflows have different failure modes.
+- Keep the main conclusion scoped: production harnesses reduce full-file round-trip corruption, but do not formally refute DELEGATE-52 without rerunning the benchmark.
+- Preserve Codex and Claude Code claims as local-source-backed observations, not generic product claims beyond the inspected snapshots.
+
+**Next:**
+- If we want empirical evidence, implement a small DELEGATE-52-style harness ablation that runs the same tasks through pi-style exact replacements, Codex-style `apply_patch`, and Claude-Code-style read-before-edit tools.
+
 ## 2026-05-10 — Ingested DELEGATE-52 paper and harness analysis
 
 **What:** Created a research-paper wiki entry for arXiv 2604.15597 and compared its agentic harness result to pi-style coding workflows.

@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-05-10] update | DELEGATE-52 harness comparison expanded with pi, Codex, Claude Code
+- Source: local Codex CLI snapshot (`/home/lhl/github/other/codex`), local Claude Code analysis snapshot (`/home/lhl/github/lhl/claudecode-codex-analysis/src`), plus pi edit-tool diff implementation.
+- Pages updated: `wiki/papers/delegate52-document-corruption.md`, `wiki/index.md`.
+- Summary: expanded the harness analysis from a two-column DELEGATE-52-vs-pi comparison into a four-way table covering read/search surfaces, edit primitives, unchanged-text data paths, ambiguity handling, staleness rails, diff/audit surfaces, validator loops, and residual full-rewrite risk.
+- Takeaway: production coding harnesses differ materially: pi uses exact multi-replacements, Codex centers shell plus grammar-constrained `apply_patch`, and Claude Code uses dedicated read/search/edit/write tools with read-before-edit and staleness checks. DELEGATE-52's basic agent remains a weak baseline rather than a general verdict on agentic editing.
+
 ## [2026-05-10] ingest | DELEGATE-52 document corruption and agentic harness analysis
 - Source: arXiv 2604.15597 (PDF + arXiv HTML), microsoft/delegate52 harness snapshot (`model_agentic.py`, prompts, model wrapper), Hacker News discussion 48073246, local pi-coding-agent README/edit-tool snapshot.
 - Pages created: `wiki/papers/delegate52-document-corruption.md`.
