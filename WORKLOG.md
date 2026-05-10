@@ -4,6 +4,23 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-05-10 — Ingested DELEGATE-52 paper and harness analysis
+
+**What:** Created a research-paper wiki entry for arXiv 2604.15597 and compared its agentic harness result to pi-style coding workflows.
+
+- Archived the DELEGATE-52 paper PDF/HTML, the relevant `microsoft/delegate52` harness snapshot, the Hacker News discussion, and local pi edit-tool documentation/source under `sources/`.
+- Created `wiki/papers/delegate52-document-corruption.md` with the benchmark summary, headline results, harness critique, HN discussion synthesis, and pi comparison.
+- Added a new Papers section to `wiki/index.md` and logged the ingest in `wiki/log.md`.
+- Verified the new page frontmatter, sources, and wikilinks; a broader wiki lint still reports pre-existing broken wikilinks/frontmatter exceptions in older pages.
+
+**Decisions:**
+- Treat the paper's main full-document corruption result as useful, but scope the "tool use did not help" result to their basic `read_file`/`write_file`/`run_python` harness.
+- Archive the pi edit-tool implementation snapshot so the comparison to exact replacement tooling is traceable, not just anecdotal.
+- Use `wiki/papers/` plus a `## Papers` catalog section rather than folding paper analyses into `concepts/` or `tools/`.
+
+**Next:**
+- If we want to go beyond analysis, design a DELEGATE-52 harness ablation using pi-style exact edits, diff review, validators, and programmatic-first transformations.
+
 ## 2026-05-10 — Removed pi-rtk-optimizer, installed pi-context-prune
 
 **What:** Replaced the rtk auto-rewrite + output-compaction stack with conversation-level batch pruning. Captured the full landscape analysis as a new wiki page.

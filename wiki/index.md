@@ -5,6 +5,10 @@
 - [[concepts/autonomous-loops]] — Autonomous loop extensions for Pi: optimization, multi-agent, goal supervision, comparison tables
 - [[concepts/llm-wiki]] — The LLM Wiki pattern: agent-compiled knowledge base vs RAG, implementations, ecosystem
 
+## Papers
+
+- [[papers/delegate52-document-corruption]] — DELEGATE-52 paper analysis: long-horizon document corruption, weak agentic harness baseline, and comparison to pi-style surgical editing workflows
+
 ## Practices
 
 - [[practices/ml-workflow-tips]] — ML dev environment setup: mamba + uv, nvm.fish, Starship, byobu/tmux, Atuin

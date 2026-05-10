@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-05-10] ingest | DELEGATE-52 document corruption and agentic harness analysis
+- Source: arXiv 2604.15597 (PDF + arXiv HTML), microsoft/delegate52 harness snapshot (`model_agentic.py`, prompts, model wrapper), Hacker News discussion 48073246, local pi-coding-agent README/edit-tool snapshot.
+- Pages created: `wiki/papers/delegate52-document-corruption.md`.
+- Pages updated: `wiki/index.md` (new Papers section).
+- Summary: documented the benchmark's round-trip-relay method and headline degradation results; separated the credible full-document delegation warning from the narrower "tool use did not help" result; compared the paper's full-read/full-write/basic-Python harness to pi-style exact replacement, diff/test/git-driven coding workflows.
+
 ## [2026-05-10] update | Token reduction landscape — removed pi-rtk-optimizer, installed pi-context-prune
 - Audited the pi-rtk-optimizer / rtk stack against documented failure modes (rtk #690 Playwright, #1282 pipe corruption, #720 gh comments, #1152 curl JSON, #1080 npx, #1335 exclude_commands, #640 auto-allow injection); confirmed via `pi-rtk-optimizer` 0.7.1 source review (npm pack) that v0.6.0 removed local bypass tables in favor of pure delegation to `rtk rewrite`, so the binary's bugs propagate; documented what the pi extension *did* sidestep (auto-allow #640, read-tool source-filter destruction) vs what it didn't (Linux pipe corruption, Playwright, gh comments, curl JSON).
 - Surveyed alternatives: lean-ctx, snip, caveman, headroom, pi-dynamic-context-pruning, pi-context-pruning, hermes-context-manager. Established two-category framework (per-command output summarizers vs context-level dedup/pruning) and a lossless-vs-lossy transform table; cited third-party benchmarks (implicator.ai's caveman audit, vexp.dev manual-vs-automated, lean-ctx 'fix inflated savings' release).
