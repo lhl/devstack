@@ -61,7 +61,7 @@ pi install npm:@lhl/pi-vertex
 pi install npm:@sting8k/pi-vcc
 
 pi install npm:pi-codex-status
-pi install npm:@victor-software-house/pi-multicodex
+pi install https://github.com/lhl/pi-multicodex
 pi install npm:pi-skill-dollar
 
 # pi-context-prune: enable the extension and use the recommended `agent-message`
