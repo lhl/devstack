@@ -12,6 +12,7 @@
 ## Practices
 
 - [[practices/ml-workflow-tips]] — ML dev environment setup: mamba + uv, nvm.fish, Starship, byobu/tmux, Atuin
+- [[practices/supply-chain-security]] — Package supply-chain security playbook: age gates, wheels-only Python wrappers, frozen installs, lifecycle-script blocking, GitHub Actions hardening, and Mini Shai-Hulud/TanStack incident notes
 
 ## Tools
 

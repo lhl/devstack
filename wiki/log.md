@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-05-12] ingest | Supply chain security playbook and Python secure defaults
+- Source: user-supplied supply-chain security guide, local fish wrapper changes, Socket Mini Shai-Hulud/TanStack report.
+- Pages created: `wiki/practices/supply-chain-security.md`.
+- Pages updated: `wiki/index.md`.
+- Summary: documented secure-by-default fish wrappers for `uv` and `pip` with a 1-day age gate, no sdist builds / wheels-only defaults, explicit unsafe escape hatches, and broader package-manager/CI defenses across Python, npm, pnpm, Bun, and GitHub Actions.
+- Incident note: linked the ongoing Mini Shai-Hulud campaign and captured relevant TanStack/PyPI implications: trusted publishing can be abused if attackers execute inside CI, lifecycle scripts remain a key vector, age gates and egress control help, and developer tool directories such as `.claude/` / `.vscode/` are part of the persistence surface.
+
 ## [2026-05-11] update | pi-agent — switched pi-tasks install to lhl fork
 - Updated the pi-agent extension record to install task management from `https://github.com/lhl/pi-tasks` instead of upstream `npm:@tintinweb/pi-tasks`.
 - Documented fork-specific behavior: no system-reminder context injection, prompt-queued `TaskExecute`, `TaskCreateMany`, and auto-continue-with-prompts rather than subagent launches.

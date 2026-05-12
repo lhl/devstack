@@ -4,6 +4,23 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-05-12 — Added supply chain security wiki page
+
+**What:** Created a practices wiki page for package supply-chain security and recorded the Python secure-default wrappers added to fish.
+
+- Added `wiki/practices/supply-chain-security.md` covering Python `uv`/`pip` defaults, npm/pnpm/Bun settings, GitHub Actions hardening, defense tiers, incident response, and Mini Shai-Hulud/TanStack/PyPI notes.
+- Documented the local fish function files: `~/.config/fish/functions/uv.fish`, `pip.fish`, `uv-unsafe.fish`, and `pip-unsafe.fish`.
+- Updated `wiki/index.md` with the new Practices entry.
+- Prepended `wiki/log.md` with the ingest summary.
+
+**Decisions:**
+- Use `wiki/practices/` because this is a workflow/playbook, not a single tool page.
+- Keep the interactive Python default at a 1-day age gate for drive-by attack resistance, with `*-unsafe` escape hatches; note that 7 days is stronger for CI/org policy.
+- Treat provenance/trusted publishing as one layer, not a sufficient defense, because the current Mini Shai-Hulud/TanStack reports involve attacker execution inside trusted CI.
+
+**Next:**
+- If desired, add project templates (`.npmrc`, `pnpm-workspace.yaml`, CI snippets) that encode these defaults for new repos.
+
 ## 2026-05-10 — Expanded DELEGATE-52 harness comparison
 
 **What:** Updated the DELEGATE-52 wiki analysis with source-backed comparisons to pi, Codex CLI, and Claude Code editing harnesses.
