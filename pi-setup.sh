@@ -47,6 +47,24 @@ pi --version
 # --prune removes local/dev/legacy package entries before installing/updating it.
 "$SCRIPT_DIR/tools/pi-sync.sh" --prune
 
+# Apply temporary npm security overrides for pi-managed extension deps. Pi owns
+# ~/.pi/agent/npm/package.json, so reapply after sync/update until upstream
+# packages relax their dependency ranges.
+PI_AGENT_DIR="${PI_CODING_AGENT_DIR:-$HOME/.pi/agent}"
+PI_NPM_DIR="$PI_AGENT_DIR/npm"
+if [ -f "$PI_NPM_DIR/package.json" ]; then
+  echo "Applying npm audit overrides for pi extensions..."
+  (
+    cd "$PI_NPM_DIR"
+    npm pkg set \
+      "overrides.@mozilla/readability=0.6.0" \
+      "overrides.gaxios.uuid=11.1.1"
+    npm install --omit=dev
+  )
+else
+  echo "Skipping npm audit overrides; $PI_NPM_DIR/package.json not found"
+fi
+
 # pi-context-prune: enable the extension and use the recommended `agent-message`
 # prune trigger (batches one prune per user→final-agent-message span, much
 # friendlier to provider prompt caching than per-turn pruning). Default is

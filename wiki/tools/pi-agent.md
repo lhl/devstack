@@ -43,6 +43,13 @@ Use this to reconcile a stale machine before trusting its extension list:
 
 `pi-setup.sh` calls `tools/pi-sync.sh --prune`, so new machines and existing machines use the same reconciliation path. Local path installs and evaluation packages should stay temporary; if one becomes canonical, add it to `pi-packages.json` and update `README.md`, this page, and `pi-setup.sh` in the same logical unit.
 
+After package sync, `pi-setup.sh` reapplies npm audit overrides in the pi-managed extension workspace (`~/.pi/agent/npm`). Current overrides pin `@mozilla/readability` to `0.6.0` for `pi-web-access` and `gaxios`'s nested `uuid` to `11.1.1` for the older Google auth stack under `@lhl/pi-vertex`. These are local dependency hygiene shims, not canonical package-source changes; remove them after upstream packages publish compatible dependency ranges. Verify with:
+
+```bash
+cd ~/.pi/agent/npm
+npm audit --omit=dev
+```
+
 ## Installed Extensions
 
 | Extension | Install source | Purpose | Status |
