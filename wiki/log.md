@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-06-13] ingest | Arch AUR safety guide
+- Source: `sources/repos/supply-chain-security/guides/arch-aur-safety.md` copied from local `github/shisa-ai/supply-chain-security/guides/arch-aur-safety.md`.
+- Pages created: `wiki/practices/arch-aur-safety.md`.
+- Pages updated: `wiki/practices/supply-chain-security.md`, `wiki/index.md`.
+- Summary: added an AUR-specific supply-chain security page covering the AUR trust boundary, 2026-06-12 Arch malicious-package incident, affected-package intersection checks, IOC checks, AUR review checklist, build isolation, npm/Bun guardrails, network/secret controls, and compromise response.
+- Verification note: confirmed the Arch incident notice and `aur-general` affected-package-list post directly on 2026-06-13; retained malware capability claims as public-analysis claims rather than locally reproduced reverse engineering.
+
 ## [2026-05-22] update | pi-agent — published pi-continue-after-compaction
 - Published `pi-continue-after-compaction` as the public GitHub repo `https://github.com/lhl/pi-continue-after-compaction`.
 - Switched the canonical package manifest from the local `/home/lhl/pi-continue-after-compaction` checkout to the GitHub source.

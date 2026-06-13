@@ -4,6 +4,23 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-06-13 — Ingested Arch AUR safety guide
+
+**What:** Added an AUR-specific supply-chain security wiki page from the local `shisa-ai/supply-chain-security` guide.
+
+- Copied `github/shisa-ai/supply-chain-security/guides/arch-aur-safety.md` into `sources/repos/supply-chain-security/guides/arch-aur-safety.md` as the immutable source snapshot.
+- Created `wiki/practices/arch-aur-safety.md` with the AUR threat model, June 2026 incident context, exposure/IOC checks, review checklist, build isolation guidance, npm/Bun guardrails, and response baseline.
+- Updated `wiki/practices/supply-chain-security.md` to cross-link the AUR guide and add a short current-campaign note.
+- Updated `wiki/index.md` and prepended `wiki/log.md` with the ingest record.
+
+**Decisions:**
+- Use a separate `wiki/practices/arch-aur-safety.md` page because AUR package review/build isolation is a distinct workflow from language package-manager hardening.
+- Link to the live Arch affected-package list rather than archiving it because the list is explicitly incomplete and may change during the incident.
+- Mark malware capability details as public-analysis claims because we verified the Arch notice and mailing-list post, but did not reproduce reverse engineering.
+
+**Next:**
+- If this becomes a recurring local workflow, add a small script or checklist command that runs the AUR package intersection and IOC checks on Arch-derived machines.
+
 ## 2026-05-12 — Added supply chain security wiki page
 
 **What:** Created a practices wiki page for package supply-chain security and recorded the Python secure-default wrappers added to fish.

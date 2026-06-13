@@ -3,6 +3,9 @@ title: Supply Chain Security
 tags: [security, supply-chain, python, javascript, ci, package-management]
 sources: []
 links:
+  - https://archlinux.org/news/active-aur-malicious-packages-incident/
+  - https://lists.archlinux.org/archives/list/aur-general%40lists.archlinux.org/message/FCH7TT6IOVT7D477JKSVJALBKADAARSW/
+  - https://md.archlinux.org/s/SxbqukK6IA
   - https://socket.dev/blog/tanstack-npm-packages-compromised-mini-shai-hulud-supply-chain-attack
   - https://socket.dev/supply-chain-attacks/mini-shai-hulud
   - https://docs.astral.sh/uv/reference/environment/
@@ -22,7 +25,7 @@ links:
 
 Practical defaults for defending developer workstations and CI from package supply-chain attacks. This page records our current Python shell defaults plus a broader checklist for npm, pnpm, Bun, GitHub Actions, and incident response.
 
-Related: [[practices/ml-workflow-tips]] for the broader mamba + uv + fish environment pattern.
+Related: [[practices/ml-workflow-tips]] for the broader mamba + uv + fish environment pattern, and [[practices/arch-aur-safety]] for Arch User Repository-specific controls.
 
 ## Current local defaults: fish wrappers for uv and pip
 
@@ -314,6 +317,19 @@ Important implications:
 Socket's recommended triage includes checking `router_init.js` hashes, rotating secrets on any machine or CI runner that installed affected versions, revoking/re-establishing GitHub Actions OIDC federation grants for affected publishers, auditing `.claude/` and `.vscode/` directories, checking for suspicious commits authored as `claude@users.noreply.github.com`, and blocking egress to `filev2.getsession[.]org` if Session is not intentionally used.
 
 Reference: https://socket.dev/blog/tanstack-npm-packages-compromised-mini-shai-hulud-supply-chain-attack
+
+## Current campaign note: Arch AUR malicious package adoptions
+
+Arch published an active incident notice on 2026-06-12 for high-volume malicious AUR package adoptions and updates. The AUR-specific issue is that `PKGBUILD` files and `.install` hooks are executable code: build-time steps can run as the developer user and pacman install hooks can run as root.
+
+The dedicated page is [[practices/arch-aur-safety]]. Key deltas from language-package-manager hardening:
+
+- Keep AUR updates separate from routine `sudo pacman -Syu` updates.
+- Review all AUR repo diffs, not just `PKGBUILD`.
+- Do not treat `makepkg --nobuild` as a safe preview because package functions may execute.
+- Build AUR packages in a disposable VM, clean chroot, or dedicated low-privilege build user when practical.
+- During active incidents, intersect `pacman -Qqm` and `pacman.log` history with the Arch-maintained affected-package list.
+- Treat confirmed execution as host and credential compromise, especially when root/eBPF behavior is plausible.
 
 ## Layer interaction table
 
