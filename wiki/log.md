@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-06-14] update | pi-agent — canonical vanillagreen background tasks
+- Source: follow-up decision after the isolated and full-stack tests recorded in `sources/conversations/pi-background-task-plugin-smoke-test-2026-06-14.md` and `sources/conversations/pi-background-task-plugin-fullstack-test-2026-06-14.md`.
+- Pages updated: `wiki/tools/pi-background-task-plugins.md`, `wiki/tools/pi-agent.md`.
+- Repo docs updated: `README.md`, `docs/TODO.md`, `pi-setup.sh`, `pi-packages.json`.
+- Summary: promoted `@vanillagreen/pi-background-tasks@1.6.0` into the canonical Pi package manifest, documented it under Automation & Workflow, and retained the operational caveat that the default epyc/Qwen model had poor post-wake tool-loop behavior while Haiku 4.5 handled the flow cleanly.
+- Verification note: no separate config bootstrap is required; defaults are acceptable and optional tuning lives in `/extensions:settings`. The package is pinned to `1.6.0` because local npm age-gates newer `1.6.1`.
+
 ## [2026-06-14] update | pi-agent — vanillagreen full-stack background-task test
 - Source: `sources/conversations/pi-background-task-plugin-fullstack-test-2026-06-14.md` from local `pi -e npm:@vanillagreen/pi-background-tasks@1.6.0` tests in the devstack repo with the canonical extension stack active.
 - Pages updated: `wiki/tools/pi-background-task-plugins.md`, `wiki/tools/pi-agent.md`.

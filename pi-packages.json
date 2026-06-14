@@ -13,6 +13,11 @@
       "note": "Cron/one-shot prompt scheduling."
     },
     {
+      "source": "npm:@vanillagreen/pi-background-tasks@1.6.0",
+      "category": "automation",
+      "note": "Non-blocking shell tasks with output-pattern and completion wakeups; pinned to the tested version while local npm age-gates newer releases."
+    },
+    {
       "source": "npm:pi-boomerang",
       "category": "automation",
       "note": "Subagent/background prompt workflows."

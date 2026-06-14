@@ -33,7 +33,7 @@ This page tracks the June 2026 evaluation of Pi background-task extensions for t
 
 ## Current decision
 
-**Default candidate:** `@vanillagreen/pi-background-tasks`, now tested both in isolation and through the devstack canonical extension stack on 2026-06-14. Keep it out of the canonical manifest until we decide the model/tooling policy: the plugin worked with `anthropic/claude-haiku-4-5`, but the current default `epyc/shisa-ai/Qwen3.6-35B-A3B-PARO-packed` showed poor tool-loop behavior after wake injection.
+**Canonical choice:** `@vanillagreen/pi-background-tasks@1.6.0`, promoted to `pi-packages.json` on 2026-06-14 after isolated and full devstack-stack tests. The plugin worked with `anthropic/claude-haiku-4-5`; the current default `epyc/shisa-ai/Qwen3.6-35B-A3B-PARO-packed` showed poor tool-loop behavior after wake injection, so prefer stronger tool-calling models for autonomous background-task workflows.
 
 Why:
 
@@ -77,7 +77,7 @@ The important delivery constraint is common to all candidates: Pi notifications 
 
 | Package | Primary primitive | Wake / injection model | Maturity signal checked 2026-06-14 | Fit |
 | --- | --- | --- | --- | --- |
-| `@vanillagreen/pi-background-tasks` | Explicit `bg_task` / `/bg` shell tasks plus auto-backgrounded bash monitors | Exit wakes as `followUp` with `triggerTurn`; output-match wakes as `steer` with `triggerTurn`; `notifyPattern`, `notifyMode`, wake budgets, durable missed exit replay | `1.6.1` latest; `1.6.0` installable under local npm age gate; created 2026-05-06; MIT; vstack monorepo; isolated and full-stack smoke tests passed 2026-06-14 with model caveat | **Best default candidate; not canonical yet** |
+| `@vanillagreen/pi-background-tasks` | Explicit `bg_task` / `/bg` shell tasks plus auto-backgrounded bash monitors | Exit wakes as `followUp` with `triggerTurn`; output-match wakes as `steer` with `triggerTurn`; `notifyPattern`, `notifyMode`, wake budgets, durable missed exit replay | `1.6.1` latest; `1.6.0` installable under local npm age gate; created 2026-05-06; MIT; vstack monorepo; isolated and full-stack smoke tests passed 2026-06-14 with model caveat | **Canonical, pinned as `npm:@vanillagreen/pi-background-tasks@1.6.0`** |
 | `@richardgill/pi-tmux-bash` | Drop-in bash replacement backed by tmux | Completion follow-up; optional polling; foreground timeout can convert to background; no pattern-triggered output wakes | `0.0.12`; modified 2026-06-06; no license field in npm metadata | Good substrate alternative; needs license check |
 | `@trevonistrevon/pi-loop` | Cron/event agent re-wake loops plus process monitors | Loop/event wakeups rather than shell task completion as the main primitive | `0.5.5`; modified 2026-06-10 | Mostly redundant with current devstack loop/scheduling stack |
 | `pi-background-tasks` (ismailsaleekh) | Named background tasks and background `pi -p` child agents | Completion wakeups; unique child-agent telemetry for context/tokens/tools/model | `0.6.0`; modified 2026-05-31; ISC | Watch if background Pi-agent telemetry becomes a priority |
@@ -157,7 +157,7 @@ Observed harness caveat: the exit wake triggered an LLM turn, but the turn faile
 
 ### Full devstack stack LLM-tool test — 2026-06-14
 
-Used the real canonical extension stack plus `-e npm:@vanillagreen/pi-background-tasks@1.6.0`, from the devstack repo root, with `--no-session` so no session was persisted. The plugin was not added to `~/.pi/agent/settings.json` or `pi-packages.json`.
+Used the then-current canonical extension stack plus `-e npm:@vanillagreen/pi-background-tasks@1.6.0`, from the devstack repo root, with `--no-session` so no session was persisted. The plugin had not yet been added to `~/.pi/agent/settings.json` or `pi-packages.json` during this test; it was promoted afterward.
 
 Passed with `--model anthropic/claude-haiku-4-5`:
 
@@ -170,7 +170,7 @@ Passed with `--model anthropic/claude-haiku-4-5`:
 Default-model caveat:
 
 - The current default model (`epyc/shisa-ai/Qwen3.6-35B-A3B-PARO-packed`) did call `bg_task spawn` successfully and the task/wake event worked, but the model then emitted repeated literal `<tool_call>` text, repeatedly called `bg_task log` without an id, and spawned duplicate test tasks during wake handling.
-- Treat that as a model/tool-use risk before canonical promotion. The plugin itself passed the load/spawn/output-wake/exit-wake checks with a stronger tool-calling model.
+- Treat that as an operational model/tool-use risk. The plugin itself passed the load/spawn/output-wake/exit-wake checks with a stronger tool-calling model.
 
 Still not covered yet:
 
@@ -198,17 +198,20 @@ Checks:
 - ✅ Exit wake/follow-up delivery appears in the conversation after task completion.
 - ✅ `notifyPattern` output wake works for `READY` with Haiku 4.5.
 - ✅ Auto-backgrounding catches a `tail -f` monitor command through the LLM `bash` tool path.
-- ⚠️ Validate model policy: default epyc/Qwen had poor tool-loop behavior even though the plugin worked.
+- ⚠️ Operational model policy: default epyc/Qwen had poor tool-loop behavior even though the plugin worked; prefer stronger tool-calling models for autonomous background-task workflows.
 - ⏳ Confirm wake messages stay small enough not to defeat `pi-context-prune` batching in real long sessions.
-- ⏳ `tools/pi-sync.sh --dry-run --prune --no-update` would remove it until and unless we promote it into `pi-packages.json`.
+- ✅ Promoted to `pi-packages.json`, documented in `README.md`, noted in `pi-setup.sh`, and updated in [[tools/pi-agent]] on 2026-06-14.
 
-## Promotion policy
+## Promotion status
 
-If the test succeeds and we decide to make `@vanillagreen/pi-background-tasks` canonical:
+`@vanillagreen/pi-background-tasks` is canonical as `npm:@vanillagreen/pi-background-tasks@1.6.0`.
 
-1. Add it to `pi-packages.json`.
-2. Update `README.md` under Automation & Workflow or Task Management.
-3. Update `pi-setup.sh` only if configuration bootstrap is needed; otherwise manifest sync is enough.
-4. Update [[tools/pi-agent]] installed/evaluated extension tables.
-5. Keep this page as the detailed landscape/provenance record.
-6. Commit all setup/docs/wiki changes in the same logical unit.
+Promotion records:
+
+1. Added the pinned package to `pi-packages.json`.
+2. Updated `README.md` under Automation & Workflow.
+3. Updated `pi-setup.sh` comments; no separate config bootstrap is required because defaults are acceptable and `/extensions:settings` manages optional tuning.
+4. Updated [[tools/pi-agent]] installed/evaluated extension tables.
+5. Kept this page as the detailed landscape/provenance record.
+
+Revisit the pin after the local npm age gate permits newer releases and after a quick smoke test of the new version.

@@ -45,6 +45,9 @@ pi --version
 
 # Install/sync canonical plugin stack. pi-packages.json is the source of truth;
 # --prune removes local/dev/legacy package entries before installing/updating it.
+# This includes @vanillagreen/pi-background-tasks@1.6.0 for non-blocking
+# shell tasks and output/completion wakeups; it is pinned to the version tested
+# with the devstack extension stack while local npm age-gates newer releases.
 "$SCRIPT_DIR/tools/pi-sync.sh" --prune
 
 # pi-context-prune: enable the extension and use the recommended `agent-message`

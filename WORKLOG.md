@@ -4,6 +4,24 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-06-14 — Promoted vanillagreen background tasks to canonical pi stack
+
+**What:** Added `@vanillagreen/pi-background-tasks@1.6.0` to the canonical devstack Pi plugin stack after the isolated and full-stack tests passed.
+
+- Added `npm:@vanillagreen/pi-background-tasks@1.6.0` to `pi-packages.json` under Automation.
+- Updated `README.md` Automation & Workflow with the background-task extension and its tested-version pin.
+- Updated `pi-setup.sh` comments to make it explicit that manifest sync installs the background-task extension; no separate config bootstrap is needed.
+- Updated `wiki/tools/pi-agent.md`, `wiki/tools/pi-background-task-plugins.md`, `docs/TODO.md`, and `wiki/log.md` to mark the plugin canonical while retaining the model/tool-loop caveat.
+- Ran the package sync/install path; `~/.pi/agent/settings.json` now contains `npm:@vanillagreen/pi-background-tasks@1.6.0`. A follow-up dry run showed only the pre-existing `https://github.com/lhl/pi-continue-after-compaction` package still pending install.
+
+**Decisions:**
+- Pin `@vanillagreen/pi-background-tasks` to `1.6.0` because that is the tested version and local npm currently age-gates newer `1.6.1`.
+- Use default extension settings for now; optional tuning can happen through `/extensions:settings`.
+- Keep the operational warning that default epyc/Qwen had poor post-wake tool-loop behavior; prefer stronger tool-calling models for autonomous background-task workflows.
+
+**Next:**
+- Run `tools/pi-sync.sh --prune` to install the canonical package, then `/reload` any active Pi session so the new tools/commands are available.
+
 ## 2026-06-14 — Tested vanillagreen background tasks in devstack stack
 
 **What:** Exercised `@vanillagreen/pi-background-tasks@1.6.0` through the real devstack Pi extension stack without installing it canonically.
