@@ -4,6 +4,23 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-06-14 — Tested vanillagreen background tasks in devstack stack
+
+**What:** Exercised `@vanillagreen/pi-background-tasks@1.6.0` through the real devstack Pi extension stack without installing it canonically.
+
+- Ran `pi --mode json --no-session -e npm:@vanillagreen/pi-background-tasks@1.6.0` from the devstack repo root, leaving canonical settings unchanged.
+- With `anthropic/claude-haiku-4-5`, verified LLM `bg_task` spawn with `notifyOnExit`, `notifyOnOutput`, and `notifyPattern: READY`; observed both output wake (`READY`) and exit wake (`READY\nBG_DONE`) events and successful wake-triggered model turns.
+- Verified LLM `bash` auto-backgrounding by asking the model to run `tail -f /tmp/pi-vg-autobg-...log`; the bash tool returned immediately with `Started bg-1 ... Reason: follow-mode log command`.
+- Observed a model caveat with the current default `epyc/shisa-ai/Qwen3.6-35B-A3B-PARO-packed`: the plugin worked, but the model emitted repeated literal `<tool_call>` text, called `bg_task log` without ids, and spawned duplicate tasks after wakes.
+- Added `sources/conversations/pi-background-task-plugin-fullstack-test-2026-06-14.md` and updated `wiki/tools/pi-background-task-plugins.md`, `wiki/tools/pi-agent.md`, `docs/TODO.md`, and `wiki/log.md`.
+
+**Decisions:**
+- Do not add the plugin to `pi-packages.json` yet. The technical primitives pass, but canonical promotion should decide the default-model/tool-calling policy first.
+- No `README.md` or `pi-setup.sh` change is needed because the installed/canonical plugin stack did not change.
+
+**Next:**
+- If adopting, test the interactive dashboard and cross-restart missed-exit replay, then add the package to `pi-packages.json` and update setup docs in the same commit.
+
 ## 2026-06-14 — Smoke-tested vanillagreen pi background tasks
 
 **What:** Ran an isolated `@vanillagreen/pi-background-tasks@1.6.0` smoke test without changing the canonical Pi package stack.

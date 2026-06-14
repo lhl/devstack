@@ -74,7 +74,7 @@ Use this to reconcile a stale machine before trusting its extension list:
 | **pi-continue-after-compaction** | `https://github.com/lhl/pi-continue-after-compaction` ([source](https://github.com/lhl/pi-continue-after-compaction)) | Watchdog that sends `continue` only after auto-threshold compaction if no next turn starts | ✅ Canonical (GitHub source, switched 2026-05-22) |
 | **pi-codex-fast** | `npm:@calesennett/pi-codex-fast` ([source](https://github.com/calesennett/pi-codex-fast)) | Optional OpenAI/OpenAI Codex priority service-tier toggle (`service_tier: "priority"`) | 🧪 Evaluation only; pruned by canonical sync |
 | **pi-live-terminal** | `npm:pi-live-terminal` ([source](https://github.com/tanishqkancharla/pi-live-terminal)) | tmux-based live terminal widget for interactive/long-running commands | ⚪ Optional; not in canonical manifest |
-| **@vanillagreen/pi-background-tasks** | `npm:@vanillagreen/pi-background-tasks` ([source](https://github.com/vanillagreencom/vstack/tree/main/pi-extensions/pi-background-tasks)) | Explicit `bg_task` / `/bg` shell jobs, auto-backgrounded monitors, completion and output-pattern wakeups | 🧪 Isolated smoke test passed 2026-06-14; full-stack/interactive test before canonical promotion — see [[tools/pi-background-task-plugins]] |
+| **@vanillagreen/pi-background-tasks** | `npm:@vanillagreen/pi-background-tasks` ([source](https://github.com/vanillagreencom/vstack/tree/main/pi-extensions/pi-background-tasks)) | Explicit `bg_task` / `/bg` shell jobs, auto-backgrounded monitors, completion and output-pattern wakeups | 🧪 Isolated + full-stack tests passed 2026-06-14 with Haiku 4.5; default epyc/Qwen model caveat before canonical promotion — see [[tools/pi-background-task-plugins]] |
 | **@richardgill/pi-tmux-bash** | `npm:@richardgill/pi-tmux-bash` ([source](https://github.com/richardgill/pi-extensions/tree/main/extensions/tmux-bash)) | tmux-backed drop-in `bash` replacement with timeout→background ergonomics | 📋 Evaluated alternative; license/maturity check before adoption — see [[tools/pi-background-task-plugins]] |
 | **pi-codex-conversion** | `npm:@howaboua/pi-codex-conversion` ([source](https://github.com/IgorWarzocha/pi-codex-conversion)) | Codex-oriented adapter: tool-swap, WS/SSE dual transport, native Codex web_search/image_generation | 📋 Evaluated (not installed) |
 
@@ -227,7 +227,7 @@ Then `/reload` inside pi.
 
 Detailed landscape record: [[tools/pi-background-task-plugins]].
 
-Current recommendation is `@vanillagreen/pi-background-tasks`, unforked first. An isolated `pi -e npm:@vanillagreen/pi-background-tasks@1.6.0` smoke test passed on 2026-06-14 for load, `/bg:run`, completion exit wake event delivery, `/bg:list`, `/bg log`, and `/bg:clear`. Do not promote it to `pi-packages.json` until a full-stack/interactive test confirms real model wake behavior and `pi-context-prune` interaction. It is still the strongest fit for devstack because it provides the primitive the current stack lacks: explicit non-blocking shell tasks that can wake the agent on **completion** or on **interesting output**.
+Current recommendation is `@vanillagreen/pi-background-tasks`, unforked first. Isolated and full-stack `pi -e npm:@vanillagreen/pi-background-tasks@1.6.0` tests passed on 2026-06-14. Verified behaviors include load, `/bg:run`, completion exit wake event delivery, `/bg:list`, `/bg log`, `/bg:clear`, LLM `bg_task` spawn with `notifyOnOutput` / `notifyPattern`, output wake injection, exit wake injection, and LLM `bash` auto-backgrounding for `tail -f`. Do not promote it to `pi-packages.json` until deciding the model policy: Haiku 4.5 handled the tool/wake flow cleanly, while the current default epyc/Qwen model showed poor tool-loop behavior after wake injection. It is still the strongest fit for devstack because it provides the primitive the current stack lacks: explicit non-blocking shell tasks that can wake the agent on **completion** or on **interesting output**.
 
 Key differentiators:
 
@@ -244,7 +244,7 @@ Key differentiators:
 
 `pi-monitor` is not infrastructure-ready for devstack, but its passive filtered-stream design is worth stealing later if we need ambient low-significance process context instead of active wakes.
 
-Testing note: local npm has `before` set to 2026-06-07, so `@vanillagreen/pi-background-tasks@1.6.1` is currently blocked by the age gate. The isolated smoke test used `@1.6.0`. Remaining validation: `bg_task` LLM tool invocation with `notifyOnOutput` / `notifyPattern`, LLM bash auto-backgrounding, interactive dashboard behavior, cross-restart missed-exit replay, and wake batching with `pi-context-prune`.
+Testing note: local npm has `before` set to 2026-06-07, so `@vanillagreen/pi-background-tasks@1.6.1` is currently blocked by the age gate. The tests used `@1.6.0`. Remaining validation: interactive dashboard behavior, cross-restart missed-exit replay, noisy long-running wake-budget behavior, and wake batching/prompt-cache impact with `pi-context-prune` during real multi-hour sessions.
 
 ---
 

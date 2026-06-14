@@ -4,6 +4,7 @@ tags: [tools, pi, background-tasks, extension-evaluation]
 sources:
   - sources/conversations/pi-background-task-plugins-2026-06-14.md
   - sources/conversations/pi-background-task-plugin-smoke-test-2026-06-14.md
+  - sources/conversations/pi-background-task-plugin-fullstack-test-2026-06-14.md
 links:
   - https://www.npmjs.com/package/@vanillagreen/pi-background-tasks
   - https://github.com/vanillagreencom/vstack/tree/main/pi-extensions/pi-background-tasks
@@ -32,7 +33,7 @@ This page tracks the June 2026 evaluation of Pi background-task extensions for t
 
 ## Current decision
 
-**Default candidate:** `@vanillagreen/pi-background-tasks`, smoke-tested in isolation on 2026-06-14. Keep it out of the canonical manifest until an interactive/full-stack test confirms wake behavior with the real model config and `pi-context-prune`.
+**Default candidate:** `@vanillagreen/pi-background-tasks`, now tested both in isolation and through the devstack canonical extension stack on 2026-06-14. Keep it out of the canonical manifest until we decide the model/tooling policy: the plugin worked with `anthropic/claude-haiku-4-5`, but the current default `epyc/shisa-ai/Qwen3.6-35B-A3B-PARO-packed` showed poor tool-loop behavior after wake injection.
 
 Why:
 
@@ -43,7 +44,7 @@ Why:
 - It has durable missed exit wake replay across Pi reloads/session restarts and PID reuse checks.
 - It is MIT-licensed and zero-dependency in the package tarball, so a local fork remains feasible if vstack monorepo coupling becomes a problem.
 
-**Isolated smoke test result:** pass for extension load, slash-command registration, `/bg:run`, completion exit wake event delivery, `/bg:list`, `/bg log`, and `/bg:clear` using `pi -e npm:@vanillagreen/pi-background-tasks@1.6.0` with a temporary Pi agent directory. Not yet covered: LLM `bg_task` tool invocation with `notifyOnOutput` / `notifyPattern`, LLM bash auto-backgrounding, interactive TUI dashboard behavior, cross-restart durable replay, and full-stack interaction with `pi-context-prune`.
+**Test result:** pass for extension load, slash-command registration, `/bg:run`, completion exit wake event delivery, `/bg:list`, `/bg log`, and `/bg:clear` in an isolated temp Pi harness. Pass in the full devstack stack with Haiku 4.5 for LLM `bg_task` invocation, `notifyOnOutput` / `notifyPattern` output wake, completion exit wake, and LLM `bash` auto-backgrounding of `tail -f`. Still not covered: interactive TUI dashboard behavior, cross-restart durable replay, and long noisy wake streams with `pi-context-prune` over real sessions.
 
 **Alternative candidate:** `@richardgill/pi-tmux-bash` if we want to replace the bash execution substrate instead of adding a parallel `bg_task` tool.
 
@@ -76,7 +77,7 @@ The important delivery constraint is common to all candidates: Pi notifications 
 
 | Package | Primary primitive | Wake / injection model | Maturity signal checked 2026-06-14 | Fit |
 | --- | --- | --- | --- | --- |
-| `@vanillagreen/pi-background-tasks` | Explicit `bg_task` / `/bg` shell tasks plus auto-backgrounded bash monitors | Exit wakes as `followUp` with `triggerTurn`; output-match wakes as `steer` with `triggerTurn`; `notifyPattern`, `notifyMode`, wake budgets, durable missed exit replay | `1.6.1` latest; `1.6.0` installable under local npm age gate; created 2026-05-06; MIT; vstack monorepo; isolated slash-command smoke test passed 2026-06-14 | **Best default candidate; not canonical yet** |
+| `@vanillagreen/pi-background-tasks` | Explicit `bg_task` / `/bg` shell tasks plus auto-backgrounded bash monitors | Exit wakes as `followUp` with `triggerTurn`; output-match wakes as `steer` with `triggerTurn`; `notifyPattern`, `notifyMode`, wake budgets, durable missed exit replay | `1.6.1` latest; `1.6.0` installable under local npm age gate; created 2026-05-06; MIT; vstack monorepo; isolated and full-stack smoke tests passed 2026-06-14 with model caveat | **Best default candidate; not canonical yet** |
 | `@richardgill/pi-tmux-bash` | Drop-in bash replacement backed by tmux | Completion follow-up; optional polling; foreground timeout can convert to background; no pattern-triggered output wakes | `0.0.12`; modified 2026-06-06; no license field in npm metadata | Good substrate alternative; needs license check |
 | `@trevonistrevon/pi-loop` | Cron/event agent re-wake loops plus process monitors | Loop/event wakeups rather than shell task completion as the main primitive | `0.5.5`; modified 2026-06-10 | Mostly redundant with current devstack loop/scheduling stack |
 | `pi-background-tasks` (ismailsaleekh) | Named background tasks and background `pi -p` child agents | Completion wakeups; unique child-agent telemetry for context/tokens/tools/model | `0.6.0`; modified 2026-05-31; ISC | Watch if background Pi-agent telemetry becomes a priority |
@@ -154,13 +155,29 @@ Passed:
 
 Observed harness caveat: the exit wake triggered an LLM turn, but the turn failed with `Validation error: The provided model identifier is invalid` because the temporary smoke-test Pi config used an invalid default Bedrock model. This still confirms wake delivery at the Pi event layer; it does not validate a successful model response after wake.
 
-Not covered yet:
+### Full devstack stack LLM-tool test — 2026-06-14
 
-- `bg_task` LLM tool invocation with `notifyOnOutput` / `notifyPattern` because RPC extension commands do not directly expose arbitrary tool execution and `/bg:run` does not accept those advanced parameters.
-- Auto-backgrounding of LLM `bash` tool calls; RPC `bash` bypassed the LLM/tool path and hung on `tail -f` as expected for that protocol path.
+Used the real canonical extension stack plus `-e npm:@vanillagreen/pi-background-tasks@1.6.0`, from the devstack repo root, with `--no-session` so no session was persisted. The plugin was not added to `~/.pi/agent/settings.json` or `pi-packages.json`.
+
+Passed with `--model anthropic/claude-haiku-4-5`:
+
+- One LLM `bg_task` call spawned `bash -lc 'echo READY; sleep 2; echo BG_DONE'` with `notifyOnExit: true`, `notifyOnOutput: true`, and `notifyPattern: READY`.
+- The task generated an output wake with `eventType: "output"` and `outputTail: "READY\n"`.
+- The same task generated a completion wake with `eventType: "exit"` and `outputTail: "READY\nBG_DONE\n"`.
+- A real model turn after wake completed without error.
+- A separate LLM `bash` tool call to `tail -f /tmp/pi-vg-autobg-...log` was auto-backgrounded as a background task with reason `follow-mode log command`, returning immediately instead of blocking.
+
+Default-model caveat:
+
+- The current default model (`epyc/shisa-ai/Qwen3.6-35B-A3B-PARO-packed`) did call `bg_task spawn` successfully and the task/wake event worked, but the model then emitted repeated literal `<tool_call>` text, repeatedly called `bg_task log` without an id, and spawned duplicate test tasks during wake handling.
+- Treat that as a model/tool-use risk before canonical promotion. The plugin itself passed the load/spawn/output-wake/exit-wake checks with a stronger tool-calling model.
+
+Still not covered yet:
+
 - Interactive TUI dashboard behavior.
 - Cross-restart durable missed-exit replay.
-- Full canonical-stack interaction, especially real wake streams with `pi-context-prune` batching.
+- Long-running noisy-output budget behavior over many wakes.
+- Prompt-cache / `pi-context-prune` quality over real multi-hour sessions.
 
 ### Promotion checklist
 
@@ -175,14 +192,15 @@ pi --no-extensions \
 
 Checks:
 
-- The extension loads in isolation.
-- `bg_task` appears as a tool and can spawn a command.
-- `list` and `log` work.
-- Exit wake/follow-up delivery appears in the conversation after task completion.
-- `notifyPattern` output wake works for a line such as `READY` or `BG_DONE`.
-- Auto-backgrounding catches an obvious monitor command without blocking.
-- Wake messages are small enough not to defeat `pi-context-prune` batching.
-- `tools/pi-sync.sh --dry-run --prune --no-update` would remove it until and unless we promote it into `pi-packages.json`.
+- ✅ The extension loads in isolation.
+- ✅ `bg_task` appears as a tool and can spawn a command with Haiku 4.5.
+- ✅ Slash-command `list` and `log` work in isolation.
+- ✅ Exit wake/follow-up delivery appears in the conversation after task completion.
+- ✅ `notifyPattern` output wake works for `READY` with Haiku 4.5.
+- ✅ Auto-backgrounding catches a `tail -f` monitor command through the LLM `bash` tool path.
+- ⚠️ Validate model policy: default epyc/Qwen had poor tool-loop behavior even though the plugin worked.
+- ⏳ Confirm wake messages stay small enough not to defeat `pi-context-prune` batching in real long sessions.
+- ⏳ `tools/pi-sync.sh --dry-run --prune --no-update` would remove it until and unless we promote it into `pi-packages.json`.
 
 ## Promotion policy
 

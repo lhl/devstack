@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-06-14] update | pi-agent — vanillagreen full-stack background-task test
+- Source: `sources/conversations/pi-background-task-plugin-fullstack-test-2026-06-14.md` from local `pi -e npm:@vanillagreen/pi-background-tasks@1.6.0` tests in the devstack repo with the canonical extension stack active.
+- Pages updated: `wiki/tools/pi-background-task-plugins.md`, `wiki/tools/pi-agent.md`.
+- Summary: recorded that Haiku 4.5 successfully used `bg_task` with `notifyOnOutput` / `notifyPattern`, produced both output and exit wake events, and confirmed LLM `bash` auto-backgrounding for `tail -f`; also recorded that the current default epyc/Qwen model spawned and received wakes but then showed poor tool-loop behavior.
+- Verification note: no persistent package-stack change was made; `@vanillagreen/pi-background-tasks` remains out of `pi-packages.json` pending model-policy, TUI, restart-replay, and long-session context-prune checks.
+
 ## [2026-06-14] update | pi-agent — vanillagreen background-task smoke test
 - Source: `sources/conversations/pi-background-task-plugin-smoke-test-2026-06-14.md` from an isolated local RPC-mode smoke test using temporary Pi state.
 - Pages updated: `wiki/tools/pi-background-task-plugins.md`, `wiki/tools/pi-agent.md`.
