@@ -4,6 +4,24 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-06-14 — Documented pi background-task plugin evaluation
+
+**What:** Captured the latest background-task plugin comparison and aligned the devstack TODO/wiki state with the vanillagreen-first test plan.
+
+- Archived the in-session comparison notes and local npm metadata checks in `sources/conversations/pi-background-task-plugins-2026-06-14.md`.
+- Created `wiki/tools/pi-background-task-plugins.md` with the recommendation to test `@vanillagreen/pi-background-tasks` first, keep `@richardgill/pi-tmux-bash` as the substrate alternative, treat `@trevonistrevon/pi-loop` as a separate loop/scheduler tool, and preserve `pi-monitor` as a pattern rather than infrastructure.
+- Updated `wiki/tools/pi-agent.md` with evaluated-extension rows, a background-task evaluation section, and current `pi-loop` scheduling notes.
+- Updated `docs/TODO.md` to park the older gob/`pi-backtask` plan and make the isolated vanillagreen test the next step.
+- Updated `wiki/index.md` and prepended `wiki/log.md` for the new wiki page.
+
+**Decisions:**
+- Do not promote any background-task plugin into `pi-packages.json` until an isolated `pi -e` test verifies load/spawn/log/wake behavior.
+- Use `@vanillagreen/pi-background-tasks@1.6.0` for the first test because local npm's `before` policy currently blocks `1.6.1`.
+- Keep `@richardgill/pi-tmux-bash` as an alternative only after checking its license metadata/repo license.
+
+**Next:**
+- Run the isolated `pi -e npm:@vanillagreen/pi-background-tasks@1.6.0` smoke tests and document the result before deciding on canonical promotion.
+
 ## 2026-06-13 — Ingested Arch AUR safety guide
 
 **What:** Added an AUR-specific supply-chain security wiki page from the local `shisa-ai/supply-chain-security` guide.

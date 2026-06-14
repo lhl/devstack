@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-06-14] update | pi-agent — background task plugin evaluation
+- Source: `sources/conversations/pi-background-task-plugins-2026-06-14.md` from recent in-session package comparison plus local npm metadata checks.
+- Pages created: `wiki/tools/pi-background-task-plugins.md`.
+- Pages updated: `wiki/tools/pi-agent.md`, `wiki/index.md`.
+- Summary: recorded the current recommendation to test `@vanillagreen/pi-background-tasks` first, keep `@richardgill/pi-tmux-bash` as the substrate alternative, treat `@trevonistrevon/pi-loop` as mostly redundant with existing scheduling/autoloop plugins, and preserve `pi-monitor` as a passive-stream pattern rather than infrastructure.
+- Verification note: npm metadata was checked locally on 2026-06-14; local `npm config before` age-gates `@vanillagreen/pi-background-tasks@1.6.1`, so the first isolated test should use `@1.6.0` unless bypassing the policy intentionally.
+
 ## [2026-06-13] ingest | Arch AUR safety guide
 - Source: `sources/repos/supply-chain-security/guides/arch-aur-safety.md` copied from local `github/shisa-ai/supply-chain-security/guides/arch-aur-safety.md`.
 - Pages created: `wiki/practices/arch-aur-safety.md`.

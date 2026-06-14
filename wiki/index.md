@@ -18,6 +18,7 @@
 ## Tools
 
 - [[tools/pi-agent]] — Pi coding agent: minimal extensible terminal coding harness (pi.dev), canonical `pi-packages.json` package sync workflow, pi-zentui customization log, Codex quota status, account rotation, pi-tasks/pi-goal forks, GitHub-sourced compaction watchdog, optional Codex fast mode
+- [[tools/pi-background-task-plugins]] — Pi background task plugin evaluation: @vanillagreen/pi-background-tasks vs tmux-bash, pi-loop, pi-monitor, gob, and minimal alternatives
 - [[tools/pi-model-selection]] — Pi model selection & customization: favorites, scoping, sticky models, extensions
 - [[tools/pi-statusline]] — Pi status line / powerline footer: colorful segments, presets, themeable TUI bar
 - [[tools/pruning-and-compaction]] — Token reduction landscape: per-command output summarizers vs context-level dedup/pruning, lossless-vs-lossy transforms, rtk failure-mode audit, why we removed pi-rtk-optimizer and installed pi-context-prune

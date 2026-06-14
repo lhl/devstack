@@ -8,7 +8,13 @@ links:
   - https://pi.dev
   - https://github.com/qualisero/awesome-pi-agent
   - https://github.com/ifiokjr/oh-pi
-  - https://github.com/ArtemisAI/pi-loop
+  - https://github.com/trvon/pi-loop
+  - https://github.com/vanillagreencom/vstack/tree/main/pi-extensions/pi-background-tasks
+  - https://github.com/richardgill/pi-extensions/tree/main/extensions/tmux-bash
+  - https://github.com/ismailsaleekh/pi-background-tasks
+  - https://github.com/zackify/pi-bg-tasks
+  - https://github.com/artale93/pi-procs
+  - https://github.com/juanibiapina/pi-gob
   - https://github.com/tintinweb/pi-schedule-prompt
   - https://github.com/lhl/pi-tasks
   - https://github.com/lhl/pi-goal
@@ -68,6 +74,8 @@ Use this to reconcile a stale machine before trusting its extension list:
 | **pi-continue-after-compaction** | `https://github.com/lhl/pi-continue-after-compaction` ([source](https://github.com/lhl/pi-continue-after-compaction)) | Watchdog that sends `continue` only after auto-threshold compaction if no next turn starts | ✅ Canonical (GitHub source, switched 2026-05-22) |
 | **pi-codex-fast** | `npm:@calesennett/pi-codex-fast` ([source](https://github.com/calesennett/pi-codex-fast)) | Optional OpenAI/OpenAI Codex priority service-tier toggle (`service_tier: "priority"`) | 🧪 Evaluation only; pruned by canonical sync |
 | **pi-live-terminal** | `npm:pi-live-terminal` ([source](https://github.com/tanishqkancharla/pi-live-terminal)) | tmux-based live terminal widget for interactive/long-running commands | ⚪ Optional; not in canonical manifest |
+| **@vanillagreen/pi-background-tasks** | `npm:@vanillagreen/pi-background-tasks` ([source](https://github.com/vanillagreencom/vstack/tree/main/pi-extensions/pi-background-tasks)) | Explicit `bg_task` / `/bg` shell jobs, auto-backgrounded monitors, completion and output-pattern wakeups | 🧪 Evaluation candidate; test before canonical promotion — see [[tools/pi-background-task-plugins]] |
+| **@richardgill/pi-tmux-bash** | `npm:@richardgill/pi-tmux-bash` ([source](https://github.com/richardgill/pi-extensions/tree/main/extensions/tmux-bash)) | tmux-backed drop-in `bash` replacement with timeout→background ergonomics | 📋 Evaluated alternative; license/maturity check before adoption — see [[tools/pi-background-task-plugins]] |
 | **pi-codex-conversion** | `npm:@howaboua/pi-codex-conversion` ([source](https://github.com/IgorWarzocha/pi-codex-conversion)) | Codex-oriented adapter: tool-swap, WS/SSE dual transport, native Codex web_search/image_generation | 📋 Evaluated (not installed) |
 
 **Canonical install/sync command:**
@@ -214,6 +222,29 @@ Then `/reload` inside pi.
 **Requirements:** `tmux` must be installed (`which tmux`).
 
 **When to use:** Interactive TTY apps (htop, vim, less), watch-mode builds, dev servers, long-running tests — anything where you want to see live output and optionally interact.
+
+### Background Task Plugin Evaluation (2026-06-14)
+
+Detailed landscape record: [[tools/pi-background-task-plugins]].
+
+Current recommendation is to test `@vanillagreen/pi-background-tasks` first, unforked and via `pi -e`, before promoting it to `pi-packages.json`. It is the strongest fit for devstack because it provides the primitive the current stack lacks: explicit non-blocking shell tasks that can wake the agent on **completion** or on **interesting output**.
+
+Key differentiators:
+
+- `bg_task` / `/bg` for spawning, listing, tailing, stopping, and clearing shell tasks.
+- Auto-backgrounding for obvious blocking monitors (`watch`, `tail -f`, `journalctl -f`, polling loops) before they freeze a foreground bash turn.
+- Exit wakeups delivered as `followUp` with `triggerTurn: true`.
+- Output-pattern wakeups delivered as `steer` with `triggerTurn: true`.
+- `notifyPattern`, `notifyMode`, `dedupeKey`, per-wake output caps, and per-task wake budgets to keep chatty monitors from bloating context.
+- Durable missed exit wake replay across reloads/restarts and PID reuse checks.
+
+`@richardgill/pi-tmux-bash` remains the best substrate alternative if the goal is to replace bash itself. Its standout feature is foreground timeout → background conversion. It is not the default recommendation because it lacks pattern-triggered mid-run output wakes and needs a license check before fork/canonical use.
+
+`@trevonistrevon/pi-loop` is mostly separate from this problem. It is for cron/event re-wake loops plus process monitors; devstack already covers that axis with `pi-multiloop` and `pi-schedule-prompt`.
+
+`pi-monitor` is not infrastructure-ready for devstack, but its passive filtered-stream design is worth stealing later if we need ambient low-significance process context instead of active wakes.
+
+Testing note: local npm has `before` set to 2026-06-07, so `@vanillagreen/pi-background-tasks@1.6.1` is currently blocked by the age gate. Use `@1.6.0` for the first isolated test unless intentionally bypassing that policy.
 
 ---
 
@@ -1008,7 +1039,7 @@ Part of the tmustier/pi-extensions package. Long-running agent loops for iterati
 
 | Use Case | Recommended Extension |
 |----------|----------------------|
-| Continuous monitoring loop (time-based) | pi-loop |
+| Continuous monitoring loop (time-based) | pi-schedule-prompt for cron/interval prompts; pi-multiloop for stateful autoloops; pi-loop only if event-triggered loop integration is specifically needed |
 | Simple continuous loop (keep agent running) | pi-autoloop |
 | Research experiments with success conditions | pi-autoresearch |
 | Single goal/punchlist workflow | lhl/pi-goal |
@@ -1022,7 +1053,7 @@ Part of the tmustier/pi-extensions package. Long-running agent loops for iterati
 
 ## Scheduling Extensions
 
-Two options for cron/scheduled prompts:
+Scheduling is now separate from the background-shell-task decision in [[tools/pi-background-task-plugins]]. Devstack's canonical scheduler remains `pi-schedule-prompt`; `@trevonistrevon/pi-loop` is an event/cron loop package to evaluate only if we need loop triggers beyond `pi-schedule-prompt` and `pi-multiloop`.
 
 ### pi-schedule-prompt (Recommended)
 
@@ -1041,12 +1072,12 @@ Two options for cron/scheduled prompts:
 
 ### pi-loop
 
-**Repo:** [ArtemisAI/pi-loop](https://github.com/ArtemisAI/pi-loop)
-npm: `@pi-agents/loop`, 3 stars
+**Repo:** [trvon/pi-loop](https://github.com/trvon/pi-loop)
+**npm:** `@trevonistrevon/pi-loop`
 
-Similar features but less developed. Has `/loop` command, cron tools, idle gating, anti-thundering-herd jitter.
+`pi-loop` is a cron/event-based agent re-wake loop package with background process monitoring. In the June 2026 background-task survey, it appeared to solve a different problem from `bg_task`-style shell managers: use it to drive periodic/event agent turns, not primarily to run `npm run dev` without blocking.
 
-**Verdict:** pi-schedule-prompt has more stars, per-task model (big plus), and live widget. Use that one.
+**Verdict:** Do not add by default while `pi-schedule-prompt` covers heartbeat scheduling and `pi-multiloop` covers stateful autonomous work. Revisit only if we need `pi-loop`'s event-triggered loop semantics or integration with `pi-tasks`.
 
 ---
 

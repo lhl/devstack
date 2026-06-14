@@ -2,47 +2,49 @@
 
 ## Background Execution Stack (in progress)
 
-Goal: composable background execution + task management for pi.
+Goal: composable background execution + task management for pi without blocking agent turns or flooding context.
 
-### Components
+### Current direction (2026-06-14)
 
-| Component | Source | Status |
-|-----------|--------|--------|
-| [gob](https://github.com/juanibiapina/gob) | Process manager backend | Need to install binary |
-| [@juanibiapina/pi-gob](https://github.com/juanibiapina/pi-gob) | Powerbar segment + `/gob` interactive TUI | Install when ready |
-| [lhl/pi-backtask](https://github.com/lhl/pi-backtask) | Background execution, result injection, `bg_process` tool | Extending with subagent functionality |
-| [@tintinweb/pi-tasks](https://github.com/tintinweb/pi-tasks) | LLM-callable structured task management (7 tools) | ✅ Installed |
+The earlier gob/`pi-backtask` plan is superseded for now by evaluating maintained Pi background-task plugins directly. See [`wiki/tools/pi-background-task-plugins.md`](../wiki/tools/pi-background-task-plugins.md).
 
-### Integration Plan
+| Candidate | Role | Status |
+|-----------|------|--------|
+| [`@vanillagreen/pi-background-tasks`](https://www.npmjs.com/package/@vanillagreen/pi-background-tasks) | Explicit `bg_task` / `/bg` shell tasks, auto-backgrounded monitors, completion + output-pattern wakeups | **Next test** via `pi -e npm:@vanillagreen/pi-background-tasks@1.6.0` |
+| [`@richardgill/pi-tmux-bash`](https://www.npmjs.com/package/@richardgill/pi-tmux-bash) | tmux-backed drop-in `bash` replacement, timeout→background | Alternative if substrate replacement is preferable; verify license first |
+| [`@trevonistrevon/pi-loop`](https://www.npmjs.com/package/@trevonistrevon/pi-loop) | Cron/event re-wake loops plus process monitors | Mostly redundant with `pi-multiloop` + `pi-schedule-prompt` for devstack |
+| `pi-monitor` | Passive filtered stream as context | Pattern to steal later, not infrastructure now |
+| `gob` + `@juanibiapina/pi-gob` + `lhl/pi-backtask` | Older process-manager-backed plan | Parked unless plugin options fail or gob reattach becomes necessary |
 
-1. Finish pi-backtask subagent extension
-2. Install gob binary
-3. Install pi-gob (`pi install npm:@juanibiapina/pi-gob`)
-4. Install pi-backtask from fork (`pi install git:github.com/lhl/pi-backtask`)
-5. Verify all three compose without conflicts
-6. Update wiki/tools/pi-agent.md with final setup
-7. Update pi-setup.sh and README.md
+### Why vanillagreen first
 
-### Composition Notes
+- Completion wakeups and output-match wakeups are both supported.
+- Output wakeups have budget controls (`outputAlertMaxChars`, wake count, cumulative bytes) and transition/first-match defaults.
+- Obvious blocking monitors (`watch`, `tail -f`, `journalctl -f`, polling loops) auto-background before they freeze a turn.
+- Exit wakeups are durable across reload/restart/PID reuse cases.
+- The package is MIT and zero-dependency, so a fork is tractable if vstack monorepo coupling becomes a problem.
 
-**pi-tasks ↔ pi-backtask:** No conflicts. Different tool names, different keybindings, different storage.
-- pi-tasks = LLM self-organizes work (structured tasks, dependencies, `TaskCreate`/`TaskList`/etc.)
-- pi-backtask = background execution engine + human task tracking (`/bg run`, `/bg agent`, `bg_process`)
+### Test plan
 
-**pi-tasks TaskExecute:** Uses `@tintinweb/pi-subagents` via `pi.events` RPC protocol (`subagents:rpc:spawn`, `subagents:completed`, `subagents:failed`). If pi-backtask emits the same events, pi-tasks could track agent tasks spawned by pi-backtask automatically — but this requires implementing the `pi-subagents` RPC protocol in pi-backtask.
+1. Use `pi -e` so the canonical stack does not change during the first trial.
+2. Because local npm has `before` set to 2026-06-07, test `@vanillagreen/pi-background-tasks@1.6.0` first; `1.6.1` is newer than the local age gate.
+3. Verify basic `bg_task spawn/list/log/stop` on a short command.
+4. Verify `notifyOnExit` follow-up delivery after completion.
+5. Verify `notifyOnOutput` + `notifyPattern` steer delivery for a `READY` / `BG_DONE` line.
+6. Verify auto-backgrounding for an obvious monitor command without blocking.
+7. Watch interaction with `pi-context-prune` batching: wake streams should not fragment batches or harm prompt-cache locality.
+8. If promoted, update `pi-packages.json`, `README.md`, `pi-setup.sh` if config bootstrap is needed, `wiki/tools/pi-agent.md`, and `wiki/tools/pi-background-task-plugins.md` in the same logical unit.
 
-**pi-gob ↔ pi-backtask:** Both talk to gob. pi-gob is view-only (daemon socket subscription + interactive TUI). pi-backtask spawns jobs via `gob add` CLI. No conflicts — pi-gob will show jobs that pi-backtask spawns.
+### Parked historical plan
 
-### Do we need to fork pi-tasks?
+The old plan was:
 
-**Probably not yet.** pi-tasks is designed to be composable:
-- Its `TaskExecute` only fires if `@tintinweb/pi-subagents` is loaded (checked via RPC ping)
-- Without pi-subagents, the other 6 tools (TaskCreate, TaskList, TaskGet, TaskUpdate, TaskOutput, TaskStop) work standalone
-- The task store, dependency tracking, widget, and system-reminder injection are all independent of the subagent layer
+1. Install gob.
+2. Install `@juanibiapina/pi-gob` for a `/gob` interactive TUI.
+3. Install/fork `lhl/pi-backtask` for background execution, result injection, and a `bg_process` tool.
+4. Optionally implement the `@tintinweb/pi-subagents` RPC protocol so `pi-tasks TaskExecute` could track spawned agent tasks.
 
-**Fork if:** we want pi-backtask to be the subagent backend instead of `@tintinweb/pi-subagents`. That would mean pi-backtask implements the `subagents:rpc:spawn` / `subagents:completed` / `subagents:failed` event protocol so pi-tasks' TaskExecute works with gob-backed agents instead of pi-subagents' in-process agents.
-
-**Alternative:** Just implement the pi-subagents RPC protocol in pi-backtask as a compatibility layer. Then pi-tasks works unmodified.
+Keep this as a fallback only if maintained single-plugin options fail. `lhl/pi-tasks` is already forked and canonical, so task tracking no longer depends on upstream `@tintinweb/pi-subagents`.
 
 ---
 
