@@ -3,6 +3,7 @@ title: Pi Background Task Plugins
 tags: [tools, pi, background-tasks, extension-evaluation]
 sources:
   - sources/conversations/pi-background-task-plugins-2026-06-14.md
+  - sources/conversations/pi-background-task-plugin-smoke-test-2026-06-14.md
 links:
   - https://www.npmjs.com/package/@vanillagreen/pi-background-tasks
   - https://github.com/vanillagreencom/vstack/tree/main/pi-extensions/pi-background-tasks
@@ -31,7 +32,7 @@ This page tracks the June 2026 evaluation of Pi background-task extensions for t
 
 ## Current decision
 
-**Default candidate:** test `@vanillagreen/pi-background-tasks` unforked first.
+**Default candidate:** `@vanillagreen/pi-background-tasks`, smoke-tested in isolation on 2026-06-14. Keep it out of the canonical manifest until an interactive/full-stack test confirms wake behavior with the real model config and `pi-context-prune`.
 
 Why:
 
@@ -41,6 +42,8 @@ Why:
 - It auto-backgrounds obvious blocking monitors such as `watch`, `tail -f`, `journalctl -f`, and polling loops before they can freeze a foreground bash turn.
 - It has durable missed exit wake replay across Pi reloads/session restarts and PID reuse checks.
 - It is MIT-licensed and zero-dependency in the package tarball, so a local fork remains feasible if vstack monorepo coupling becomes a problem.
+
+**Isolated smoke test result:** pass for extension load, slash-command registration, `/bg:run`, completion exit wake event delivery, `/bg:list`, `/bg log`, and `/bg:clear` using `pi -e npm:@vanillagreen/pi-background-tasks@1.6.0` with a temporary Pi agent directory. Not yet covered: LLM `bg_task` tool invocation with `notifyOnOutput` / `notifyPattern`, LLM bash auto-backgrounding, interactive TUI dashboard behavior, cross-restart durable replay, and full-stack interaction with `pi-context-prune`.
 
 **Alternative candidate:** `@richardgill/pi-tmux-bash` if we want to replace the bash execution substrate instead of adding a parallel `bg_task` tool.
 
@@ -73,7 +76,7 @@ The important delivery constraint is common to all candidates: Pi notifications 
 
 | Package | Primary primitive | Wake / injection model | Maturity signal checked 2026-06-14 | Fit |
 | --- | --- | --- | --- | --- |
-| `@vanillagreen/pi-background-tasks` | Explicit `bg_task` / `/bg` shell tasks plus auto-backgrounded bash monitors | Exit wakes as `followUp` with `triggerTurn`; output-match wakes as `steer` with `triggerTurn`; `notifyPattern`, `notifyMode`, wake budgets, durable missed exit replay | `1.6.1` latest; `1.6.0` installable under local npm age gate; created 2026-05-06; MIT; vstack monorepo | **Best default candidate** |
+| `@vanillagreen/pi-background-tasks` | Explicit `bg_task` / `/bg` shell tasks plus auto-backgrounded bash monitors | Exit wakes as `followUp` with `triggerTurn`; output-match wakes as `steer` with `triggerTurn`; `notifyPattern`, `notifyMode`, wake budgets, durable missed exit replay | `1.6.1` latest; `1.6.0` installable under local npm age gate; created 2026-05-06; MIT; vstack monorepo; isolated slash-command smoke test passed 2026-06-14 | **Best default candidate; not canonical yet** |
 | `@richardgill/pi-tmux-bash` | Drop-in bash replacement backed by tmux | Completion follow-up; optional polling; foreground timeout can convert to background; no pattern-triggered output wakes | `0.0.12`; modified 2026-06-06; no license field in npm metadata | Good substrate alternative; needs license check |
 | `@trevonistrevon/pi-loop` | Cron/event agent re-wake loops plus process monitors | Loop/event wakeups rather than shell task completion as the main primitive | `0.5.5`; modified 2026-06-10 | Mostly redundant with current devstack loop/scheduling stack |
 | `pi-background-tasks` (ismailsaleekh) | Named background tasks and background `pi -p` child agents | Completion wakeups; unique child-agent telemetry for context/tokens/tools/model | `0.6.0`; modified 2026-05-31; ISC | Watch if background Pi-agent telemetry becomes a priority |
@@ -135,9 +138,33 @@ Tradeoffs:
 
 If devstack later wants "many low-significance events accumulate into context without each becoming a discrete notification," this pattern could be folded into a vanillagreen fork or `pi-multiloop` rather than maintained as a third background execution extension.
 
-## Test checklist before promotion
+## Test results and checklist before promotion
 
-Use `pi -e` for an isolated trial so the canonical stack does not change during evaluation:
+### Isolated smoke test — 2026-06-14
+
+Used `pi -e npm:@vanillagreen/pi-background-tasks@1.6.0` with temporary `PI_CODING_AGENT_DIR` and `PI_BG_TASK_DIR`; no canonical user/project package settings were modified.
+
+Passed:
+
+- Package load and command registration: `/bg`, `/bg:list`, `/bg:run`, `/bg:stop`, `/bg:clear`.
+- `/bg:run bash -lc "printf BG_START; sleep 0.2; echo BG_DONE"` returned successfully.
+- Completion generated a custom `vstack-background-tasks:event` message with `eventType: "exit"`.
+- `/bg:list`, `/bg log bg-1`, and `/bg:clear` returned successfully.
+- Both the log notification and the task log file contained `BG_DONE`.
+
+Observed harness caveat: the exit wake triggered an LLM turn, but the turn failed with `Validation error: The provided model identifier is invalid` because the temporary smoke-test Pi config used an invalid default Bedrock model. This still confirms wake delivery at the Pi event layer; it does not validate a successful model response after wake.
+
+Not covered yet:
+
+- `bg_task` LLM tool invocation with `notifyOnOutput` / `notifyPattern` because RPC extension commands do not directly expose arbitrary tool execution and `/bg:run` does not accept those advanced parameters.
+- Auto-backgrounding of LLM `bash` tool calls; RPC `bash` bypassed the LLM/tool path and hung on `tail -f` as expected for that protocol path.
+- Interactive TUI dashboard behavior.
+- Cross-restart durable missed-exit replay.
+- Full canonical-stack interaction, especially real wake streams with `pi-context-prune` batching.
+
+### Promotion checklist
+
+Use `pi -e` for isolated trials so the canonical stack does not change during evaluation:
 
 ```bash
 pi --no-extensions \

@@ -4,6 +4,22 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-06-14 — Smoke-tested vanillagreen pi background tasks
+
+**What:** Ran an isolated `@vanillagreen/pi-background-tasks@1.6.0` smoke test without changing the canonical Pi package stack.
+
+- Used a temporary `PI_CODING_AGENT_DIR`, temporary `PI_BG_TASK_DIR`, and `pi --mode rpc --no-session --no-context-files --no-extensions -e npm:@vanillagreen/pi-background-tasks@1.6.0`.
+- Verified `/bg`, `/bg:list`, `/bg:run`, `/bg:stop`, and `/bg:clear` command registration.
+- Verified `/bg:run bash -lc "printf BG_START; sleep 0.2; echo BG_DONE"`, completion exit event delivery, `/bg:list`, `/bg log bg-1`, and `/bg:clear`.
+- Added `sources/conversations/pi-background-task-plugin-smoke-test-2026-06-14.md` and updated `wiki/tools/pi-background-task-plugins.md`, `wiki/tools/pi-agent.md`, `docs/TODO.md`, and `wiki/log.md` with the smoke-test results.
+
+**Decisions:**
+- Keep the plugin non-canonical for now; the isolated test is promising but does not cover LLM-tool `notifyOnOutput` / `notifyPattern`, LLM bash auto-backgrounding, TUI dashboard behavior, restart replay, or `pi-context-prune` interaction.
+- No `/reload` is needed for the isolated test. `/reload` is only needed after installing/promoting the plugin into an active interactive Pi session.
+
+**Next:**
+- Run a real interactive/full-stack test before adding `@vanillagreen/pi-background-tasks` to `pi-packages.json`.
+
 ## 2026-06-14 — Documented pi background-task plugin evaluation
 
 **What:** Captured the latest background-task plugin comparison and aligned the devstack TODO/wiki state with the vanillagreen-first test plan.

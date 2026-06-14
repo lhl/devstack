@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-06-14] update | pi-agent — vanillagreen background-task smoke test
+- Source: `sources/conversations/pi-background-task-plugin-smoke-test-2026-06-14.md` from an isolated local RPC-mode smoke test using temporary Pi state.
+- Pages updated: `wiki/tools/pi-background-task-plugins.md`, `wiki/tools/pi-agent.md`.
+- Summary: recorded that `@vanillagreen/pi-background-tasks@1.6.0` loaded via `pi -e`, registered `/bg` commands, spawned a background command, delivered a completion exit event, and supported `/bg:list`, `/bg log`, and `/bg:clear`; kept it non-canonical pending LLM-tool notifyPattern, bash auto-background, TUI, restart replay, and `pi-context-prune` full-stack tests.
+- Verification note: the completion wake attempted to trigger a model turn in the temp harness, but that turn failed because the temp/default model identifier was invalid; wake event delivery itself was observed.
+
 ## [2026-06-14] update | pi-agent — background task plugin evaluation
 - Source: `sources/conversations/pi-background-task-plugins-2026-06-14.md` from recent in-session package comparison plus local npm metadata checks.
 - Pages created: `wiki/tools/pi-background-task-plugins.md`.
