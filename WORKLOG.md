@@ -1392,3 +1392,21 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 **Next:**
 - Decide whether the LLM prose-generation techniques become a `docs/` working doc or a `wiki/` page (with proper sourcing of the arxiv claims).
+
+## 2026-06-17 — Wiki: AI slop concept + LLM prose techniques
+
+**What:** Ingested AI-slop knowledge (template, theory, detection research, prose techniques) into the wiki, keeping the enforceable checklist as the docs/ instruction doc.
+
+- Filed the pasted research discussion to `sources/conversations/2026-06-17-ai-slop-template-why-and-prose-techniques.md` with a provenance/claim-status header and inline arXiv links where the original cited papers.
+- Created `wiki/concepts/ai-slop.md`: template/taxonomy, why-models-converge theory (marked author-attributed + unverified), empirical-support papers, detection/forensics landscape (from shisa-v3 `antislop/` notes), unslop/enslop training technique. Linked to the repo owner's larger slop corpus in shisa-v3.
+- Created `wiki/practices/llm-prose-techniques.md`: the 10 generation-side techniques in claimed-leverage order, each with verification status flagged ("not independently benchmarked by us").
+- Updated `wiki/index.md` (Concepts + Practices entries) and prepended `wiki/log.md`.
+- Verified arXiv citations live: 2509.19163, 2503.01659, 2506.17871, 2505.00047, 2503.17126, 2602.16162, 2507.20956, 2305.17359. Corrected two attributions in the shisa notes (Shaib affiliation is Northeastern/Stony Brook/Meta, not MIT; the fingerprints paper has three authors incl. Elad Bitton, Copyleaks).
+
+**Decisions:**
+- Split into concept (theory/landscape) vs. practice (how-to) pages per the one-concept-per-page rule, rather than one mega-page.
+- Kept `docs/ANTI-SLOP-INSTRUCTIONS.md` as the canonical enforceable checklist; the wiki pages reference it rather than duplicating the pattern list.
+- Separated author claims from cited empirical work per research-hygiene: the why-it-happens and social-equilibrium sections are flagged as armchair theory; the alignment-narrows-diversity papers are cited as independent support, not proof of the causal chain.
+
+**Next:**
+- Optional: pull more from shisa-v3 `antislop/` (RESEARCH.md, gpt5.2-pro deepdive, JA-specific forensics) if a deeper detection/forensics or Japanese-slop page is wanted.
