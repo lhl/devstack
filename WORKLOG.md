@@ -1373,3 +1373,22 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 **Next:**
 - Push devstack `main` and the new GitHub extension repo is already published.
+
+## 2026-06-17 — Anti-slop checklist: relocate and expand
+
+**What:** Moved the anti-slop doc into `docs/` and expanded the banned-pattern list.
+
+- `git mv ANTI-SLOP-INSTRUCTIONS.md docs/ANTI-SLOP-INSTRUCTIONS.md` (no other files referenced it; clean move).
+- Added patterns 13–20 in a prior pass: rhetorical-question setups, time-relative doc-rot words, decorative emoji, "note that" directive padding, AI-tell vocabulary, wordy connectives/doublets, CTA bait, weasel attribution. Extended pattern 5 to cover conclusion/wrap-up sections.
+- Added patterns 21–23 from a template-analysis discussion: staccato fragment cadence, bolded pseudo-insight, hedge-and-elevate concession.
+- Added the stacked-negation variant ("Not just X. Not even Y. It's Z.") to pattern 2.
+- Expanded vocabulary tells in patterns 8 and 17 (harness, revolutionize, paradigm, game-changer, ever-evolving, fast-paced, intricate, vibrant).
+- Fixed the doc's own closing line, which was slop (aphorism + parallel "X is correct; Y is slop" cadence — a banned wrap-up flourish). Replaced with a flat instruction.
+- Updated the deslop pass checklist to reference every new pattern (now 17 steps).
+
+**Decisions:**
+- Kept the uppercase filename to match `docs/` convention (`WIKI.md`, `TODO.md`).
+- Scoped the doc to *deslopping technical docs*. The prose-generation/prompting techniques from the same discussion (base models, logit bias, prefill, voice corpus, etc.) are a different artifact and were not folded in — pending a decision on a separate doc or wiki page.
+
+**Next:**
+- Decide whether the LLM prose-generation techniques become a `docs/` working doc or a `wiki/` page (with proper sourcing of the arxiv claims).
