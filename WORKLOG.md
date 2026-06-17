@@ -4,6 +4,25 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-06-17 — Document pi model catalog loading; add GLM-5.2 to models.json
+
+**What:** Investigated why GLM-5.2 wasn't appearing in pi's model picker for the HuggingFace provider, documented the architecture, and added the missing model.
+
+- Investigated pi's model loading: static `models.generated.js` in `@earendil-works/pi-ai`, not dynamically fetched
+- Found GLM-5.2 existed only under `openrouter` (as `z-ai/glm-5.2`), not under `huggingface` (which had GLM-4.7, 4.7-Flash, 5, 5.1)
+- Verified Z.ai pricing: $1.40/M input, $4.40/M output, $0.26/M cache read, 1M context, 128K max output
+- Added `zai-org/GLM-5.2` to `~/.pi/agent/models.json` under `huggingface` provider
+- Documented model catalog architecture in `wiki/tools/pi-model-selection.md`: static source, models.json merge, catalog-lag pattern, dynamic discovery alternatives
+- Updated `wiki/index.md` and `wiki/log.md`
+
+**Decisions:**
+- Used Z.ai's official pricing ($1.40/$4.40) rather than the older GLM-5.1 HF pricing ($0.70/$2.20) — GLM-5.2 is a larger model
+- Used 131072 maxTokens (128K per Z.ai docs) rather than the OpenRouter entry's 262144
+
+**Next:**
+- Monitor upstream `pi-ai` for GLM-5.2 addition; remove models.json entry once it lands
+- Consider whether other recently-released models need the same treatment
+
 ## 2026-06-14 — Promoted vanillagreen background tasks to canonical pi stack
 
 **What:** Added `@vanillagreen/pi-background-tasks@1.6.0` to the canonical devstack Pi plugin stack after the isolated and full-stack tests passed.
