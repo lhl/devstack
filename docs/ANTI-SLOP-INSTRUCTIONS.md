@@ -11,6 +11,20 @@ The test for every sentence: **does it state a fact, a number, a path, a
 command, a decision, or an action?** If not, cut it. Tone, reassurance, and
 editorializing are not information.
 
+## The core rule
+
+Marketing-speak and pseudo-insight do not belong in technical docs, in any
+section, ever. Every banned pattern below is an instance of this rule. Sort each
+candidate sentence into one of two buckets:
+
+- **Carries information that matters:** mark it structurally — a bolded
+  sentence, a `NOTE:` / `WARNING:` callout, or a labeled table row. Importance
+  is signaled by placement, not by cadence, adjectives, or emphasis-prose.
+- **Filler or fluff:** delete it. Don't soften it or keep it "for tone."
+
+If you can't tell which bucket a sentence is in, treat it as filler. The numbered
+patterns below are the recurring ways slop sneaks back into the first bucket.
+
 ## Banned patterns
 
 ### 1. Editorializing adjectives on facts
