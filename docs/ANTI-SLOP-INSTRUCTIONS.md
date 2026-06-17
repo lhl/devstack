@@ -38,6 +38,9 @@ Contrastive reassurance that argues with an imagined objection.
   `transformers==5.x`. The export runs in a separate env."
 - ❌ "This isn't a workaround so much as the intended path."
 - ✅ State what it does and why. Let the reader judge.
+- ❌ Stacked escalation: "Not just X. Not even Y. It's Z." (each step vaguer
+  and grander than the last)
+- ✅ One sentence naming what it is.
 
 ### 3. "Honestly" / "to be fair" / "the truth is"
 
@@ -83,8 +86,9 @@ minimizing), `actually`, `definitely`, `clearly`, `obviously`.
 ### 8. Marketing verbs and abstraction nouns
 
 Verbs: `leverage`, `utilize`, `enable`, `empower`, `facilitate`, `streamline`,
-`unlock`, `ensure` (when vague). Nouns: `solution`, `capability`, `journey`,
-`experience`, `ecosystem`, `synergy`, `best-in-class`.
+`unlock`, `harness`, `revolutionize`, `transform` (when vague), `ensure` (when
+vague). Nouns: `solution`, `capability`, `journey`, `experience`, `ecosystem`,
+`synergy`, `paradigm`, `paradigm shift`, `game-changer`, `best-in-class`.
 
 - ❌ "This leverages sherpa to enable robust verification capabilities."
 - ✅ "verify_export.py decodes a duration sweep through sherpa."
@@ -158,7 +162,8 @@ preamble.
 
 `delve`, `tapestry`, `realm`, `landscape` ("the X landscape"), `navigate`
 ("navigating the"), `testament to`, `plays a crucial/vital role`, `a wide range
-of`, `rich set of`, `wealth of`, `treasure trove`.
+of`, `rich set of`, `wealth of`, `treasure trove`, `ever-evolving`,
+`fast-paced`, `intricate`, `vibrant`.
 
 - ❌ "This plays a crucial role in navigating the deployment landscape."
 - ✅ "This sets the deploy target."
@@ -189,6 +194,31 @@ or an expert`, `happy coding`, `feel free to`, `give it a try`.
 - ✅ Cite it or cut it: "Benchmark (bench/run.py, 2026-01): 1.8s vs 4.2s."
   Unsourced claims should be traceable or removed.
 
+### 21. Staccato fragment cadence
+
+Sentence fragments deployed for dramatic rhythm, not content. The "one punchy
+sentence, or three short ones" beat that usually trails an em-dash hook.
+
+- ❌ "We rewrote the parser. From scratch. In a weekend."
+- ✅ "We rewrote the parser from scratch over a weekend."
+
+### 22. Bolded pseudo-insight
+
+Phrases bolded for visual rhythm rather than to mark a defined term, label, or
+key. Bold cosplaying as structure.
+
+- ❌ "The real win here is **thinking differently about state**."
+- ✅ Bold only defined terms, labels, or keys (as this doc bolds **While
+  writing** / **As a deslop pass**). Otherwise, unbold it.
+
+### 23. Hedge-and-elevate
+
+Conceding a cartoon objection so the pivot lands harder. Cousin of pattern 2.
+
+- ❌ "While benchmarks have their place, the real story is developer joy."
+- ✅ State both as facts: "Benchmark: 1.8s. Separately, the API is smaller —
+  see §3." Don't stage a strawman to knock down.
+
 ## Deslop pass checklist
 
 Run top to bottom over a doc:
@@ -210,9 +240,12 @@ Run top to bottom over a doc:
 11. Strip decorative emoji (pattern 15); keep functional legends/status
     columns.
 12. Delete any conclusion/wrap-up section (pattern 5).
-13. Re-read each section's first line; delete it if it just restates the
+13. Collapse staccato fragments (pattern 21) into complete sentences.
+14. Unbold pseudo-insight (pattern 22); keep bold on defined terms and labels.
+15. Rewrite hedge-and-elevate concessions (pattern 23) as parallel facts.
+16. Re-read each section's first line; delete it if it just restates the
     heading.
-14. Check headings are noun phrases or imperatives, not sentences.
+17. Check headings are noun phrases or imperatives, not sentences.
 
 ## What to keep
 
@@ -224,5 +257,4 @@ Deslop removes filler, not substance. Keep:
   first"). Cut rationale that only justifies a choice to an imagined critic.
 - One-line context where a fact is genuinely ambiguous without it.
 
-Plain and terse beats polished. A doc that reads slightly blunt is correct; a
-doc that reads like a product page is slop.
+Blunt phrasing is acceptable; don't smooth terse prose into marketing copy.
