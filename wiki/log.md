@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-06-17] update | pi-model-selection — model catalog loading architecture
+- Source: investigation of missing `zai-org/GLM-5.2` from HuggingFace provider in pi's model picker.
+- Pages updated: `wiki/tools/pi-model-selection.md`.
+- Config updated: `~/.pi/agent/models.json` — added `zai-org/GLM-5.2` under `huggingface` provider.
+- Summary: documented how pi loads its model catalog (static `models.generated.js` in `@earendil-works/pi-ai`, merged with user `models.json`), the catalog-lag pattern for new HF releases, and added GLM-5.2 to local config since it was missing from the built-in HF provider section.
+- Verification: `~/.pi/agent/models.json` valid JSON; wiki page reads correctly.
+
 ## [2026-06-14] update | pi-agent — canonical vanillagreen background tasks
 - Source: follow-up decision after the isolated and full-stack tests recorded in `sources/conversations/pi-background-task-plugin-smoke-test-2026-06-14.md` and `sources/conversations/pi-background-task-plugin-fullstack-test-2026-06-14.md`.
 - Pages updated: `wiki/tools/pi-background-task-plugins.md`, `wiki/tools/pi-agent.md`.
