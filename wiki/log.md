@@ -1,5 +1,13 @@
 # Wiki Log
 
+## [2026-06-17] ingest | AI slop concept + LLM prose techniques
+- Source: `sources/conversations/2026-06-17-ai-slop-template-why-and-prose-techniques.md` (pasted research discussion) plus the shisa-v3 `antislop/` research notes.
+- Pages created: `wiki/concepts/ai-slop.md`, `wiki/practices/llm-prose-techniques.md`.
+- Pages updated: `wiki/index.md`.
+- Related doc: `docs/ANTI-SLOP-INSTRUCTIONS.md` (the enforceable deslop checklist; cross-linked, not a wiki page).
+- Summary: recorded the slop template/taxonomy, the (author-attributed, unverified) theory for why post-training converges on slop, an empirical-support section citing the alignment-narrows-diversity papers, the detection/forensics landscape from the shisa-v3 notes, and the unslop/enslop training technique. Separate practices page captures the generation-side techniques with verification status flagged.
+- Verification: arXiv citations confirmed live (2509.19163, 2503.01659, 2506.17871, 2505.00047, 2503.17126, 2602.16162, 2507.20956); corrected two attributions in the shisa notes (Shaib affiliation; three authors on the fingerprints paper). Why-it-happens and social sections marked as theory; techniques marked not independently reproduced.
+
 ## [2026-06-17] update | pi-model-selection — model catalog loading architecture
 - Source: investigation of missing `zai-org/GLM-5.2` from HuggingFace provider in pi's model picker.
 - Pages updated: `wiki/tools/pi-model-selection.md`.
