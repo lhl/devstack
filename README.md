@@ -43,6 +43,31 @@ place on re-run, never duplicated):
 
 After running, open a new shell or `source ~/.bashrc`.
 
+## Package Manager Security
+
+[`pkg-security-setup.sh`](pkg-security-setup.sh) sets a rolling **minimum-release-age
+("cooldown") gate** across npm, pnpm, uv, and pip so the package managers refuse any
+release younger than 1 day. Most drive-by supply-chain attacks are caught and yanked
+within hours, so a 1-day delay filters the bulk of them at install time with no scanner
+or allowlist to maintain. Idempotent — safe to re-run.
+
+```bash
+./pkg-security-setup.sh          # default: 1-day gate
+MIN_AGE_DAYS=7 ./pkg-security-setup.sh   # stricter 7-day gate
+```
+
+Every tool now supports a relative duration, so a single static config line gives a
+rolling window — no cron or shell-startup `date` math:
+
+- npm `>=11.10` — `min-release-age=1` (**days**) in `~/.npmrc`
+- pnpm `>=11` (enabled on demand via `corepack`) — `minimumReleaseAge: 1440` (**minutes**) in `~/.config/pnpm/config.yaml`
+- uv `>=0.9.17` — `exclude-newer = "P1D"` in `~/.config/uv/uv.toml`
+- pip `>=26.1` — `[install] uploaded-prior-to = P1D` in `~/.config/pip/pip.conf`
+
+Mind the units: npm is days, pnpm/Yarn are minutes, Bun is seconds, uv/pip take ISO 8601
+durations. See [`wiki/practices/supply-chain-security.md`](wiki/practices/supply-chain-security.md)
+for the full playbook, per-tool escape hatches, and the deeper defense tiers.
+
 ## Why Pi Is Neat
 
 - **extensibility**: it's not *just* open source (Codex and OpenCode are too) — pi is expressly designed to be easily customized. anything you don't like? tell pi to change itself. Almost everything can be refreshed with `/reload` without a restart — see my list for how w/ minimal yak-shaving, you can customize something to be *very* specific to your preferences
@@ -169,6 +194,7 @@ This repo is also an LLM Wiki (Karpathy pattern) — a personal knowledge base w
 devstack/
 ├── README.md              # This file — overview + setup
 ├── dev-setup.sh           # Base shell/dev env (starship, atuin, miniforge)
+├── pkg-security-setup.sh  # Package-manager min-release-age cooldown gate
 ├── pi-setup.sh            # Pi coding-agent stack installer
 ├── inbox/                 # Drop zone for unprocessed material
 ├── sources/               # Immutable archive of ingested material

@@ -1429,3 +1429,28 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 **Next:**
 - Consider migrating other dotfile/shell config into this script if more base tooling accrues.
+
+---
+
+## 2026-06-26 — Package-manager minimum-release-age cooldown gate
+
+**What:** Added `pkg-security-setup.sh` and applied a rolling 1-day minimum-release-age ("cooldown") gate across npm, pnpm, uv, and pip to blunt drive-by supply-chain attacks; documented it in the wiki and README.
+
+- Created `pkg-security-setup.sh` (idempotent, per-tool failures non-fatal): sets a 1-day gate via each tool's own config, defaulting `MIN_AGE_DAYS=1` (override env for a 7-day gate).
+- Applied and verified live on this machine:
+  - npm 11.16.0 → `min-release-age=1` (days) in `~/.npmrc`
+  - pnpm 11.9.0 → `minimumReleaseAge: 1440` (minutes) in `~/.config/pnpm/config.yaml`
+  - uv 0.11.24 → `exclude-newer = "P1D"` in `~/.config/uv/uv.toml`
+  - pip 26.1.2 → `[install] uploaded-prior-to = P1D` in `~/.config/pip/pip.conf`
+- Functional check: `uv pip compile` and `pip install --dry-run` both resolve cleanly honoring the gate (malformed durations would hard-error).
+- Updated `wiki/practices/supply-chain-security.md` (new devstack/bash config-file section + unit-gotcha table), `wiki/index.md`, `wiki/log.md`, and `README.md` (new "Package Manager Security" section + repo-structure listing).
+- Fixed a pre-existing wiki bug: npm `min-release-age` is **days**, not minutes; the old `1440` example would have been a ~4-year gate.
+
+**Decisions:**
+- Config files over shell wrappers: pip 26.1+ and uv 0.9.17+ now accept *relative* durations, so one static line is a rolling window — no cron or shell-startup `date` math (the older fish-wrapper machine needed wrappers because its uv 0.6.9 / pip 25.0.1 only had absolute dates). Config files are also shell-agnostic (this box is bash).
+- pnpm via `corepack` (ships with nvm's Node), enabled on demand rather than a separate global install — the "easiest for this system" path requested.
+- Wrote pnpm's gate to its v11 YAML `config.yaml` directly: `pnpm config set --global` errors until `pnpm setup` wires `PNPM_HOME` into PATH, and `~/.npmrc` would make npm warn on the unknown key.
+- Scoped to the age gate only (not global `ignore-scripts`/wheels-only), per the request to set up a 1-day min-age to catch drive-bys.
+
+**Next:**
+- Apply the same gate to project-local configs (`.npmrc`, `pyproject.toml [tool.uv]`) where CI needs it, and consider bumping to 7 days where compatibility allows.
