@@ -1,5 +1,13 @@
 # Wiki Log
 
+## [2026-06-26] update | supply-chain-security — config-file rolling age gates
+- Source: live setup on the `devstack` machine (bash + miniforge + nvm); authoritative syntax/unit checks against the uv resolution docs, npm config docs, pip `install --help`, and Matteo Collina's cross-package-manager min-release-age gist.
+- Pages updated: `wiki/practices/supply-chain-security.md`, `wiki/index.md`.
+- Software added (separate commit): `pkg-security-setup.sh`.
+- Summary: documented the new cross-shell config-file approach (one static relative-duration line per tool → rolling 1-day cooldown, no wrappers/cron) for npm (`min-release-age`, days), pnpm v11 (`minimumReleaseAge`, minutes, YAML `config.yaml`), uv (`exclude-newer`, ISO `P1D`), and pip 26.1+ (`uploaded-prior-to`, ISO `P1D`). Added a per-ecosystem unit-gotcha table.
+- Correction: fixed a unit bug on the page — npm `min-release-age` is **days**, not minutes; the old `1440` value would have meant a ~4-year gate. Also updated the now-outdated claims that pip/uv age gates require a dynamically computed absolute date (both accept relative durations now).
+- Verification: all four gates applied and confirmed live on-machine (npm 11.16.0=1d, pnpm 11.9.0=1440min, uv 0.11.24=P1D, pip 26.1.2=P1D); uv/pip dry-run resolves succeed honoring the config.
+
 ## [2026-06-17] ingest | AI slop concept + LLM prose techniques
 - Source: `sources/conversations/2026-06-17-ai-slop-template-why-and-prose-techniques.md` (pasted research discussion) plus the shisa-v3 `antislop/` research notes.
 - Pages created: `wiki/concepts/ai-slop.md`, `wiki/practices/llm-prose-techniques.md`.

@@ -10,6 +10,8 @@ links:
   - https://socket.dev/supply-chain-attacks/mini-shai-hulud
   - https://docs.astral.sh/uv/reference/environment/
   - https://docs.astral.sh/uv/reference/settings/
+  - https://docs.astral.sh/uv/concepts/resolution/
+  - https://gist.github.com/mcollina/b294a6c39ee700d24073c0e5a4e93104
   - https://pip.pypa.io/en/stable/topics/secure-installs/
   - https://pip.pypa.io/en/stable/user_guide/
   - https://pnpm.io/supply-chain-security
@@ -26,6 +28,45 @@ links:
 Practical defaults for defending developer workstations and CI from package supply-chain attacks. This page records our current Python shell defaults plus a broader checklist for npm, pnpm, Bun, GitHub Actions, and incident response.
 
 Related: [[practices/ml-workflow-tips]] for the broader mamba + uv + fish environment pattern, and [[practices/arch-aur-safety]] for Arch User Repository-specific controls.
+
+## Current local defaults: config-file age gates (devstack, bash)
+
+On 2026-06-26, on the `devstack` machine (bash + miniforge + nvm), we set a rolling 1-day minimum-release-age gate across npm, pnpm, uv, and pip using **static config files** instead of shell wrappers. This is applied and re-applied idempotently by `pkg-security-setup.sh` in this repo.
+
+The key change from the fish-wrapper approach below: **every tool now supports a relative duration**, so one static config line produces a *rolling* window (recomputed at each resolution) with no shell-startup `date` math and no cron job.
+
+Files written (all user-global, so they survive nvm/conda version switches):
+
+| Tool | File | Line | Unit |
+| --- | --- | --- | --- |
+| npm `>=11.10.0` | `~/.npmrc` | `min-release-age=1` | **days** |
+| pnpm `>=11` | `~/.config/pnpm/config.yaml` | `minimumReleaseAge: 1440` | **minutes** |
+| uv `>=0.9.17` | `~/.config/uv/uv.toml` | `exclude-newer = "P1D"` | ISO 8601 duration |
+| pip `>=26.1` | `~/.config/pip/pip.conf` | `[install]`\n`uploaded-prior-to = P1D` | ISO 8601 duration |
+
+Unit gotcha — each ecosystem chose a different unit for "1 day":
+
+- npm: **days** → `1`. (Earlier versions of this page incorrectly used `1440`; `min-release-age` is days, so `1440` would mean ~4 years.)
+- pnpm and Yarn: **minutes** → `1440`.
+- Bun: **seconds** → `86400`.
+- uv and pip: **duration strings** → `P1D` (ISO 8601) or friendly forms like `"1 day"`. Calendar units (months/years) are rejected because their length is inconsistent.
+
+Tool-specific notes:
+
+- **pnpm** is installed on demand via `corepack` (it ships with the nvm-managed Node), not as a separate global. pnpm `>=11` keeps global config in a YAML file (`~/.config/pnpm/config.yaml`), not an `.npmrc`/`rc`. We write it directly because `pnpm config set --global` errors until `pnpm setup` wires `PNPM_HOME` into `PATH`, and because putting `minimumReleaseAge` in `~/.npmrc` makes npm emit an "Unknown user config" warning on every npm command.
+- **uv** `exclude-newer` is global, so it also gates `uvx` and `uv tool install`. `uv sync --frozen` is unaffected (it installs the lock without resolving).
+- **pip** `uploaded-prior-to` lives under `[install]` (not `[global]`, which would make unrelated commands like `pip list` choke on the unknown option).
+
+Escape hatches when a brand-new release is genuinely needed:
+
+```bash
+npm  i --min-release-age 0 <pkg>@<version>
+uv   add --exclude-newer-package <pkg>=false <pkg>   # or: UV_EXCLUDE_NEWER= uv ...
+pip  install --uploaded-prior-to P0D <pkg>
+# pnpm: temporarily set minimumReleaseAge: 0 in ~/.config/pnpm/config.yaml, then restore
+```
+
+Versions observed during this setup: npm 11.16.0, pnpm 11.9.0, uv 0.11.24, pip 26.1.2 — all new enough for relative-duration gates, which the earlier fish-wrapper machine's `uv 0.6.9` / `pip 25.0.1` were not.
 
 ## Current local defaults: fish wrappers for uv and pip
 
@@ -90,7 +131,7 @@ uv sync --frozen
 Rules:
 
 - Commit `uv.lock`.
-- Use `UV_EXCLUDE_NEWER` / `--exclude-newer` to block very recent releases.
+- Use `UV_EXCLUDE_NEWER` / `--exclude-newer` to block very recent releases. uv 0.9.17+ accepts a relative duration (`"1 day"` or ISO `P1D`), so a static `exclude-newer = "P1D"` in `~/.config/uv/uv.toml` gives a rolling window recomputed on each resolve — preferable to a frozen absolute date.
 - Use `UV_NO_BUILD=1` / `--no-build` to refuse source distribution builds.
 - Do not set `UV_FROZEN=1` globally for interactive dev; it breaks normal `uv add` / lockfile update flows. Enforce frozen mode in CI.
 
@@ -112,7 +153,7 @@ Rules:
 - Generate pinned+hashed requirements with `uv pip compile --generate-hashes`.
 - `--require-hashes` is excellent in CI, but do not make `PIP_REQUIRE_HASHES=1` a global interactive default; it breaks ad-hoc `pip install <package>` unless every transitive requirement has a hash.
 - `--only-binary :all:` blocks source builds and therefore blocks install-time arbitrary code from `setup.py` / PEP 517 build hooks.
-- `--uploaded-prior-to` is a pip 26.0+ age gate. It accepts an absolute date, so wrappers/CI should compute it dynamically.
+- `--uploaded-prior-to` is a pip 26.0+ age gate. pip 26.0 accepted absolute timestamps only; pip 26.1+ also accepts a relative ISO 8601 duration (e.g. `P1D`), which gives a rolling window from a static config line — no dynamic date computation needed. Set it globally as `uploaded-prior-to = P1D` under `[install]` in `~/.config/pip/pip.conf` (or `pip config set --user install.uploaded-prior-to P1D`).
 - Avoid `--extra-index-url` for private packages because it creates dependency-confusion risk. Prefer one `--index-url` or uv's default first-index behavior.
 
 ### npm
@@ -120,10 +161,12 @@ Rules:
 `~/.npmrc` or project `.npmrc`:
 
 ```ini
-min-release-age=1440   # 1 day in minutes; use 10080 for 7 days
+min-release-age=1   # npm's unit is DAYS (not minutes); use 7 for a week
 ignore-scripts=true
 save-exact=true
 ```
+
+Note: npm `min-release-age` is native since npm 11.10.0 and measured in **days**. Do not copy pnpm's minute value (`1440`) here — that would set a ~4-year gate.
 
 Rules:
 
@@ -218,11 +261,11 @@ This prevents surprise version drift but does not protect the first time you sel
 
 Block packages uploaded too recently:
 
-- npm: `min-release-age`
-- pnpm: `minimumReleaseAge`
-- Bun: `minimumReleaseAge`
-- uv: `UV_EXCLUDE_NEWER` / `--exclude-newer`
-- pip: `--uploaded-prior-to` / `PIP_UPLOADED_PRIOR_TO` once pip 26.0+ is available
+- npm: `min-release-age` (days; native since 11.10.0)
+- pnpm: `minimumReleaseAge` (minutes)
+- Bun: `minimumReleaseAge` (seconds)
+- uv: `UV_EXCLUDE_NEWER` / `--exclude-newer` / `exclude-newer` in `uv.toml` (relative duration → rolling window since 0.9.17)
+- pip: `--uploaded-prior-to` / `PIP_UPLOADED_PRIOR_TO` / `[install] uploaded-prior-to` (pip 26.0+; relative duration like `P1D` since 26.1)
 
 ### Tier 3: disable lifecycle and build scripts
 
