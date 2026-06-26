@@ -20,6 +20,29 @@ The canonical extension list lives in [`pi-packages.json`](pi-packages.json). `p
 ./tools/pi-sync.sh --dry-run --prune --no-update
 ```
 
+## Base Dev Environment
+
+[`dev-setup.sh`](dev-setup.sh) installs the base shell/dev tooling I expect on a
+machine, separate from the pi agent stack. It is idempotent — safe to re-run.
+
+```bash
+./dev-setup.sh
+```
+
+It installs and wires up `~/.bashrc` (guarded `# >>> name >>>` blocks, replaced in
+place on re-run, never duplicated):
+
+- [starship](https://starship.rs/) — cross-shell prompt, installed to `~/.local/bin`.
+- [atuin](https://atuin.sh/) — SQLite-backed shell history (Ctrl-R / up-arrow). Bash
+  integration also pulls in [bash-preexec](https://github.com/rcaloras/bash-preexec).
+- [Miniforge](https://github.com/conda-forge/miniforge) — conda + mamba from
+  conda-forge, installed to `~/miniforge3`. The `base` env **auto-activates** so
+  `python`, `pip`, and `uv` are always on `PATH`; `uv` is added to `base` explicitly
+  (it does not ship with the installer). `MAMBA_ROOT_PREFIX` is exported to silence
+  the mamba 2.x prefix warning.
+
+After running, open a new shell or `source ~/.bashrc`.
+
 ## Why Pi Is Neat
 
 - **extensibility**: it's not *just* open source (Codex and OpenCode are too) — pi is expressly designed to be easily customized. anything you don't like? tell pi to change itself. Almost everything can be refreshed with `/reload` without a restart — see my list for how w/ minimal yak-shaving, you can customize something to be *very* specific to your preferences
@@ -145,6 +168,8 @@ This repo is also an LLM Wiki (Karpathy pattern) — a personal knowledge base w
 ```
 devstack/
 ├── README.md              # This file — overview + setup
+├── dev-setup.sh           # Base shell/dev env (starship, atuin, miniforge)
+├── pi-setup.sh            # Pi coding-agent stack installer
 ├── inbox/                 # Drop zone for unprocessed material
 ├── sources/               # Immutable archive of ingested material
 │   ├── gists/             # External specs, gists

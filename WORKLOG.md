@@ -1410,3 +1410,22 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 **Next:**
 - Optional: pull more from shisa-v3 `antislop/` (RESEARCH.md, gpt5.2-pro deepdive, JA-specific forensics) if a deeper detection/forensics or Japanese-slop page is wanted.
+
+## 2026-06-26 — Base dev environment setup script
+
+**What:** Added `dev-setup.sh` to install and wire up my base shell/dev tooling, separate from the pi agent stack.
+
+- Created `dev-setup.sh` (idempotent): installs starship (`~/.local/bin`), atuin + bash-preexec (`~/.atuin`), and Miniforge conda+mamba (`~/miniforge3`).
+- Shell wiring goes into `~/.bashrc` as guarded `# >>> name >>>` / `# <<< name <<<` blocks via an `upsert_block` helper that replaces in place — re-running never duplicates blocks (verified: 1 block each after a second run).
+- Miniforge `base` env auto-activates (`auto_activate_base true`) so `python`/`pip`/`uv` are always on PATH; `uv` installed into base explicitly since the installer doesn't ship it.
+- Exported `MAMBA_ROOT_PREFIX` in the conda block to silence the mamba 2.x prefix warning.
+- Documented in `README.md` (new "Base Dev Environment" section + repo-structure listing).
+- Verified in a fresh interactive shell: starship 1.25.1, atuin 18.16.1, conda 26.3.2, mamba 2.5.0, base active, `uv 0.11.24` resolving to miniforge3.
+
+**Decisions:**
+- Chose Miniforge (full conda+mamba, matching the repo's existing "mambaforge" references) over micromamba, per user.
+- Managed the shell init blocks myself (guarded markers) rather than letting each installer touch `~/.bashrc`, so re-runs stay clean and removable.
+- Kept dev-setup.sh separate from pi-setup.sh: base machine tooling vs. the pi coding-agent toolchain.
+
+**Next:**
+- Consider migrating other dotfile/shell config into this script if more base tooling accrues.
