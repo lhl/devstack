@@ -4,6 +4,21 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-06-29 — Disabled pi-web-access pending Pi compatibility fix
+
+**What:** Removed `pi-web-access` from the canonical devstack Pi extension stack after it broke startup on Pi 0.79.7.
+
+- Moved `npm:pi-web-access` out of `pi-packages.json` canonical packages and into `legacyPackages` so `tools/pi-sync.sh --prune` removes it.
+- Updated `README.md`, `pi-setup.sh`, `wiki/tools/pi-agent.md`, `wiki/index.md`, and `wiki/log.md` with the compatibility note.
+- Root cause observed locally: `pi-web-access@0.13.0` imports `@earendil-works/pi-ai/compat`; Pi 0.79.7 no longer exports that path, producing an extension load error during startup.
+
+**Decisions:**
+- Keep `pi-smart-fetch` and `camoufox-pi` as the canonical web-access path for now.
+- Preserve the older `pi-web-access` evaluation notes for feature comparison, but mark the package non-canonical until upstream fixes the import or Pi restores the compatibility export.
+
+**Next:**
+- Re-test `pi-web-access` after an upstream release or Pi compatibility change, then restore it to `pi-packages.json` if startup and basic web tools pass.
+
 ## 2026-06-17 — Document pi model catalog loading; add GLM-5.2 to models.json
 
 **What:** Investigated why GLM-5.2 wasn't appearing in pi's model picker for the HuggingFace provider, documented the architecture, and added the missing model.

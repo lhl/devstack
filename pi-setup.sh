@@ -48,6 +48,8 @@ pi --version
 # This includes @vanillagreen/pi-background-tasks@1.6.0 for non-blocking
 # shell tasks and output/completion wakeups; it is pinned to the version tested
 # with the devstack extension stack while local npm age-gates newer releases.
+# pi-web-access is intentionally pruned for now because v0.13.0 imports a
+# pi-ai compat path that Pi 0.79.7 no longer exports.
 "$SCRIPT_DIR/tools/pi-sync.sh" --prune
 
 # pi-context-prune: enable the extension and use the recommended `agent-message`

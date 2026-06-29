@@ -23,11 +23,6 @@
       "note": "Subagent/background prompt workflows."
     },
     {
-      "source": "npm:pi-web-access",
-      "category": "web-access",
-      "note": "Search, fetch, video/GitHub/PDF extraction."
-    },
-    {
       "source": "npm:pi-smart-fetch",
       "category": "web-access",
       "note": "Browser-like TLS fetching and readable extraction."
@@ -94,6 +89,10 @@
     }
   ],
   "legacyPackages": [
+    {
+      "source": "npm:pi-web-access",
+      "reason": "Disabled 2026-06-29: pi-web-access 0.13.0 imports @earendil-works/pi-ai/compat, which Pi 0.79.7 no longer exports; it breaks Pi startup until the extension or Pi compatibility layer is updated."
+    },
     {
       "source": "npm:@tintinweb/pi-tasks",
       "reason": "Legacy upstream task package; replaced by https://github.com/lhl/pi-tasks."

@@ -82,12 +82,12 @@ Oftentimes there are multiple options for a feature; these are the ones I've pic
 
 ### Web Access
 
-This is probably the biggest feature you're going to need. `pi-web-access` is the most popular and robust plugin, and the others augment the capabilities with better data extraction or more robust browsing
+This is probably the biggest feature you're going to need. `pi-smart-fetch` and `camoufox-pi` are the current canonical pair; `pi-web-access` is otherwise the most full-featured plugin, but it is temporarily disabled in this stack until its Pi 0.79.7 compatibility issue is fixed.
 
-- [nicobailon/pi-web-access](https://github.com/nicobailon/pi-web-access) - web search, content extraction, video/YT, GitHub clone, PDF
 - [Thinkscape/agent-smart-fetch](https://github.com/Thinkscape/agent-smart-fetch) (pi-smart-fetch) - browser-like TLS fingerprints + Defuddle site extractors
 - [MonsieurBarti/camoufox-pi](https://github.com/MonsieurBarti/camoufox-pi) - stealth web access via Camoufox anti-fingerprinting Firefox fork (requires `npx camoufox fetch` + `/reload`)
   - [Camoufox](https://github.com/daijro/camoufox) - there are a few different builds, but basically, it's a Firefox fork designed for AI agents
+- [nicobailon/pi-web-access](https://github.com/nicobailon/pi-web-access) - disabled as of 2026-06-29: v0.13.0 imports `@earendil-works/pi-ai/compat`, which Pi 0.79.7 no longer exports, causing extension load failure at startup
 
 ### Automation & Workflow
 

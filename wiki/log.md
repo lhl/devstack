@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-06-29] update | pi-agent — disabled pi-web-access on Pi 0.79.7
+- Removed `npm:pi-web-access` from the canonical `pi-packages.json` stack and added it to legacy/prune removals.
+- Root cause: `pi-web-access@0.13.0` imports `@earendil-works/pi-ai/compat`, but Pi 0.79.7's `@earendil-works/pi-ai` package no longer exports that path.
+- Pages updated: `wiki/tools/pi-agent.md`, `wiki/index.md`.
+- Repo docs updated: `README.md`, `pi-setup.sh`, `pi-packages.json`.
+
 ## [2026-06-26] update | supply-chain-security — config-file rolling age gates
 - Source: live setup on the `devstack` machine (bash + miniforge + nvm); authoritative syntax/unit checks against the uv resolution docs, npm config docs, pip `install --help`, and Matteo Collina's cross-package-manager min-release-age gist.
 - Pages updated: `wiki/practices/supply-chain-security.md`, `wiki/index.md`.

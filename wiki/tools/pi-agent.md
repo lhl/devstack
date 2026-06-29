@@ -62,7 +62,7 @@ Use this to reconcile a stale machine before trusting its extension list:
 | **pi-multiloop** | `npm:pi-multiloop` ([source](https://github.com/lhl/pi-multiloop)) | Multi-lane autoloop/autoresearch extension with lane-isolated `.multiloop/` state | ✅ Canonical |
 | **pi-continue** | `git:pi-continue` | Mid-run context compaction with Continuation Ledger | ❌ Disabled (v0.6.0, local) |
 | **pi-code-previews** | `npm:pi-code-previews` ([source](https://github.com/mattleong/pi-code-previews)) | Shiki syntax-highlighted tool output rendering in TUI | ✅ Canonical |
-| **pi-web-access** | `npm:pi-web-access` | Web search, content extraction, video/YT understanding, GitHub cloning, PDF | ✅ Canonical |
+| ~~pi-web-access~~ | `npm:pi-web-access` | Web search, content extraction, video/YT understanding, GitHub cloning, PDF | ❌ Disabled 2026-06-29 — v0.13.0 imports `@earendil-works/pi-ai/compat`, which Pi 0.79.7 no longer exports |
 | **pi-smart-fetch** | `npm:pi-smart-fetch` | Browser-like TLS fingerprints + Defuddle extraction for bot-defended pages | ✅ Canonical |
 | **camoufox-pi** | `npm:@the-forge-flow/camoufox-pi@0.2.1` | Stealth web access via Camoufox (C++-level anti-fingerprinting Firefox fork) | ✅ Canonical (pinned v0.2.1) |
 | **pi-zentui** | `https://github.com/lhl/pi-zentui` | Starship-inspired status line + Opencode-style TUI (footer with git/runtime, bordered editor, accent rail) | ✅ Canonical (lhl fork) |
@@ -1138,7 +1138,7 @@ Nine pi packages for web fetching and search were evaluated (2026-05-03). Three 
 
 ### Recommendations
 
-**Primary (installed): `pi-web-access`** — 418 stars, 62 forks, most features, most polish. Zero-config Exa MCP means it works immediately. YouTube understanding, GitHub cloning, and PDF extraction are genuinely unique. Actively maintained (pushed 2026-05-02).
+**Disabled compatibility hold: `pi-web-access`** — still the most full-featured web plugin on paper, but disabled from the canonical stack on 2026-06-29 because `pi-web-access@0.13.0` imports `@earendil-works/pi-ai/compat`, which Pi 0.79.7 no longer exports. The failure mode is an extension load error during Pi startup, before any tools can be used. Re-enable only after either the extension moves to the current `@earendil-works/pi-ai` exports or Pi restores the compatibility path.
 
 **TLS fingerprint bypass (installed): `pi-smart-fetch`** — Browser-like TLS/SSL + HTTP fingerprints via wreq-js for bot-defended pages. Defuddle extraction with specialized support for YouTube, Reddit, X/Twitter, GitHub, HN, and Substack. Batch fetch with bounded concurrency. Lighter alternative to a full headless browser.
 
@@ -1154,7 +1154,9 @@ Nine pi packages for web fetching and search were evaluated (2026-05-03). Three 
 
 ### Installed Package Details
 
-#### pi-web-access (v0.10.7)
+#### pi-web-access (disabled; last broken locally at v0.13.0)
+
+Status: disabled from `pi-packages.json` as of 2026-06-29. The older evaluation below remains useful for feature comparison, but the current npm install is not canonical until the Pi 0.79.7 `@earendil-works/pi-ai/compat` import break is fixed.
 
 **Tools:**
 - `web_search` — multi-provider search with automatic fallback (Exa → Perplexity → Gemini API → Gemini Web)
