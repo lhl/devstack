@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-07-03] update | pi-agent — retired pi-multicodex under codex-pool
+- Removed `https://github.com/lhl/pi-multicodex` from the canonical `pi-packages.json` stack and added it to legacy/prune removals.
+- Reason: codex-pool is now the Codex account-rotation layer through `~/.pi/agent/models.json`; local MultiCodex accounts were all flagged `needsReauth`, so the extension registered `openai-codex` models without usable auth and broke Pi startup.
+- Pages updated: `wiki/tools/pi-agent.md`, `wiki/index.md`.
+- Repo docs updated: `README.md`, `pi-setup.sh`, `pi-packages.json`.
+
 ## [2026-06-29] update | pi-agent — disabled pi-web-access on Pi 0.79.7
 - Removed `npm:pi-web-access` from the canonical `pi-packages.json` stack and added it to legacy/prune removals.
 - Root cause: `pi-web-access@0.13.0` imports `@earendil-works/pi-ai/compat`, but Pi 0.79.7's `@earendil-works/pi-ai` package no longer exports that path.

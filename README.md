@@ -109,11 +109,10 @@ For saving tokens.
 
 ### Account & Quota Management
 
-- [lhl/pi-multicodex](https://github.com/lhl/pi-multicodex) — our fork of [victor-software-house/pi-multicodex](https://github.com/victor-software-house/pi-multicodex) with fixes; automatic ChatGPT Codex account rotation when quota limits or rate limits are hit
-  - Keeps its own `~/.pi/agent/codex-accounts.json` (separate from pi's native `auth.json`) and patches into existing model resolution so `/model` and provider config work unchanged
-  - Recommended: do not use pi's native `/login` for Codex if you're using multicodex; the two auth systems are independent and mixing them causes confusion
+- `codex-pool` via `~/.pi/agent/models.json` — current Codex account-rotation path. The local config is fetched from the pool proxy and uses the `codex` provider against `stg04.local:8989`; credentials are intentionally not committed to this repo. Plain `pi` defaults to the pool-backed `codex/gpt-5.5`.
 - [pi-codex-status](https://www.npmjs.com/package/pi-codex-status) - CLI + pi extension for ChatGPT Codex quota visibility (`/status`, `pi-codex-status statusline`, normalized JSON export); source: [lhl/pi-codex-status](https://github.com/lhl/pi-codex-status)
-  - Auth resolution: tries MultiCodex `codex-accounts.json` first, then pi `auth.json`, then Codex CLI `.codex/auth.json`
+  - Auth resolution still understands the legacy MultiCodex `codex-accounts.json` file if present, then pi `auth.json`, then Codex CLI `.codex/auth.json`
+- [lhl/pi-multicodex](https://github.com/lhl/pi-multicodex) — retired from the canonical stack while codex-pool is active. It is still useful for direct ChatGPT Codex OAuth rotation, but stale managed accounts can block startup by registering `openai-codex` without usable auth.
 
 ### Task Management
 

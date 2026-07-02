@@ -73,11 +73,6 @@
       "note": "Codex status/statusline integration."
     },
     {
-      "source": "https://github.com/lhl/pi-multicodex",
-      "category": "automation",
-      "note": "Multi-Codex workflow tooling."
-    },
-    {
       "source": "npm:pi-skill-dollar",
       "category": "skills",
       "note": "Dollar-triggered skill/tool helper."
@@ -89,6 +84,10 @@
     }
   ],
   "legacyPackages": [
+    {
+      "source": "https://github.com/lhl/pi-multicodex",
+      "reason": "Removed 2026-07-03: codex-pool is now the Codex account-rotation layer via ~/.pi/agent/models.json. With no valid managed/imported Codex OAuth account, pi-multicodex registers openai-codex models without auth and breaks Pi startup."
+    },
     {
       "source": "npm:pi-web-access",
       "reason": "Disabled 2026-06-29: pi-web-access 0.13.0 imports @earendil-works/pi-ai/compat, which Pi 0.79.7 no longer exports; it breaks Pi startup until the extension or Pi compatibility layer is updated."

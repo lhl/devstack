@@ -4,6 +4,23 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-07-03 — Retired pi-multicodex after codex-pool default switch
+
+**What:** Fixed Pi startup after switching the local default Codex path to codex-pool.
+
+- Confirmed `pi-multicodex` was failing startup because both managed accounts in `~/.pi/agent/codex-accounts.json` were flagged `needsReauth` and pi's native `auth.json` was empty.
+- Removed `https://github.com/lhl/pi-multicodex` from the active Pi package list and changed `~/.pi/agent/settings.json` default provider from `openai-codex` to the pool-backed `codex` provider.
+- Tightened `~/.pi/agent/codex-accounts.json` from mode `644` to `600`.
+- Updated `pi-packages.json`, `README.md`, `pi-setup.sh`, `wiki/tools/pi-agent.md`, `wiki/index.md`, and `wiki/log.md` so canonical sync prunes MultiCodex while codex-pool is active.
+- Verified plain `pi` and explicit `--provider codex --model gpt-5.5` prompts return successfully.
+
+**Decisions:**
+- Treat codex-pool as the account-rotation layer for now; do not keep MultiCodex enabled unless direct ChatGPT Codex OAuth rotation is needed again.
+- Keep the stale `codex-accounts.json` file in place but private, rather than deleting credential history without an explicit cleanup request.
+
+**Next:**
+- Re-enable MultiCodex only after reauthenticating at least one managed/imported Codex account or after the extension handles no-auth startup without registering invalid models.
+
 ## 2026-07-03 — Pointed Pi models.json at codex-pool on stg04
 
 **What:** Updated the current user's Pi model configuration to load the codex-pool provider list through the LAN proxy host.
