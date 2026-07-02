@@ -19,7 +19,7 @@
 
 ## Tools
 
-- [[tools/pi-agent]] — Pi coding agent: minimal extensible terminal coding harness (pi.dev), canonical `pi-packages.json` package sync workflow, pi-zentui customization log, codex-pool model config, Codex quota status, pi-tasks/pi-goal forks, web-access extension compatibility notes, GitHub-sourced compaction watchdog, optional Codex fast mode
+- [[tools/pi-agent]] — Pi coding agent: minimal extensible terminal coding harness (pi.dev), canonical `pi-packages.json` package sync workflow, pi-zentui customization log, codex-pool model config, conditional MultiCodex personal-account rotation, Codex quota status, pi-tasks/pi-goal forks, web-access extension compatibility notes, GitHub-sourced compaction watchdog, optional Codex fast mode
 - [[tools/pi-background-task-plugins]] — Pi background task plugin evaluation: @vanillagreen/pi-background-tasks vs tmux-bash, pi-loop, pi-monitor, gob, and minimal alternatives
 - [[tools/pi-model-selection]] — Pi model selection & customization: how the model catalog loads (static models.generated.js + models.json merge), favorites, scoping, sticky models, extensions
 - [[tools/pi-statusline]] — Pi status line / powerline footer: colorful segments, presets, themeable TUI bar

@@ -67,7 +67,7 @@ Use this to reconcile a stale machine before trusting its extension list:
 | **camoufox-pi** | `npm:@the-forge-flow/camoufox-pi@0.2.1` | Stealth web access via Camoufox (C++-level anti-fingerprinting Firefox fork) | ✅ Canonical (pinned v0.2.1) |
 | **pi-zentui** | `https://github.com/lhl/pi-zentui` | Starship-inspired status line + Opencode-style TUI (footer with git/runtime, bordered editor, accent rail) | ✅ Canonical (lhl fork) |
 | **pi-codex-status** | `npm:pi-codex-status` ([source](https://github.com/lhl/pi-codex-status)) | ChatGPT Codex quota/status CLI + `/status` extension (5h, weekly, credits, JSON/statusline export) | ✅ Canonical |
-| ~~pi-multicodex~~ | `https://github.com/lhl/pi-multicodex` | Automatic ChatGPT Codex OAuth account rotation on quota/rate limits | ❌ Removed 2026-07-03 — codex-pool now handles Codex routing; stale OAuth accounts broke startup |
+| **pi-multicodex** | `https://github.com/lhl/pi-multicodex` | Automatic ChatGPT Codex OAuth account rotation on quota/rate limits | ✅ Canonical again 2026-07-03 — conditional `openai-codex` registration avoids stale-auth startup failures |
 | **pi-skill-dollar** | `npm:pi-skill-dollar` ([source](https://github.com/lhl/pi-skill-dollar)) | `$` autocomplete shortcut for skill suggestions in the input area | ✅ Canonical |
 | **pi-vertex** | `npm:@lhl/pi-vertex` ([source](https://github.com/lhl/pi-vertex)) | Google Vertex AI provider — Gemini, Claude, Llama, DeepSeek, Qwen, Mistral, and 20+ other MaaS models | ✅ Canonical |
 | **pi-vcc** | `npm:@sting8k/pi-vcc` ([source](https://github.com/sting8k/pi-vcc)) | Zero-LLM algorithmic session compaction override with `vcc_recall` | ✅ Canonical |
@@ -267,13 +267,13 @@ Testing note: local npm has `before` set to 2026-06-07, so `@vanillagreen/pi-bac
 
 ### pi-multicodex
 
-**Status:** Removed from the canonical stack on 2026-07-03 while codex-pool is the Codex account-rotation layer. The active Pi default is the pool-backed `codex/gpt-5.5` provider from `~/.pi/agent/models.json`, pointed at `stg04.local:8989`.
+**Status:** Canonical again as of 2026-07-03. The active Pi default stays the pool-backed `codex/gpt-5.5` provider from `~/.pi/agent/models.json`, pointed at `stg04.local:8989`; MultiCodex remains a separate personal-account path under `openai-codex`.
 
-**Removal trigger:** Pi startup failed with `Provider openai-codex: "apiKey" or "oauth" is required when defining models` because the local MultiCodex account store had managed accounts flagged `needsReauth` and pi's native `auth.json` had no `openai-codex` OAuth entry. MultiCodex then registered mirrored `openai-codex` models without a usable token; Pi rejects that provider definition.
+**Compatibility fix:** The `lhl/pi-multicodex` fork now conditionally registers its `openai-codex` provider override only when a usable managed/imported Codex account exists. If all managed accounts are flagged `needsReauth` and pi's native `auth.json` has no usable `openai-codex` OAuth entry, the extension still loads `/multicodex` commands but unregisters its provider override, avoiding Pi's `Provider openai-codex: "apiKey" or "oauth" is required when defining models` startup failure.
 
-**Key feature when re-enabled:** Manages multiple ChatGPT Codex OAuth accounts and automatically rotates between them when quota or rate limits are hit. Intercepts the standard `openai-codex-responses` API for transparent switching.
+**Key feature:** Manages multiple ChatGPT Codex OAuth accounts and automatically rotates between them when quota or rate limits are hit. Intercepts the standard `openai-codex-responses` API for transparent switching.
 
-**Re-enable only if:** direct ChatGPT Codex OAuth rotation is needed again and at least one managed/imported account has been reauthenticated. Otherwise let codex-pool own routing through the custom `codex` provider.
+**Operational model:** Use `codex/gpt-5.5` for the shared codex-pool route. Use `openai-codex` only after adding or reauthenticating a personal account through `/multicodex`.
 
 #### Implementation Comparison: kim0 vs Victor
 

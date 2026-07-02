@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-07-03] update | pi-agent — restored pi-multicodex with conditional provider registration
+- Restored `https://github.com/lhl/pi-multicodex` to the canonical `pi-packages.json` stack after pushing `lhl/pi-multicodex` commit `6b12d92`.
+- Fix: MultiCodex now loads commands but only registers its `openai-codex` provider override when a usable managed/imported Codex account exists; stale `needsReauth` accounts no longer break Pi startup.
+- Operational model: keep plain Pi on pool-backed `codex/gpt-5.5`; use MultiCodex `openai-codex` only for personal ChatGPT Codex OAuth accounts.
+- Pages updated: `wiki/tools/pi-agent.md`, `wiki/index.md`.
+- Repo docs updated: `README.md`, `pi-setup.sh`, `pi-packages.json`.
+
 ## [2026-07-03] update | pi-agent — retired pi-multicodex under codex-pool
 - Removed `https://github.com/lhl/pi-multicodex` from the canonical `pi-packages.json` stack and added it to legacy/prune removals.
 - Reason: codex-pool is now the Codex account-rotation layer through `~/.pi/agent/models.json`; local MultiCodex accounts were all flagged `needsReauth`, so the extension registered `openai-codex` models without usable auth and broke Pi startup.

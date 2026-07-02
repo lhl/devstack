@@ -112,7 +112,7 @@ For saving tokens.
 - `codex-pool` via `~/.pi/agent/models.json` — current Codex account-rotation path. The local config is fetched from the pool proxy and uses the `codex` provider against `stg04.local:8989`; credentials are intentionally not committed to this repo. Plain `pi` defaults to the pool-backed `codex/gpt-5.5`.
 - [pi-codex-status](https://www.npmjs.com/package/pi-codex-status) - CLI + pi extension for ChatGPT Codex quota visibility (`/status`, `pi-codex-status statusline`, normalized JSON export); source: [lhl/pi-codex-status](https://github.com/lhl/pi-codex-status)
   - Auth resolution still understands the legacy MultiCodex `codex-accounts.json` file if present, then pi `auth.json`, then Codex CLI `.codex/auth.json`
-- [lhl/pi-multicodex](https://github.com/lhl/pi-multicodex) — retired from the canonical stack while codex-pool is active. It is still useful for direct ChatGPT Codex OAuth rotation, but stale managed accounts can block startup by registering `openai-codex` without usable auth.
+- [lhl/pi-multicodex](https://github.com/lhl/pi-multicodex) — optional personal ChatGPT Codex OAuth account rotation alongside codex-pool. It loads `/multicodex` commands at startup, but only registers its `openai-codex` provider override when a usable managed/imported account exists, so stale accounts do not block Pi startup and the pool-backed `codex/gpt-5.5` default stays separate.
 
 ### Task Management
 

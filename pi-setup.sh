@@ -50,8 +50,8 @@ pi --version
 # with the devstack extension stack while local npm age-gates newer releases.
 # pi-web-access is intentionally pruned for now because v0.13.0 imports a
 # pi-ai compat path that Pi 0.79.7 no longer exports.
-# pi-multicodex is intentionally pruned while codex-pool-backed models.json is
-# the default Codex path; stale OAuth accounts can otherwise block Pi startup.
+# pi-multicodex is safe to keep alongside codex-pool because it only registers
+# its openai-codex override when a usable managed/imported account exists.
 "$SCRIPT_DIR/tools/pi-sync.sh" --prune
 
 # pi-context-prune: enable the extension and use the recommended `agent-message`

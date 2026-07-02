@@ -4,6 +4,24 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-07-03 — Restored pi-multicodex with conditional provider registration
+
+**What:** Re-enabled personal MultiCodex accounts while keeping codex-pool as the default Pi route.
+
+- Updated `lhl/pi-multicodex` so it loads `/multicodex` commands but only registers the `openai-codex` provider override when a usable managed/imported Codex account exists.
+- Pushed the MultiCodex fix as `6b12d92` after rebasing over the upstream custom-provider compatibility work.
+- Restored `https://github.com/lhl/pi-multicodex` to `pi-packages.json` and updated `README.md`, `pi-setup.sh`, `wiki/tools/pi-agent.md`, `wiki/index.md`, and `wiki/log.md`.
+- Ran canonical Pi sync; installed `https://github.com/lhl/pi-multicodex` at `6b12d92`.
+- Kept `~/.pi/agent/settings.json` default provider/model at pool-backed `codex/gpt-5.5`.
+- Verified plain `pi`, explicit `--provider codex --model gpt-5.5`, and model listing with stale `needsReauth` MultiCodex accounts still present.
+
+**Decisions:**
+- Use codex-pool (`codex/gpt-5.5`) for shared routing by default.
+- Keep MultiCodex separate under `openai-codex` for personal ChatGPT Codex OAuth accounts; it should not publish that override while accounts are missing or marked `needsReauth`.
+
+**Next:**
+- Add or reauthenticate personal Codex accounts through `/multicodex` when needed; until then only the pool-backed `codex` provider is published.
+
 ## 2026-07-03 — Retired pi-multicodex after codex-pool default switch
 
 **What:** Fixed Pi startup after switching the local default Codex path to codex-pool.
