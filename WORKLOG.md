@@ -4,6 +4,22 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-07-03 — Pointed Pi models.json at codex-pool on stg04
+
+**What:** Updated the current user's Pi model configuration to load the codex-pool provider list through the LAN proxy host.
+
+- Downloaded the generated Pi provider config from the codex-pool endpoint and normalized provider base URLs from `localhost:8989` to `stg04.local:8989`.
+- Installed the config at `~/.pi/agent/models.json` with file mode `600` and tightened `~/.pi/agent` to mode `700`.
+- Verified the installed provider list contains `aiand`, `codex`, `local`, `minimax`, `nvidia`, and `zai`, all pointed at `stg04.local:8989`.
+- Verified Pi loads the `codex` entries via `pi --list-models` and ran a minimal `local/local` Pi prompt successfully.
+
+**Decisions:**
+- Do not commit the generated `models.json`, pool credentials, or config endpoint token into the repo.
+- Use `stg04.local:8989` instead of `localhost:8989` so Pi sessions can reach the proxy from the local network.
+
+**Next:**
+- Fully restart any already-running Pi sessions so they reload `~/.pi/agent/models.json`.
+
 ## 2026-06-29 — Disabled pi-web-access pending Pi compatibility fix
 
 **What:** Removed `pi-web-access` from the canonical devstack Pi extension stack after it broke startup on Pi 0.79.7.
