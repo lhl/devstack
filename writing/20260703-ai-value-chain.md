@@ -1,4 +1,4 @@
-i# Frontier Labs, Enterprises, and the AI Value Chain
+# Frontier Labs, Enterprises, and the AI Value Chain
 
 ## Deployment programs, data flows, and value capture: analysis and evidence
 
