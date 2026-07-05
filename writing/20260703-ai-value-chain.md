@@ -2,11 +2,13 @@
 
 ## Who learns what from whom when AI labs deploy into businesses — and who keeps the value
 
-July 3, 2026 · revised July 5, 2026 to be readable without industry background
+July 3, 2026 · revised July 5, 2026: readability rework; scope expanded to valuations, the discovery layer, and sovereignty
 
 ---
 
-## 1. The suspicion
+## 1. Scope and claims
+
+### The suspicion
 
 The leading AI labs no longer merely sell access to their models; they now send their own people inside customer companies. OpenAI created a subsidiary — the Deployment Company, "DeployCo" — with $4 billion behind it and a staff of engineers whose job is to embed with corporate customers and build AI systems around their workflows [5], [7]. Anthropic is reported to be forming a $1.5 billion joint venture with the investment firms Blackstone, Goldman Sachs, and Hellman & Friedman to do the same across the companies those firms own [9]. Microsoft and Amazon have each announced billion-dollar-plus units on the same model [10], [11]. The job title for this work, borrowed from Palantir, is **forward deployed engineer** (FDE): an engineer from the vendor who sits with your experts, learns how your business actually works, and wires the AI into it.
 
@@ -18,7 +20,17 @@ The first is what happened to **Windsurf**, a startup that sold an AI coding ass
 
 The second is what **Bridgewater**, one of the world's largest hedge funds, published in June 2026. Bridgewater tested the best available models on document-analysis tasks its own investors consider trivial. The frontier models scored around 50%. Even with prompts painstakingly engineered by Bridgewater's experts, they stayed under 80% — the experts' judgment, it turned out, could not be fully written down as instructions. Then Bridgewater took an openly downloadable Chinese model, trained it further on examples labeled by its own experts, and got 84.7% — better than every frontier model tested, at roughly one-fourteenth the running cost [30]. The firm named the strategy "differentiated intelligence" and, notably, chose to pour its proprietary judgment into a model it owns rather than share that judgment with an AI vendor. For enterprises worried about feeding the labs, Bridgewater is the proof that the value flow can be pointed the other way.
 
-This document sorts out how much of the suspicion is true, using public evidence: contracts, prices, published research, and reported market behavior.
+### The bigger question
+
+The suspicion is the entry point, but it opens onto the question this document is really about: **across the whole AI stack — model makers, cloud providers, application companies, enterprises, and now governments — where does durable, defensible value actually sit?** The same evidence that answers the enterprise's question (*are we being strip-mined?*) answers the investor's (*what, if anything, justifies the frontier labs' valuations and growth expectations?*) and the policymaker's (*who ends up with leverage over whom?*).
+
+The question is urgent from the labs' own side, because frontier-model economics do not obviously close at the model layer. Making frontier models is staggeringly capital-intensive — training runs and data-center commitments in the tens of billions per year — and much of the buildout is financed through arrangements that press coverage through late 2025 flagged as circular: chip suppliers investing in the labs that commit to spend the money on their chips, data-center buildouts financed against those same labs' future payments. Meanwhile the price of the labs' core product, raw model access, is collapsing (§4). A business with enormous fixed costs and a commoditizing product has to find margin somewhere else — and the moves this document catalogs (services arms, first-party apps, and, days before this revision, drug discovery) are what that search looks like as strategy.
+
+The most striking recent statement of the stakes comes not from a lab critic but from Microsoft's CEO. In June 2026, Satya Nadella warned that a handful of AI systems could "hollow out" entire industries — models absorbing companies' professional knowledge and selling it back to them at commodity prices, concentrating the economic returns in a few providers — and urged companies to build what he calls **token capital**: AI capability they *own*, built on their internal data and their own learning loops [38], [39]. That is the extraction claim, restated as a warning, by the chief executive of the company that sells more enterprise AI than anyone.
+
+And the customer side of the story no longer stops at enterprises. In the weeks around this revision, European governments — France, Germany, Spain, the UK — took concrete steps away from US AI-adjacent vendors on sovereignty grounds, and Palantir published a manifesto arguing that "controlling your weights is controlling your fate" (§8.3). The logic this document develops for companies is being run, live, by nation-states.
+
+This document sorts out how much of the suspicion is true — and what the answer implies for the larger question — using public evidence: contracts, prices, published research, and reported market behavior.
 
 ### The short answer
 
@@ -32,7 +44,7 @@ But three related things *are* happening, all documented, all legal, and mostly 
 
 3. **The competition question.** A lab that runs the platform sees what everyone builds on it, and controls who keeps access. That is enough to pick winning application categories, build them in-house, and disadvantage the companies it competes with — no misuse of any individual customer's data required. *Verdict: the best-evidenced part of the whole story — Windsurf is the case record, and policy proposals are already circulating.* (§7)
 
-The counterweight to all three is not regulation. It is the customer's ability to leave: commodity work can now run on open, downloadable models at 3–10% of frontier prices, and Bridgewater showed that a company's own expert data can make those cheap models *better than* the frontier on the company's own tasks. Where this leaves the market — a stratified truce, and the three developments that would break it — is in §10. A practical checklist for enterprises is in §11, and §12 grades how solid each claim is.
+The counterweight to all three is not regulation. It is the customer's ability to leave: commodity work can now run on open, downloadable models at 3–10% of frontier prices, and Bridgewater showed that a company's own expert data can make those cheap models *better than* the frontier on the company's own tasks. Where this leaves the market — a stratified truce, what it implies for frontier-lab valuations, and the developments that would break it — is in §10. A practical checklist for enterprises is in §11, and §12 grades how solid each claim is.
 
 ### Background the rest of this relies on
 
@@ -112,9 +124,13 @@ The **application layer** is the stratum of companies that build products on top
 
 ## 4. Why the labs are doing this
 
-None of the moves that alarm enterprises — services arms, first-party apps, PE deployment vehicles — is arbitrary. They follow from one economic fact, so it's worth walking the causal chain slowly:
+None of the moves that alarm enterprises — services arms, first-party apps, PE deployment vehicles, and now drug discovery — is arbitrary. They follow from an economic squeeze with two jaws, so it's worth walking the causal chain slowly.
 
-Open-weight models are within a few benchmark points of frontier models (§3.1) and cost a small fraction as much to run. So the price of raw model access — the labs' core product — is being competed toward commodity levels. A lab that only sells API access is a company whose product gets 10× cheaper every year or so *without getting 10× better margins*. The escape is to move **up the stack**: sell applications, sell services, own workflows — layers where margin survives commoditization. But the companies already occupying those layers are the labs' own customers and partners. Commoditization below forces vertical conflict above. That is the whole logic of this section, and most of the conflict in this document.
+The cost jaw: frontier-model making requires capital expenditure at a scale with few precedents — training runs, chips, and data-center commitments running to tens of billions per year per lab, financed substantially through the circular arrangements flagged in §1 (suppliers investing in their own customers; buildouts collateralized by the buyers' future commitments). These costs are largely fixed, and they recur with every model generation.
+
+The price jaw: open-weight models are within a few benchmark points of frontier models (§3.1) and cost a small fraction as much to run. So the price of raw model access — the labs' core product — is being competed toward commodity levels. A lab that only sells API access is a company whose product gets 10× cheaper every year or so *without getting 10× better margins*.
+
+A business with enormous recurring fixed costs and a commoditizing product has one escape: move **up the stack** — sell applications, sell services, own workflows, or (the newest rung) own discoveries — layers where margin survives commoditization. But the companies already occupying those layers are the labs' own customers and partners. Commoditization below forces vertical conflict above. That is the whole logic of this section, and most of the conflict in this document. It is also why "why sell tokens at all?" — Karp's jab [27] — has become the industry's live question rather than a heckle.
 
 The evidence, revenue stream by revenue stream:
 
@@ -125,6 +141,8 @@ The evidence, revenue stream by revenue stream:
 **Services: the FDE build-out.** The flagship is OpenAI's DeployCo, whose disclosed structure rewards a careful read: $4 billion initial investment at a $10 billion pre-money valuation; investors get a *guaranteed minimum 17.5% return* with profits capped above that; OpenAI keeps majority control; ~150 engineers acquired via the consultancy Tomoro; and 19 private-equity and consulting backers whose portfolios span more than 2,000 companies [5], [7], [8]. Decode that: the backers are being paid a fixed coupon for delivering their portfolio companies as captive customers, while OpenAI keeps control and the upside. Anthropic's reported $1.5B joint venture with Blackstone, Goldman Sachs, and Hellman & Friedman (reported by the Wall Street Journal via Reuters; Reuters could not independently verify) runs the same play into private-equity portfolios [9]. Two readings fit these facts. (a) These are institutionalized collection vehicles — byproducts and market visibility harvested across thousands of companies at once. (b) They are a defensive move into lower-margin consulting revenue because model-layer pricing power is eroding. Note that reading (b), the charitable one, does not actually reassure customers: a lab that *needs* services margin needs each engagement's flywheel to produce reusable assets — which is the byproducts question, now with the lab's income statement behind it.
 
 **First-party applications.** The pattern, twice now: watch aggregate demand through the API, identify the winning application category, build it in-house, capture the application margin. Claude Code against Cursor and Copilot; then Cowork's legal and financial plugins against Thomson Reuters and RELX [12]. No individual customer's data is touched — aggregate demand visibility is sufficient targeting information. This is the competition question in its complete form.
+
+**Beyond apps: the discovery layer.** On June 30, 2026, Anthropic launched Claude Science — an AI "workbench" for scientific research — together with a drug-discovery program aimed at neglected diseases [40], [41]. Read against the economics above, the strategic logic is sharp, and contemporary commentary spelled it out: competing in enterprise software is "a knife fight over generic workflows and UI/UX" — low barriers, commodity pricing chasing you up the stack — whereas drug discovery has breakthrough economics: discoveries are rare, literally patent-protected, and cannot be copy-pasted by a competitor. A lab whose models can genuinely *originate* discoveries captures moaty, rent-bearing assets instead of commodity token revenue. The load-bearing word is *if*: whether frontier models can produce novel, lucrative discoveries is unproven — §12 grades it Unresolved. But as a statement of intent, Claude Science completes the pattern: each step up the stack — services, apps, now discovery — is a search for the margin that token-selling cannot provide, and each step puts labs in competition with a new class of their own customers (here, the pharmaceutical industry).
 
 **And the counter-model: selling the pickaxe and handing back the gold.** Thinking Machines Lab (an AI infrastructure company staffed heavily with ex-frontier-lab researchers) sells **Tinker**, a product that inverts the lab relationship: the customer brings its data, rents the fine-tuning and reinforcement-learning machinery, and *owns the resulting weights*; nothing flows into any shared model [30]. Combine Tinker-style infrastructure with open-weight base models and you get a complete AI stack containing no frontier lab at any layer: open base model + rented training infrastructure + the customer's own expert data + self-hosted inference. Bridgewater's paper is the published proof that this stack can *beat* the frontier on the customer's own tasks — and "differentiated intelligence," the name it coined, is turning into the strategy's banner.
 
@@ -143,12 +161,13 @@ Zoom out and the industry is a web of bilateral relationships, every one of them
 | Lab ↔ Consultancy | Delivery partnerships (Accenture, Deloitte, PwC; Bain and McKinsey as DeployCo investors) | DeployCo targets the consulting market itself | DeployCo's investor-as-competitor structure [5]–[8] |
 | Lab ↔ Private equity | Capital plus captive distribution into portfolio companies | Portfolio companies are simultaneously investors, customers, and data sources | Anthropic/Blackstone–H&F–Goldman JV [9]; DeployCo's 19 backers [8] |
 | Enterprise ↔ Open-model ecosystem | The exit option: cost discipline and data sovereignty | Legal and geopolitical exposure of Chinese models | GLM and Kimi named in a congressional security probe weeks before Coinbase adopted them [33], [36]; Bridgewater tuning Alibaba's Qwen [30], [31] |
+| US AI vendors ↔ Allied governments | Sovereign-AI offerings; intelligence and defense contracts | The vendor is a sovereignty risk — dependency on a supplier "capable of turning off the tap" | France's DGSI replacing Palantir with ChapsVision; Germany's BfV likewise; Spain warning state-backed firms off new Palantir contracts; UK reviewing the NHS contract (§8.3) [43]–[47] |
 
 Two structural observations, both of which matter later:
 
 *Every row contains the same entity in conflicting roles.* Your supplier is your competitor; your investor is your rival; your sales channel blocks your data access. This is why the policy world has started reaching for infrastructure-regulation analogies (§7): "essential supplier that also competes with its customers" is exactly the shape — railroads, telecoms — that nondiscrimination rules were invented for.
 
-*The last row prices all the others.* In every negotiation a lab has — with enterprises, app companies, consultancies — its leverage is capped by the counterparty's cost of walking away to the open-model stack. Every improvement in open models, every price cut, every tool that eases migration lowers that exit cost, and it fell all through the first half of 2026. The open-model ecosystem thus disciplines relationships it isn't even party to.
+*The exit rows price all the others.* In every negotiation a lab has — with enterprises, app companies, consultancies — its leverage is capped by the counterparty's cost of walking away to the open-model stack; and the last row shows governments running the same walk-away logic against US vendors generally. Every improvement in open models, every price cut, every tool that eases migration lowers that exit cost, and it fell all through the first half of 2026. The open-model ecosystem thus disciplines relationships it isn't even party to.
 
 ---
 
@@ -205,9 +224,9 @@ Why this is the strongest-evidenced piece of the extraction story: it requires n
 
 ---
 
-## 8. How enterprises are fighting back
+## 8. How customers are fighting back — enterprises first, now nations
 
-Four countermeasures are now public, working, and mutually reinforcing. Two are case studies with numbers (Bridgewater, Coinbase), one is a product category (sovereign deployment), and one is the architectural pattern that ties them together (the gateway).
+Four countermeasures are now public, working, and mutually reinforcing. Two are case studies with numbers (Bridgewater, Coinbase), one is a product category that nation-states have just joined (sovereign deployment), and one is the architectural pattern that ties them together (the gateway).
 
 ### 8.1 Own the judgment: Bridgewater × Thinking Machines (June 30, 2026)
 
@@ -232,6 +251,8 @@ Four consequences for this analysis, each worth stating separately:
 3. **The author is the argument.** Bridgewater's entire business is proprietary investment judgment. Facing the choice of exposing that judgment to a frontier vendor or compiling it into weights it owns, it chose ownership — and published the recipe.
 4. **It cuts both ways — and this is the honest part.** The result confirms that expert-labeled enterprise data genuinely converts into model capability. The asset the extraction claim worries about is real. Every FDE engagement that produces such labels is improving *someone's* model; the contract decides whose.
 
+A fifth consequence is still unfolding: **the price of doing this is falling.** Post-training — the shaping step, as distinct from pretraining's brute scale — is commoditizing in its own right. Practitioner commentary in mid-2026 (untraced to a durable source; see the source-quality notes) points to models roughly 5× cheaper than Opus 4.8 beating it on PostTrainBench, a benchmark of post-training effectiveness, and notes the sentiment shift among investors — six months earlier, many did not believe post-training was economically viable as a business at all. If the marginal cost of shaping intelligence keeps falling, the Bridgewater pattern stops being something only a giant hedge fund can afford and becomes ordinary procurement: businesses owning models trained on their own data, tuned to their own judgment, improved inside their own feedback loops. Nadella's "token capital" [38], [39] is this same prediction from the selling side.
+
 ### 8.2 Pay frontier prices only for frontier problems: Coinbase (June 2026)
 
 CEO Brian Armstrong published the playbook [31], [34]–[36]. Coinbase routes all internal AI usage through a single internal control point (built on LightLLM, an open-source routing layer — the "gateway" pattern §8.4 generalizes). Defaults are open-weight models — GLM 5.2 and Kimi 2.7 — with automatic escalation to frontier models when task difficulty warrants it. The mundane engineering did surprising work: raising the **cache hit rate** — the fraction of requests answered from previously computed results instead of paying for fresh computation — from 5% to 60%, plus per-team spend visibility. Outcomes: AI spend down ~50% *while token usage grew*; 91% of engineers never hit the usage caps they used to hit; and the projection quoted in §4 — 80% of workloads on 99%-cheaper models within 12–18 months. The other half of Armstrong's playbook is the Bridgewater pattern at Coinbase scale: training on its own "Advisor" human-approval decisions to beat general models on its core task, protected by the compliance moat of §3.2 [32].
@@ -240,9 +261,19 @@ Operator reaction marks this as forming consensus rather than one company's expe
 
 The caveats are geopolitical, not technical. GLM and Kimi were named in a congressional security probe weeks before Coinbase's announcement; self-hosting keeps your data off Chinese servers, but doesn't answer questions about the models' provenance — what went into training them and whether that could matter [33], [36]. Note what the caveats contest: *which* open models, not *whether* open models.
 
-### 8.3 Buy from someone whose pitch is "we're not them": sovereign deployment
+### 8.3 Sovereignty: the same revolt, up to nation scale
 
-Palantir and NVIDIA jointly sell open Nemotron models (NVIDIA's open-weight family) deployed entirely inside customer-controlled environments, marketed with Karp's checklist as the sales script: is your vendor keeping the data, and will it enter your business [26], [27]. Self-interested, obviously — Palantir sells against the labs. But it means enterprises now hold three distinct exits, each commercially supported and each marketed explicitly against lab data exposure: closed frontier models behind a hyperscaler's isolation (§3.4), open-stack self-hosting (§8.2), and sovereign vendor deployments.
+The third countermeasure started as a product category and became, in the span of a few weeks, a geopolitical argument.
+
+**The product.** Palantir and NVIDIA jointly sell open Nemotron models (NVIDIA's open-weight family) deployed entirely inside customer-controlled environments, marketed with Karp's checklist as the sales script: is your vendor keeping the data, and will it enter your business [26], [27].
+
+**The manifesto.** On July 1, 2026, Palantir published nine theses on "AI sovereignty" [42]. The language is corporate-Nietzschean, but strip the styling and it is this document's §6 and §8.1 in a vendor's marketing voice: "Data retention is your treasure. Transfer it at your own peril." "Controlling your weights is controlling your fate… if you let others control your weights, you are allowing them to migrate the alpha of your business to theirs." It even coins a slur for the labs' business model — **tokenmaxxing** — with the pointed observation that "there is a reason why those selling tokens refuse to charge based on value." Two caveats belong in the same breath: the manifesto landed two days after the NVIDIA partnership it conveniently promotes — it is, as the commentator Arnaud Bertrand put it, "essentially a product launch" — and Palantir's advice to own your tribal knowledge applies with full force *to Palantir itself* [43].
+
+**Why Palantir is suddenly talking like this.** Because governments have been running the walk-away playbook on *it*. The record from the first half of 2026, assembled in Bertrand's widely shared analysis [43] with primary links: France announced its domestic intelligence agency, the DGSI — a Palantir customer since the 2015 Paris attacks — will replace it with the French firm ChapsVision, Prime Minister Lecornu explaining that France "cannot accept new strategic dependencies in the digital sphere" and should not depend on the goodwill of companies "capable of turning off the tap" [44]. Germany's domestic intelligence service, the BfV, also chose ChapsVision, and the German military says it will stop using Palantir entirely [45]. Spain instructed state-backed companies — including Telefónica, Indra, and Navantia — to avoid new Palantir contracts on national-security grounds [46]. In the UK, the NHS's £330 million data contract with Palantir is under review after parliamentary pressure, and London's mayor blocked a proposed £50 million Metropolitan Police contract [47].
+
+**Why it belongs in this document.** Bertrand reads the episode as the death notice for two assumptions [43]: (1) that AI labs will extract significant economic rent, as opposed to models becoming commodities; and (2) that allied countries will accept structural dependency on US technology without pushing back. Both are this document's themes, escalated one level. A government watching the Windsurf cutoff (§7) draws exactly Lecornu's conclusion — never depend on a supplier capable of turning off the tap — and a government reading the Bridgewater result (§8.1) draws Palantir's fourth thesis: whoever controls the weights controls the compounding of institutional knowledge. The US government's own posture is accelerating the shift: Under Secretary of State Jacob Helberg publicly derides "AI sovereignty" as "marching in perfect formation into the past" and "synchronized mediocrity" [48] — which, read from a European or Asian capital, confirms the fear it mocks. When another country's official position is that your sovereignty is a problem, you conclude you are about to need it.
+
+The practical upshot for the §8 argument: enterprises now hold three distinct exits, each commercially supported and each marketed explicitly against lab data exposure — closed frontier models behind a hyperscaler's isolation (§3.4), open-stack self-hosting (§8.2), and sovereign vendor deployments — and demand for the third is no longer just risk-averse CIOs; it is written state policy in at least four allied capitals.
 
 ### 8.4 The gateway: where policy becomes infrastructure
 
@@ -305,11 +336,14 @@ The arrangement visible as of July 2026 is a stratified truce, along two axes:
 
 **Services are the contested middle.** DeployCo, the Anthropic/PE venture, Microsoft Frontier Company, AWS's $1 billion embedded-engineer unit, and the incumbent consultancies are all competing for the same position: the one that sees the workflows, produces the artifacts, and shapes the roadmaps. The sales pitches reveal the fault line — hyperscalers differentiate on *not learning from you* [11]; labs differentiate on frontier proximity. Enterprises get to price the trade.
 
-Three developments would break the truce:
+**What this equilibrium says about frontier-lab valuations.** The §1 question gets a conditional answer. In this settlement, a frontier lab keeps: the hardest-tier work (real, but repriced every product cycle); a contested share of lower-margin services; and options on two jackpots — solving continual learning (§9) and the discovery layer (§4). What it does *not* keep is the thing the boom-era valuations implicitly priced: durable rent on general model access. That assumption is now being pronounced dead in public by parties with nothing else in common — Palantir ("mere commodities," per Bertrand's reading [43]), Microsoft's CEO (a handful of systems capturing the returns is his *warning*, not his plan [38], [39]), and the operators quoted in §8.2. The replacement thesis — the margin lives in what you build above the models or discover with them — must be proven one application and one molecule at a time, by companies whose capital structures (circular financing against future commitments, §1) assume it is already true. That mismatch between financing and proof is what the third scenario below stresses.
+
+Four developments would break the truce:
 
 1. **A closed lab solves continual learning** (§9). The learning-stratification boundary collapses in the labs' favor, and deployment access — being the model that's *in the room where work happens* — becomes the decisive competitive asset. Every FDE program is, among other things, a bet on this outcome.
-2. **Chinese open weights become unusable for regulated Western enterprises** — the congressional-probe thread pulled to its conclusion [33]. The cheap exit narrows, and lab pricing power comes back. The counterweights that would remain: Western open-weight releases (Meta, NVIDIA, Mistral) and the sovereign stacks of §8.3.
-3. **An AI-market financial correction** — the VPA "After the AI Crash" scenario [15] — forces labs to sweat their assets: monetize retained data, push harder into verticals. Today's guarantees are promises made by companies experiencing hypergrowth; they get tested, and revealed, under distress.
+2. **Chinese open weights become unusable for regulated Western enterprises** — the congressional-probe thread pulled to its conclusion [33]. The cheap exit narrows, and lab pricing power comes back. The counterweights that would remain: Western open-weight releases (Meta, NVIDIA, Mistral) and the sovereign stacks of §8.3 — demand for which is now explicit European policy, not just enterprise preference.
+3. **An AI-market financial correction** — the VPA "After the AI Crash" scenario [15] — forces labs to sweat their assets: monetize retained data, push harder into verticals. Today's guarantees are promises made by companies experiencing hypergrowth; they get tested, and revealed, under distress. The §1 financing picture says the fuse for this scenario is lit from the cost side, not just the revenue side.
+4. **Frontier models prove they can originate lucrative discoveries.** The Claude Science bet pays off (§4): discovery-layer breakthroughs, patent-protected and uncopyable, give labs the rent-bearing moat that token-selling never could — justifying frontier capital expenditure independently of the enterprise fight. The symmetric failure — models assist but do not originate — feeds scenario 3.
 
 ---
 
@@ -354,8 +388,12 @@ How solid is each claim this document makes:
 | The open-weight exit is operational at enterprise scale | Strong | Coinbase in production; operator consensus [31]–[37] |
 | A deep FDE engagement yields low-to-mid seven figures of training-asset value | Moderate | Back-of-envelope on Epoch prices; depends on task count, rights, fidelity [6], [16] |
 | Market discipline constrains retention drift | Moderate | One natural experiment: Fable → Microsoft limits [21], [22] |
+| Sovereignty pushback is materially narrowing US vendors' reach among allies | Strong | France, Germany, Spain, UK government actions in H1 2026 [43]–[47] |
+| Frontier-model economics don't close at the model layer, forcing the up-stack moves | Moderate | Inference from capex scale, circular-financing coverage, and the labs' observed strategy (services, apps, discovery) [5]–[11], [38]–[41]; lab internals not public |
+| Falling post-training costs make customer-owned models routine | Moderate | Bridgewater demonstrated the capability [30]; the cost-curve and PostTrainBench claims are untraced practitioner commentary |
 | Enterprise content flows into shared frontier weights today | Weak | No public proof; contradicted by default terms [1]–[4] |
 | Continual learning makes deployment logs decisively more valuable | Unresolved | Stated research direction; feasibility and timeline open |
+| Frontier models can originate lucrative, patentable discoveries | Unresolved | Claude Science is a bet, not a result [40], [41] |
 
 Open questions, ranked by how much turns on them:
 
@@ -365,6 +403,9 @@ Open questions, ranked by how much turns on them:
 4. **Trace the Stanford 42% interchangeability claim** to its primary source (flagged in §3.2).
 5. **Track first-party lab app launches against enterprise-customer density by vertical** — the cleanest ongoing signal on the competition question.
 6. **Outcome of the Chinese open-weights policy fight** — determines whether §8's counterforce survives for regulated US enterprises.
+7. **Whether frontier models can originate discoveries** — the Claude Science bet (§4). If yes, discovery-layer moats rewrite the valuation math; if no, the up-stack search has one fewer exit.
+8. **Trace the post-training cost curve** — the PostTrainBench claim and the "5× cheaper" figure need primary sources; the claim matters because it sets how far down-market the Bridgewater pattern travels.
+9. **Whether the European sovereignty cascade extends from Palantir-class vendors to the frontier labs themselves** — the Palantir record (§8.3) is the leading indicator; watch sovereign-AI procurement terms for closed-model exclusions.
 
 ---
 
@@ -407,7 +448,18 @@ Open questions, ranked by how much turns on them:
 [35] BigGo Finance, Armstrong interview coverage, Jun 2026. https://finance.biggo.com/news/77dd3c6888face61 — LightLLM-derived middleware; 80%/99% projection.
 [36] MLQ News, Coinbase GLM/Kimi switch, Jun 2026. https://mlq.ai/news/coinbase-switches-to-chinese-ai-models-glm-and-kimi-cuts-ai-spending-by-50/ — $1.40 vs. $5 per M input tokens; SWE-bench Pro comparison.
 [37] Tekedia, ecosystem reactions to Armstrong, Jun 2026. https://www.tekedia.com/coinbase-ceo-brian-armstrong-urges-shift-to-cheaper-ai-models-signaling-end-of-the-tokenmaxxing-era/ — Levie, Weinberg, Gentilcore, Andreessen, Chaumond quotes.
+[38] TechTimes, "Microsoft CEO Issues AI Warning: Companies That Rent Models Risk Industry Hollowing", Jun 15, 2026. https://www.techtimes.com/articles/318394/20260615/microsoft-ceo-issues-ai-warning-companies-that-rent-models-risk-industry-hollowing.htm — Models absorbing professional knowledge, sold back at commodity prices.
+[39] The Decoder, "Microsoft CEO Satya Nadella warns of 'a small number of AI systems capturing all the economic returns'", Jun 2026. https://the-decoder.com/microsoft-ceo-satya-nadella-warns-of-a-small-number-of-ai-systems-capturing-all-the-economic-returns/ — "Token capital" framing.
+[40] Anthropic, "Claude Science, an AI workbench for scientists". https://www.anthropic.com/news/claude-science-ai-workbench — Launched Jun 30, 2026; companion page: https://www.anthropic.com/news/claude-for-life-sciences
+[41] CNBC, "Anthropic launches AI drug discovery program, Claude Science", Jun 30, 2026. https://www.cnbc.com/2026/06/30/anthropic-launches-ai-drug-discovery-program-claude-science.html — Neglected-diseases program alongside the workbench.
+[42] Palantir (@PalantirTech), "Our thoughts on the importance of AI sovereignty", Jul 1, 2026. https://threadreaderapp.com/thread/2072114267776491695.html — Nine theses; "tokenmaxxing"; "controlling your weights is controlling your fate."
+[43] Arnaud Bertrand (@RnaudBertrand), thread on Palantir and sovereignty, Jul 3, 2026. https://threadreaderapp.com/thread/2072964558302687569.html — Two dying assumptions; European case record; source of the embedded links in [44]–[48].
+[44] The Guardian, France replaces Palantir with ChapsVision at the DGSI, Jun 16, 2026. https://www.theguardian.com/world/2026/jun/16/france-ai-data-tools-palantir-chapsvision — Lecornu: no "new strategic dependencies"; "capable of turning off the tap."
+[45] Politico Europe, "Germany spy agency picks France AI firm over Palantir". https://www.politico.eu/article/germany-spy-agency-picks-france-ai-firm-over-palantir/ — BfV selects ChapsVision; German military dropping Palantir.
+[46] Anadolu Agency, "Spain tells state-backed firms to avoid new Palantir contracts amid national security concerns". https://www.aa.com.tr/en/europe/spain-tells-state-backed-firms-to-avoid-new-palantir-contracts-amid-national-security-concerns/3983804 — Telefónica, Indra, Navantia.
+[47] Reuters, "UK reviewing Palantir's NHS contract amid pressure to use break clause", Jun 9, 2026. https://www.reuters.com/business/healthcare-pharmaceuticals/uk-reviewing-palantirs-nhs-contract-amid-pressure-use-break-clause-2026-06-09/ — £330M contract; the Met Police block is reported via [43].
+[48] Jacob Helberg (Under Secretary of State), post opposing "AI sovereignty", Jun 2026. https://x.com/UnderSecE/status/2069482327387038086 — "Synchronized mediocrity" / "marching in perfect formation into the past."
 
 Adjacent sources from the research thread, not directly cited above: Wing VC on RL-environment market consolidation (3–5 predicted winners); Stratechery on subscription subsidies, Fable retention, and the commoditization case (paywalled; cited from memory); Dwarkesh Patel, "The next paradigm" (continual learning).
 
-**Source-quality notes:** Stanford 42% claim untraced to primary. [32] is a secondary interview summary. Stratechery arguments unverifiable against paywalled text. Bridgewater's all-in training cost unstated in [30]. Post-January-2026 claims verified against sources retrieved July 3, 2026.
+**Source-quality notes:** Stanford 42% claim untraced to primary. [32] is a secondary interview summary. Stratechery arguments unverifiable against paywalled text. Bridgewater's all-in training cost unstated in [30]. The PostTrainBench / "5× cheaper than Opus 4.8" post-training claims (§8.1) and the "knife fight over generic workflows" discovery-layer commentary (§4) are practitioner commentary supplied during review, untraced to durable primary sources. The circular-financing characterization (§1, §4) summarizes broad late-2025 press coverage of chip-vendor/lab co-investment structures rather than a single pinned source. [44]–[47] URLs are taken from the embedded links in [43] and not independently retrieved; verify before quoting downstream. [48] retrieved secondhand via [43]. Post-January-2026 claims verified against sources retrieved July 3, 2026; [38]–[43] retrieved July 5, 2026.

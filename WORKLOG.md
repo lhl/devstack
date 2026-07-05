@@ -1544,3 +1544,28 @@ Append-only session log. Each entry records what was done, why, and what's next.
 **Next:**
 - Get feedback from a non-industry reader on the new draft.
 - Open questions list unchanged (trace Stanford 42% claim, contract forensics, etc.).
+
+---
+
+## 2026-07-05 — AI value chain draft 5: scope expanded to valuations, discovery layer, sovereignty
+
+**What:** Expanded `writing/20260703-ai-value-chain.md` (same session as the draft-4 readability rework) from "enterprise suspicion vs. frontier labs" to the larger value-chain question: where durable value sits, what justifies frontier-lab valuations, and the nation-state version of the customer revolt.
+
+- §1 retitled "Scope and claims" with a new "The bigger question" subsection: capex/circular-financing squeeze, Nadella's June 2026 "token capital"/hollowing-out warnings, and the sovereignty cascade as framing.
+- §4 rebuilt around a two-jaw squeeze (fixed capex + commoditizing token prices) and added the discovery layer: Claude Science launch (Jun 30, 2026) as the newest up-stack rung, with the SaaS-knife-fight vs. patent-moat logic and an explicit Unresolved grade on whether models can originate discoveries.
+- §5 relationship map: new "US AI vendors ↔ Allied governments" row.
+- §8 retitled "…enterprises first, now nations"; §8.3 rewritten as the sovereignty section: Palantir's Jul 1 manifesto (tokenmaxxing, "controlling your weights is controlling your fate"), the product-launch caveat, the France/Germany/Spain/UK Palantir cascade with primary links, Bertrand's two dying assumptions, Helberg's anti-sovereignty posture.
+- §8.1: added falling post-training cost paragraph (PostTrainBench / 5×-cheaper claim, flagged untraced).
+- §10: new "What this equilibrium says about frontier-lab valuations" subsection; break scenarios expanded to four (added discovery-layer success).
+- §12: three new graded claims, three new open questions (discovery viability, post-training cost curve, sovereignty cascade reaching the labs).
+- References [38]–[48] added; source-quality notes updated (untraced practitioner quotes, circular-financing characterization, [44]–[47] sourced via Bertrand's links, not independently retrieved).
+- Verified before writing: Claude Science (CNBC/Anthropic, Jun 30), Nadella (TechTimes Jun 15, The Decoder), both threads via threadreaderapp (Palantir Jul 1, Bertrand Jul 3; dates derived from tweet snowflake IDs). WebFetch/WebSearch tools were broken (model error); used curl + DuckDuckGo HTML instead. PostTrainBench claim could not be traced.
+
+**Decisions:**
+- Kept the three-questions structure; the valuation/sovereignty material threads through existing sections rather than adding new top-level sections, to avoid renumbering.
+- Untraceable practitioner quotes included but explicitly flagged in source-quality notes rather than dropped, since they carry the argument's texture.
+
+**Next:**
+- Trace PostTrainBench and the biotech commentary to primary sources.
+- Independently retrieve [44]–[48] (currently sourced via Bertrand's embedded links).
+- Non-industry reader test of draft 5.
