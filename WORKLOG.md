@@ -1569,3 +1569,23 @@ Append-only session log. Each entry records what was done, why, and what's next.
 - Trace PostTrainBench and the biotech commentary to primary sources.
 - Independently retrieve [44]–[48] (currently sourced via Bertrand's embedded links).
 - Non-industry reader test of draft 5.
+
+---
+
+## 2026-07-05 — AI value chain: primary sources wired in for draft-5 commentary
+
+**What:** Replaced the untraced-commentary flags in `writing/20260703-ai-value-chain.md` with the primary X sources supplied by lhl, plus PostTrainBench caveats.
+
+- [42]/[43] now carry primary x.com URLs alongside the threadreader unrolls.
+- New refs: [49] Karina Nguyen (post-training economics, Jul 2), [50] @thoughtfullab (GLM 5.2 5×/11× cheaper, tops PostTrainBench; "millions of models"), [51] @scaling01 PostTrainBench critiques (Jun 20–21: internet-access score inflation; GLM-5.2 ~38% more eval probing; judge only catches crude gaming), [52] Benjamin Horne (discovery-layer "knife fight" commentary, Jul 3).
+- §8.1 fifth-consequence passage rewritten: precise claim (5× vs Opus 4.8, 11× vs Fable 5), PostTrainBench explained, followed by a caveat paragraph making the ranking contested-but-directional, anchored on Bridgewater as the benchmark-independent evidence.
+- §4 knife-fight quote attributed to Horne. Feiteng Li Bridgewater commentary added to adjacent sources (not retrievable via threadreader; content not characterized).
+- Source-quality notes and §12 (grading row + open question 8) updated to reflect sourced-but-contested status.
+- Tweet dates derived from snowflake IDs.
+
+**Decisions:**
+- Kept PostTrainBench in the argument but demoted to "directional, not dispositive," with Bridgewater carrying the load — the scaling01 critiques are substantive (score inflation, eval probing).
+
+**Next:**
+- Independently retrieve [44]–[48] and the Feiteng Li post.
+- Non-industry reader test.
