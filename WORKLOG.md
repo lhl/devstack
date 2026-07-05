@@ -1520,3 +1520,27 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 **Next:**
 - Apply the same gate to project-local configs (`.npmrc`, `pyproject.toml [tool.uv]`) where CI needs it, and consider bumping to 7 days where compatibility allows.
+
+---
+
+## 2026-07-05 — AI value chain writeup: accessibility rework (draft 4)
+
+**What:** Full rework of `writing/20260703-ai-value-chain.md` for readability by smart non-industry readers, after feedback that draft 3 required AI assistance to parse.
+
+- Rewrote the opening as a narrative on-ramp: the FDE build-out, the "sucking up alpha" suspicion, and the Windsurf + Bridgewater stories as bracketing anchors, followed by the verdict in plain English.
+- Replaced the Layer 1/2/3 codename system with plain handles used throughout: the training question, the byproducts question, the competition question.
+- Added a 5-bullet background section at the end of the intro (weights, tokens, open-weight vs. frontier, fine-tuning, API) — kept minimal per direction to avoid a full glossary.
+- Role-tagged all ~50 named entities on first mention (Windsurf, Cursor, Cowork, Tinker, Mercor, VPA, LightLLM, etc.).
+- Added explicit causal-chain paragraphs (commoditization → up-stack → customer conflict; why the RL-environment market exists; why the gateway matters; why exit cost caps lab leverage).
+- Converted argument-in-table-cells (§2, §3 moats) to prose-led sections with tables as recaps; translated key numbers inline (~quarter the price, ~14× cheaper).
+- Preserved all claims, citation numbers [1]–[37], evidence grading, open questions, and source-quality notes unchanged; fixed the line-1 typo.
+- Verification pass removed invented specifics introduced during decompression (example counts, selloff magnitudes, timeframes).
+- ~4.4K → ~9.5K words.
+
+**Decisions:**
+- Reworked the document in place rather than writing a separate lay-companion essay, to avoid forking maintenance.
+- Kept expert detail (e.g. Bridgewater training-technique names) in parentheticals so expert readers lose nothing.
+
+**Next:**
+- Get feedback from a non-industry reader on the new draft.
+- Open questions list unchanged (trace Stanford 42% claim, contract forensics, etc.).
