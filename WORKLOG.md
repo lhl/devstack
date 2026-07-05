@@ -1663,3 +1663,29 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 **Decisions:**
 - Brown's argument placed as a measurement caveat cutting both ways (weakens the doc's own open-vs-frontier scalar comparisons, not just lab claims) — consistent with the de-slop/epistemic-humility direction.
+
+---
+
+## 2026-07-05 — AI value chain: gated frontier, hyperscaler-SOP correction, cut-off risk, disclosures
+
+**What:** Six revisions to `writing/20260703-ai-value-chain.md` from lhl's read-through, plus new primary sources fetched and verified (WebFetch/WebSearch backend was down; used curl throughout).
+
+- §1: "Our goal in this document…" — goal framing made explicit per lhl.
+- §1 short answer: cut-off risk added as the mirror of the ability-to-leave counterweight — vendor cutoff (Windsurf) vs third-party cutoff (June 12 export-control directive, 18-day Fable outage, Legion LegalTech suit).
+- §1 background: fine-tuning bullet now names Shisa.AI (disclosed inline as the author's company; also noted in source-quality notes).
+- Azure de-spotlighted: provider isolation is standard hyperscaler SOP, verified against AWS Bedrock data-protection/data-retention docs (Model Deployment Accounts; providers can't see prompts/completions; ZDR accounts get retention-requiring requests blocked, "no data retention change to models released before Claude Fable 5") and Google's terms/privacy-commitment/residency pages. §2, §2 table, §3.4, §9 updated. Added the buyer consequence (cloud endpoints > lab first-party endpoints if you already trust the hyperscaler) and the DeepSeek irony (first-party endpoint trains by default, opt-out only as jurisdiction-dependent right, PRC storage — but self-hosted weights leak nothing by construction). NOTE: "DeepSeek has no opt-out" is out of date — Feb 2026 policy adds a right to refuse training use; doc says so.
+- §3.1: switching-costs line notes coding agents cheapen the port.
+- §3.1 new block "The sellable lead is smaller than the built lead": Fable 5 redeployment safeguards ([66] redeploying-fable-5, [67] fable-safeguards-jailbreak-framework, both retrieved) — high-risk dual-use category blocked "until we have better controls to limit access to known good actors", enlarged safety margin, downgrade-to-Opus-4.8; Mythos 5 vetted-list only; GPT-5.6 trusted-partner preview [68]. Three consequences: benchmark lead ≠ purchasable lead; gated segments (security) default to open models by construction; compounds open-model compression — Chinese labs framed as originating (EdgeBench, GLM), not fast-following. Deliberately did NOT claim reverse engineering is blocked (vendor taxonomy lists malware RE as benign) and bounded bio to "cyber is what's documented".
+- §5: "competing market forces, not just competing narratives" emphasis; US-vendors↔governments row gains the takedown/vetting flashpoints.
+- §9: identity paragraph now carries the primary redeployment account, CAISI testing, pre-release government access commitments, Legion suit; Mythos-channel paragraph notes AWS's explicit-opt-in/blocking behavior [65].
+- §10: gating discount noted in stratification + valuations; new truce-breaker #5 (gating regime hardens or dissolves).
+- §12: identity/state-mediated row split (state-mediated now Strong on primary docs; identity-linked stays Moderate); two new rows (safeguard blocking Strong; gating-discount inference Moderate); open question 15 (trusted-partner regime as default release path; signals to watch).
+- Refs [65]–[69] added; [4] extended with Google privacy-commitment and residency links; source-quality notes updated ([68] JS-gated, quoted via [63]; [69] served in Japanese; Shisa disclosure).
+
+**Decisions:**
+- Gating block placed in §3.1 (it qualifies the capability-lead moat) rather than §9/§10, with cross-refs — keeps evidence in the audit sections, synthesis in §10.
+- lhl's "China has more AI than the rest of the world combined" not used verbatim (unverifiable as stated); replaced with in-document evidence of origination (ByteDance EdgeBench, GLM results).
+
+**Next:**
+- GPT-5.6 Sol page is JS-gated; re-verify [68] quotes against a rendered copy or archive.
+- Watch for safeguard taxonomies beyond cyber (bio) to firm up the gating-scope claim.
