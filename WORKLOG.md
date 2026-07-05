@@ -1706,3 +1706,26 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 **Decisions:**
 - Did not use GPT-5.6 benchmark numbers (Terminal-Bench etc.) as capability claims — launch-post self-reporting; only used structural/priced facts and direct quotes.
+
+---
+
+## 2026-07-05 — AI value chain: Dean Ball material — de facto licensing, gating economics, government-stake report
+
+**What:** lhl supplied three Dean Ball-related sources (essay "What Should Be Done" Jun 26; his Jul 2 thread; Andrew Curran's FT-report thread). All retrieved via curl and integrated as [70]–[72].
+
+- §3.1 gating block: added the time dimension — recoupment happens in the few post-release months, so gated weeks eat the payback window; "$100 billion data centers" / global-TAM quote [70]. Ball's interest (ex-White House, AI Action Plan, joining OpenAI) disclosed inline at first citation.
+- §5 table: new row "US labs ↔ US government" — Glasswing/pre-release testing/wealth-fund proposal vs gatekeeper-and-prospective-shareholder; Lutnick letters, takedown, GPT-5.6 preview, Ball analysis, stake report as flashpoints. Fills the previously missing lab↔home-state relationship.
+- §9 identity paragraph: Lutnick letters named (individually-validated license "to any 'foreign person' wherever located"); Ball's de-facto-licensing characterization ("nobody knows what the requirements are", CAISI firing/stop-work) + his federalize-CA/NY/IL-and-audit prescription.
+- §9 new block "The state as prospective shareholder": FT-reported OpenAI 5% government stake / AI wealth fund (Altman, Sanders, Trump variants) [71]; graded thin/unconfirmed, Ball's own "may be importantly untrue" caveat quoted; §5 conflicting-roles pattern extended to the state (gatekeeper+standards-setter+customer+shareholder); household-distribution vs direct-stake distinction; "rats in the walls" quote; sovereignty implication for allied governments.
+- §10 scenario 3: Ball's state-made trigger — gating converts the overbuild thesis to true "because of demand that the US government renders unlawful"; coupled to scenario 5.
+- §12: two new rows (EO-as-licensing Moderate; 5% stake Weak) + open question 15 now five signals (Ball's alternative, stake outcome/variant added).
+- Source-quality notes: FT report not read directly; Ball's dual role (sharpest critic + announced OpenAI hire) flagged.
+- Fixed a splice where the shareholder block landed mid-identity-paragraph, orphaning its retained-data-asset tail.
+
+**Decisions:**
+- Government-stake claim graded Weak and kept in reported-proposal framing throughout — the doc's claim hygiene requires it (FT paywalled, relay via thread, subject himself flags possible inaccuracy).
+- Ball quoted for structure and economics, not for his political commentary threads (the Jun 7 "strategic class" thread in the sidebar was not used).
+
+**Next:**
+- Retrieve the FT article (or CNBC follow-up) directly to confirm/upgrade [71].
+- Watch for the administration's safety standard and the "repeatable process" — open question 15.
