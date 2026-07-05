@@ -1631,3 +1631,19 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 **Next:**
 - Re-verify [60]'s ID/export-control timeline against Anthropic's own pages; watch for Anthropic response to [61].
+
+---
+
+## 2026-07-05 — AI value chain: de-slop pass per ANTI-SLOP-INSTRUCTIONS.md
+
+**What:** Full-document pass over `writing/20260703-ai-value-chain.md` against `docs/ANTI-SLOP-INSTRUCTIONS.md`, per lhl's direction: strip rhetoric/punchiness, keep evidence-based stances, ground in what's known/changing/unknown.
+
+- Removed aphorisms and punchy closers ("When your competitor's anxiety is your marketing copy…", "Three incidents, one lesson…", "The author is the argument", "selling the pickaxe and handing back the gold", "the stock market did the analysis for us", "annexing", "jackpots", "borders on farce", "corporate-Nietzschean", "strip-mined").
+- Removed rhetorical-question setups, "not X but Y" frames, confessionals ("honesty requires saying so", "the honest part"), stakes inflation ("operative sentence of the whole document", "most striking"), banned words (load-bearing, notably, actually, genuinely, precisely as filler).
+- Rebounded overclaims: Bridgewater closers now carry "six tasks, one firm"; §8.5 natural experiment now "one data point… whether this generalizes is open"; EdgeBench pace claim now bounded to its measurement window with "if the result replicates"; sovereignty upshot now names the four specific government actions instead of "written state policy in four capitals" (UK is a review, not policy).
+- Added a shelf-life note to §1: dated snapshot, inputs days-to-weeks old, §12 marks single-source claims, verdicts carry implicit "as of July 5, 2026".
+- Retitled §8 ("Customer countermeasures — enterprise and national") and §8.3 ("the same argument at nation scale").
+
+**Decisions:**
+- Kept the lay-reader explanatory register (mechanism walk-throughs, role tags) — the de-slop targets rhetoric, not accessibility.
+- Kept quoted vividness (Palantir's "tokenmaxxing", Horne's "knife fight") since it is attributed source material, not authorial voice.
