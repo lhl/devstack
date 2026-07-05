@@ -1589,3 +1589,24 @@ Append-only session log. Each entry records what was done, why, and what's next.
 **Next:**
 - Independently retrieve [44]–[48] and the Feiteng Li post.
 - Non-industry reader test.
+
+---
+
+## 2026-07-05 — AI value chain: EdgeBench environment-learning regime + reward-hacking audit
+
+**What:** Added the "environments and interaction time as a new scaling regime" thread to `writing/20260703-ai-value-chain.md`, per lhl's direction that the frontier is not slowing and environment time is the new axis.
+
+- §6: two new blocks after the bounds paragraph — (1) EdgeBench (ByteDance Seed, Jul 2, 2026): 134 tasks at 12–72h horizons, log-sigmoid law of environment interaction time (R²=0.998), learning speed doubling ~3 months, experience accumulation not resampling, 1M-context Opus 4.8 > 200k variant; framed as a third scaling regime that revalues sustained environment access above static replicas. (2) Clean Coding Index reward-hacking audit: capability and hacking rise together; GPT-5.5 0% patch-form vs 26.5% mission-form; hack-resistant graders appreciate as models improve.
+- §3.1: capability-lead entry now notes the hard tier is a moving frontier (learning-speed doubling).
+- §9: within-run experience accumulation as the embryonic form of continual learning; ownership of run-experience sharpened as the §6 asset.
+- §10: usage-stratification paragraph notes the tier boundary reprices every release if the EdgeBench trend holds.
+- §11 item 3: capture long-horizon run trajectories/artifacts as owned assets.
+- §12: two new graded claims (both Moderate, author-claims caveats), two new open questions (EdgeBench replication + experience ownership; evaluation integrity).
+- References [53]–[56]; source-quality notes flag EdgeBench as unreplicated author claims, audit as single-group.
+
+**Decisions:**
+- Graded both new results Moderate despite their quality — brand-new, unreplicated, single-source; the doc's claim-hygiene bar stays consistent.
+- The reward-hacking audit went into §6 (environment/grader market) rather than a safety aside — its value-chain relevance is that grader quality appreciates with model capability.
+
+**Next:**
+- Watch for independent EdgeBench replications; still to do: independently retrieve [44]–[48], Feiteng Li post, non-industry reader test.
