@@ -1647,3 +1647,19 @@ Append-only session log. Each entry records what was done, why, and what's next.
 **Decisions:**
 - Kept the lay-reader explanatory register (mechanism walk-throughs, role tags) — the de-slop targets rhetoric, not accessibility.
 - Kept quoted vividness (Palantir's "tokenmaxxing", Horne's "knife fight") since it is attributed source material, not authorial voice.
+
+---
+
+## 2026-07-05 — AI value chain: competing-forces framing + test-time-compute measurement caveat
+
+**What:** Two additions to `writing/20260703-ai-value-chain.md` per lhl: (1) explicit forces-not-narratives framing, (2) Noam Brown's test-time-compute analysis as a document-wide measurement caveat.
+
+- §5: intro reframed ("competing forces, not competing narratives"); two new structural observations — dependency asymmetry that moves with the economics (who needs whom, repriced quarterly), and "every statement quoted is also a move" (each source's interest named: Palantir/NVIDIA launch, hyperscaler neutrality pitch, Nadella/Microsoft, post-training promoters, ByteDance-as-lab).
+- §6: new block "Capability is a function of the inference budget" — Brown [64]: scalar benchmarks lose information (GPT-5.5 vs 5.4 budget-controlled), AISI cyber eval improving past 100M tokens, ceilings unmeasured (>$10M/task feasible for state actors), EdgeBench's time-axis leaderboard as the recommended curve design. Three stated consequences: scalar comparisons in this doc are unstated-budget snapshots; cost argument should be capability-per-dollar (routing = budget allocation, Weinberg's "intelligence allocation"); §9 safety/access thresholds are budget-relative.
+- §3.1: capability-lead entry now carries the budget caveat alongside the EdgeBench caveat.
+- §12: new graded row (Moderate) + open question 14 (capability per dollar at equal spend, could shift the §4/§8 cost argument in either direction).
+- Ref [64] added (full text supplied by author; noted in source-quality notes). Fixed insertion order ([63] before [64]).
+- Confirmed EdgeBench/coding-index/reward-hacking threads were already integrated in the prior session entry.
+
+**Decisions:**
+- Brown's argument placed as a measurement caveat cutting both ways (weakens the doc's own open-vs-frontier scalar comparisons, not just lab claims) — consistent with the de-slop/epistemic-humility direction.
