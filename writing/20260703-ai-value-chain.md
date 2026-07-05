@@ -38,7 +38,7 @@ The scariest version of the claim — *labs secretly train their shared models o
 
 But three related things *are* happening, all documented, all legal, and mostly disclosed. The public debate tends to mash them together; they have different evidence, different legal footing, and different fixes, so this document keeps them separate and refers to them by name throughout:
 
-1. **The training question.** Does enterprise data flow into the labs' shared models? *Verdict: not by default, per contract, across all major providers — but there are disclosed side channels, and the future risk is real.* (§9)
+1. **The training question.** Does enterprise data flow into the labs' shared models? *Verdict: not by default, per contract, across all major providers — but the side channels are widening: the newest model tier now requires a retention-and-review data channel even through the cloud providers, and one covert client-side channel has already been caught in the wild.* (§9)
 
 2. **The byproducts question.** FDE engagements produce artifacts along the way — lists of real tasks validated by experts, grading standards, examples of expert decisions, access to real working environments. There is now a commercial market that puts prices on exactly these artifacts, because they are what labs buy to train their models. A serious engagement generates low-to-mid seven figures' worth. Who owns them is set contract by contract. *Verdict: this is real, priced, and mostly unexamined by customers.* (§6)
 
@@ -114,7 +114,7 @@ The **application layer** is the stratum of companies that build products on top
 
 ### 3.4 Hyperscalers, data vendors, consultancies
 
-**Hyperscalers** — the giant cloud providers (Microsoft Azure, Amazon Web Services, Google Cloud) — own compute, enterprise trust, and something they have turned into a product: *neutrality*. Microsoft documents that OpenAI cannot access Azure customers' AI data [3], and its new Frontier Company unit markets itself with "customers keep the results of the work" — a pitch Reuters explicitly frames against enterprise fear that labs learn enough from engagements to compete in coding and law [11]. When your competitor's anxiety is your marketing copy, the anxiety is load-bearing.
+**Hyperscalers** — the giant cloud providers (Microsoft Azure, Amazon Web Services, Google Cloud) — own compute, enterprise trust, and something they have turned into a product: *neutrality*. Microsoft documents that OpenAI cannot access Azure customers' AI data [3], and its new Frontier Company unit markets itself with "customers keep the results of the work" — a pitch Reuters explicitly frames against enterprise fear that labs learn enough from engagements to compete in coding and law [11]. When your competitor's anxiety is your marketing copy, the anxiety is load-bearing. One caveat, developed in §9: as of June 2026 the neutrality product has a frontier-tier exception — accessing Anthropic's newest model class through the clouds now *requires* the customer to share inference data with Anthropic, so the channel firewall holds in full only for models a tier down [57], [58].
 
 **Data vendors** are the companies that supply labs with training material made by human experts: Surge (over $1 billion in revenue), Mercor (valued at $10 billion), Mechanize (pays engineers $500K salaries; works with Anthropic). Their asset is expert networks plus quality-control infrastructure at scale — and their prices are what let §6 put dollar figures on engagement byproducts [16]–[20].
 
@@ -156,7 +156,7 @@ Zoom out and the industry is a web of bilateral relationships, every one of them
 |---|---|---|---|
 | Lab ↔ Enterprise | Vendor and customer; FDEs co-develop workflows | The customer is also a data source; the lab is a prospective competitor in the customer's own vertical | Karp's checklist ("are you keeping the data, are you going to enter our business") [26], [27]; Anthropic's Fable retention terms prompting Microsoft to limit employee use (§8.5) [21], [22] |
 | Lab ↔ App layer | API supplier and platform partner | The supplier is also a competitor, and access is revocable | Windsurf cutoff; Claude Code vs. Cursor; SpaceX/xAI signaling a Cursor acquisition [13]–[15] |
-| Lab ↔ Hyperscaler | Compute supplier, investor, sales channel | The channel's architecture deliberately blocks the lab's data access; the hyperscaler builds rival deployment arms | Azure's data firewall [3]; Microsoft Frontier Company [11]; Microsoft evaluating DeepSeek for Copilot [33] |
+| Lab ↔ Hyperscaler | Compute supplier, investor, sales channel | The channel's architecture deliberately blocks the lab's data access; the hyperscaler builds rival deployment arms | Azure's data firewall [3]; Microsoft Frontier Company [11]; Microsoft evaluating DeepSeek for Copilot [33]; Fable's provider-data-share requirement piercing the channel firewall for Mythos-class models (§9) [57], [58] |
 | Lab ↔ Data vendor | Labs buy environments and grading standards | Labs in-house the work to keep training priorities confidential; vendors climb up-stack | Anthropic's ~$1B/yr environment discussions; OpenAI building an in-house human-data team [16], [17] |
 | Lab ↔ Consultancy | Delivery partnerships (Accenture, Deloitte, PwC; Bain and McKinsey as DeployCo investors) | DeployCo targets the consulting market itself | DeployCo's investor-as-competitor structure [5]–[8] |
 | Lab ↔ Private equity | Capital plus captive distribution into portfolio companies | Portfolio companies are simultaneously investors, customers, and data sources | Anthropic/Blackstone–H&F–Goldman JV [9]; DeployCo's 19 backers [8] |
@@ -302,7 +302,7 @@ The exit option caps extraction twice over.
 
 **On price:** labs cannot charge much above the open-stack alternative for commodity work, which compresses the margin that funds everything else — this is the §4 chain, now operating as customer discipline.
 
-**On behavior:** policy changes now carry an observable market price. The natural experiment: Anthropic's Fable model line shipped with a 30-day data-retention *requirement* (extended to two years for interactions flagged by safety classifiers) [21] — and within weeks, Microsoft restricted its employees' use of Fable, citing the retention terms [22]. One clean data point, but it is the first public test of whether the market punishes data-policy drift, and it did: a lab changed its data posture, and a major customer visibly withdrew usage.
+**On behavior:** policy changes now carry an observable market price. The natural experiment: Anthropic's Fable model line shipped with a 30-day data-retention *requirement* (extended to two years for interactions flagged by safety classifiers; the full mechanics, including mandatory data sharing through the cloud channels, are in §9) [21] — and within weeks, Microsoft restricted its employees' use of Fable, citing the retention terms [22]. One clean data point, but it is the first public test of whether the market punishes data-policy drift, and it did: a lab changed its data posture, and a major customer visibly withdrew usage.
 
 The protection is asymmetric, and honesty requires saying so. It covers enterprises with ML capacity (Bridgewater, Coinbase) and enterprises with regulatory moats. It covers thin application-layer companies — no weights, no compliance moat, total API dependence — poorly; their remedies remain contractual nondiscrimination, multi-provider architecture, and acquiring fine-tuning capability, the cost of which Tinker-class infrastructure has at least repriced downward.
 
@@ -312,19 +312,26 @@ The protection is asymmetric, and honesty requires saying so. It covers enterpri
 
 Saved for late in the document because the evidence is the least alarming — but it needs examining, because it is the version of the claim most people mean, and because the future risk is structural.
 
-**Current state.** The no-default-training commitment is consistent across OpenAI, Anthropic, Google Cloud, and Microsoft Azure business terms [1]–[4], and Azure adds the architectural layer: customer prompts, outputs, embeddings, and fine-tuning data on Azure are not available to OpenAI at all [3]. What remains are disclosed side channels — paths by which customer-related data can still reach a provider, none of them covert, each with different training relevance:
+**Current state.** The no-default-training commitment is consistent across OpenAI, Anthropic, Google Cloud, and Microsoft Azure business terms [1]–[4], and Azure adds the architectural layer: customer prompts, outputs, embeddings, and fine-tuning data on Azure are not available to OpenAI at all [3]. What remains are side channels — paths by which customer-related data can still reach a provider. When the first draft of this document was written, all of them were disclosed; the two June–July 2026 developments covered after the table (a mandatory data-sharing channel for the newest model tier, and a covert one found in a vendor client) mean that qualifier no longer holds unqualified:
 
 | Channel | Feeds training? | Notes |
 |---|---|---|
 | Ordinary usage (prompts in, answers out) | No, under business terms | The core commitment [1]–[4] |
 | Abuse and safety logs | No | 30-day default retention; Fable: 2 years if classifier-flagged [21], [22] |
+| Mythos-class safety retention (Jun 2026) | No (stated) | Mandatory 30-day retention of prompts *and outputs* with human review, on every platform including the hyperscalers; zero-data-retention revoked for covered models [57], [58] |
 | Stateful features — uploaded files, persistent memory, vector stores | Not by default | But they *persist* your production examples with the provider; deletion and tenancy terms govern [1], [3] |
 | Your own fine-tuning data | Scoped to you | Improves your private model copy, not the shared one [1], [3] |
 | Opt-in feedback and data-sharing programs | **Yes** | Anthropic may train on feedback with full-conversation retention; OpenAI offers free tokens for opted-in traffic [1], [2] |
 | Evaluation suites, grading standards, environments, work traces | **Often yes** | The §6 byproducts — ownership is whatever the contract says [16]–[20] |
 | FDE field knowledge and roadmap signal | Not as data | Walks out in engineers' heads; shapes products and strategy [5], [6] |
 
-The pattern: the headline channel is genuinely closed; the open channels are the opt-ins (which enterprises control, and should treat as decisions rather than defaults) and the byproducts (which are the §6 story wearing a different hat).
+The pattern: the headline channel is genuinely closed; the open channels are the opt-ins (which enterprises control, and should treat as decisions rather than defaults) and the byproducts (which are the §6 story wearing a different hat). But three developments from June–July 2026 changed the structure of this table, and they deserve their own treatment.
+
+**The Mythos-class exception: safety as a mandatory data channel.** Effective June 9, 2026, Anthropic requires that prompts submitted to and outputs generated by its Mythos-class models (Fable 5, and future "covered models") be retained for 30 days "on every platform where these models are offered," with human review of flagged content — and organizations that had negotiated zero-data-retention lose that option for these models [57]. The stated rationale is genuine enough as far as it goes: some attacks (Best-of-N jailbreaking, state-sponsored campaigns) are only visible across many requests, so detection requires holding requests long enough to analyze together. The stated protections: no personnel access by default, a controlled review path, tamper-proof access logs, automatic deletion at 30 days except for flagged or legally held material, optional customer-managed keys [57]. What changed structurally is bigger than the retention window. On AWS Bedrock, *access to Fable 5 is conditional on the customer opting into `provider_data_share`* — a mode in which, in AWS's own words, "Amazon Bedrock [retains and shares] your inference data with model providers per their requirements," with Anthropic requiring 30-day input/output retention *and human review* [58]. The same policy reaches Google Cloud and Microsoft Foundry deployments [57]. Recall what §3.4 said the hyperscalers sell: architectural separation — the promise that the lab *cannot* see your data, enforced by channel design rather than by contract. For the frontier tier, that architecture has now been inverted by requirement: the firewall is no longer a property of the channel but a policy of the vendor, subject to the vendor's stated limits. Those limits may be honored scrupulously — but "the lab cannot see your data" and "the lab promises to look only for safety reasons, with controls it administers itself" are different trust postures, and the second is not independently auditable from outside. The practical and legal limits of what telemetry and metadata ride along with this channel are specified only by the vendor's own white paper; compliance analysis of the HIPAA/GDPR interaction is already a cottage industry [59]. The market response was §8.5's natural experiment: Microsoft limited employee use within weeks [22].
+
+**Covert client instrumentation: the steganography episode.** In early July 2026, a developer inspecting the Claude Code client binary (version 2.1.196, signed by Anthropic June 29) published reverse-engineered code showing that the client silently varies the punctuation of an innocuous system-prompt sentence — "Today's date is…" — to encode information: four visually near-identical Unicode apostrophe variants signal whether the configured API endpoint matches an obfuscated list of domains (Chinese tech companies, proxy and reseller gateways) or contains keywords naming Chinese AI labs (deepseek, moonshot, zhipu, stepfun…), and a system timezone of Asia/Shanghai or Asia/Urumqi flips the date separator [61]. This is **steganography** — hiding a signal inside content that looks normal — running in a developer tool with filesystem and shell access. The plausible purpose is unauthorized-reseller and distillation detection (competitors harvesting Claude outputs to train their own models), which is a legitimate interest; the finding, which reached the top of Hacker News at 2,400+ points [62], is about the *method*: the domain list is deliberately obfuscated (base64 + XOR), the behavior is undisclosed, and the signal is smuggled through the prompt rather than sent as documented telemetry. The author's conclusion is the analytically important one: "hiding the signal in the system prompt makes every other privacy claim harder to believe." For this document's purposes the episode does two things. It converts "vendor clients are part of the trust boundary" from paranoia into demonstrated fact — the §8.4 gateway argument now extends to *normalizing vendor-injected context*, not just routing. And it prices vendor credibility: a lab whose data posture is "trust our stated limits" (see the Mythos-class channel above) was simultaneously shipping undisclosed, obfuscated instrumentation in its most widely deployed client.
+
+**Identity enters the stack.** Alongside the Fable 5 relaunch — the model was offline June 12–30 under a US export-control directive and restored July 1 after Commerce lifted it — Anthropic is rolling out identity verification: a government-issued photo ID and live selfie processed by the third-party vendor Persona, with a privacy policy effective July 8, 2026 that explicitly enumerates biometric data and government IDs among collectable data; leaked app strings tie Fable usage credits to completed verification [60]. This is not one lab's quirk: OpenAI's GPT-5.6 rollout began as a trusted-partner preview whose participant list was shared with the US government at the government's request, and Anthropic's unrestricted Mythos 5 returns only to a vetted institutional list — an emerging state-mediated access regime for frontier capability (companion analysis: [63]). For the training question, identity linkage matters because it changes what retained data *is*: a 30-day store of prompts and outputs tied to a verified government identity, held under vendor-administered controls, is a qualitatively different asset — to the vendor, to litigants (recall *Heppner*), and to any state that requests it — than anonymous inference logs. And for §8.3's sovereignty argument, it is confirmation: access to the frontier tier now visibly runs through both a vendor's policy and a government's approval, which is precisely the dependency the European withdrawals are pricing.
 
 **The legal wrinkle: consumer tiers are a trapdoor.** In *United States v. Heppner* (Southern District of New York, Judge Rakoff, February 2026), a securities-fraud defendant had drafted 31 defense-strategy documents in *consumer-tier* Claude. The court held them neither privileged nor protected work product: the consumer privacy policy — which permits training use and disclosure — defeated any reasonable expectation of confidentiality, and the court flagged possible waiver over the underlying attorney communications too [25]. The enterprise lesson generalizes beyond litigation: trade-secret law protects only material kept under "reasonable secrecy measures," and employees pasting sensitive material into consumer AI tools can destroy that status *before any training question even arises*. The business/consumer tier boundary is a legal cliff, and policy enforcement at that boundary (the gateway again, §8.4) is not bureaucratic fussiness.
 
@@ -370,7 +377,8 @@ What §§2–10 imply, as things a buyer can actually do.
 - **Research/product firewalls**: the provider's engagement staff may not brief its research or product teams on your workflows.
 - **Reciprocal competitive-use covenants**: if the vendor won't promise to stay out of your business, that is information (Karp's second question).
 - **Feedback channels disabled by default** — recall from §9 that opt-in feedback is a channel that *does* feed training.
-- **A per-endpoint retention audit**: retention terms differ by product tier and feature; know each one you touch.
+- **A per-endpoint retention audit**: retention terms differ by product tier and feature; know each one you touch — and check specifically whether frontier-tier models revoke zero-data-retention or require provider data sharing, as the Mythos class does (§9).
+- **Identity exposure decisions**: decide which workflows may run through identity-verified accounts; biometric enrollment with a third-party verifier is a new data class your organization is creating (§9).
 - **API nondiscrimination clauses** — private-contract versions of the VPA proposal (§7).
 - **Conflict disclosures** from PE owners and consultancies who may also be invested in your vendor's deployment arm (§4).
 - **Canary testing**: seed engagement materials with distinctive markers and periodically probe models for leakage.
@@ -382,6 +390,7 @@ What §§2–10 imply, as things a buyer can actually do.
 3. **Treat expert labels and human approvals as owned assets.** Every time your experts correct, approve, or grade an AI output, they are producing exactly the material §6 prices. Log it; decide deliberately whether each stream flows to a vendor's evaluation set or your own training set. Armstrong's version: "the decision you make today is the dataset you own tomorrow" [32]. As agents move to day-long runs, extend this to the experience they accumulate in your environment (§6, §9): trajectories and working artifacts from long-horizon runs are training-grade material — capture and own those streams too.
 4. **If you are an application-layer company:** assume API access is revocable, because it is (Windsurf); abstract providers early; treat fine-tuning capability as insurance whose premium Tinker-class infrastructure just lowered.
 5. **Sequence FDE engagements deliberately.** Put them on workflows you have classified commodity or shareable, so the byproducts are low-value to a competitor *by construction* — contract terms as the second line of defense, not the only one.
+6. **Treat vendor clients as inside the trust boundary.** The Claude Code steganography episode (§9) demonstrated that a first-party client can carry undisclosed, obfuscated instrumentation. Prefer auditable clients; normalize or strip vendor-injected context at the gateway; monitor outbound prompts the way you would any other telemetry.
 
 ---
 
@@ -400,6 +409,9 @@ How solid is each claim this document makes:
 | The open-weight exit is operational at enterprise scale | Strong | Coinbase in production; operator consensus [31]–[37] |
 | A deep FDE engagement yields low-to-mid seven figures of training-asset value | Moderate | Back-of-envelope on Epoch prices; depends on task count, rights, fidelity [6], [16] |
 | Market discipline constrains retention drift | Moderate | One natural experiment: Fable → Microsoft limits [21], [22] |
+| Mythos-class access requires retention plus provider data sharing on every channel, including hyperscalers | Strong | The vendors' own documentation: Anthropic support page, AWS launch blog [57], [58] |
+| Claude Code covertly marks prompts via endpoint- and timezone-conditional Unicode variants | Strong (behavior) / Moderate (purpose) | Published reverse engineering of the signed binary, reproducible and unrebutted at this writing [61], [62]; the distillation-detection purpose is inference |
+| Frontier access is becoming identity-linked and state-mediated | Moderate | Vendor policy pages via secondary reporting; leaked app strings; GPT-5.6 government-vetting reports; the June export-control episode [60], [63] |
 | Sovereignty pushback is materially narrowing US vendors' reach among allies | Strong | France, Germany, Spain, UK government actions in H1 2026 [43]–[47] |
 | Frontier-model economics don't close at the model layer, forcing the up-stack moves | Moderate | Inference from capex scale, circular-financing coverage, and the labs' observed strategy (services, apps, discovery) [5]–[11], [38]–[41]; lab internals not public |
 | Falling post-training costs make customer-owned models routine | Moderate | Bridgewater demonstrated the capability [30]; pricing commentary sourced [49], [50] but PostTrainBench rankings contested [51] |
@@ -422,68 +434,139 @@ Open questions, ranked by how much turns on them:
 9. **Whether the European sovereignty cascade extends from Palantir-class vendors to the frontier labs themselves** — the Palantir record (§8.3) is the leading indicator; watch sovereign-AI procurement terms for closed-model exclusions.
 10. **Replication of the EdgeBench regime** — does the log-sigmoid law and the 3-month learning-speed doubling hold outside ByteDance Seed's own runs, and does within-run experience accumulation convert into weight-level learning? This bridges the §6 asset question to open question 1, and adds a sub-question with commercial teeth: who owns the experience an agent accumulates inside a customer's environment?
 11. **Evaluation integrity** — how much reported agent capability survives hack-auditing ([56]'s "clean where?" finding)? This bears on every benchmark number cited in this document, including the SWE-bench Pro and PostTrainBench comparisons [36], [50].
+12. **The actual limits of the Mythos-class safety channel** — what metadata and telemetry ride along with the retained prompts/outputs; whether the retained store is contractually and technically firewalled from training and product teams; whether the Trust Center white paper's threat model gets independent audit [57], [58].
+13. **The extent of covert client instrumentation** — whether the steganographic marking [61] exists in other surfaces or other vendors' clients, and whether market discipline (§8.5) prices it the way it priced retention.
 
 ---
 
 ## 13. References
 
 [1] OpenAI, Enterprise privacy. https://openai.com/enterprise-privacy/ — Business no-default-training; post-March-2023 API defaults; opt-in sharing.
+
 [2] Anthropic, Commercial Terms of Service. https://www.anthropic.com/legal/commercial-terms — Customer Content no-training clause; separate feedback clause; customer restrictions on building competing models.
+
 [3] Microsoft Learn, Data privacy for Azure/Foundry-hosted models. https://learn.microsoft.com/en-us/azure/foundry/responsible-ai/openai/data-privacy — Customer data not available to OpenAI; no training without permission.
+
 [4] Google Cloud, Gemini Enterprise ZDR. https://docs.cloud.google.com/gemini-enterprise-agent-platform/resources/zero-data-retention — No training without permission; retention exceptions enumerated.
+
 [5] OpenAI, Deployment Company announcement. https://openai.com/index/openai-launches-the-deployment-company/ — $4B+, Tomoro, 19 partners, majority OpenAI control.
+
 [6] Deploy.co, Forward deployed engineering. https://deploy.co/ — FDE flywheel; BBVA and John Deere case studies.
+
 [7] Reuters, OpenAI $4B unit, May 11, 2026. https://www.reuters.com/business/openai-creates-new-unit-with-4-billion-investment-aid-corporate-ai-push-2026-05-11/
+
 [8] Axios, DeployCo valuation and terms, May 11, 2026. https://www.axios.com/2026/05/11/openai-deployco-private-equity — $10B pre-money; 17.5% guaranteed return; capped profits.
+
 [9] Reuters, Anthropic $1.5B JV report, May 4, 2026. https://www.reuters.com/legal/transactional/anthropic-nears-15-billion-ai-joint-venture-with-wall-street-firms-wsj-reports-2026-05-04/ — Via WSJ; not independently verified.
+
 [10] Reuters, AWS $1B embedded-engineer unit, Jun 30, 2026. https://www.reuters.com/business/retail-consumer/amazons-aws-commits-1-billion-toward-new-unit-embedded-ai-engineers-2026-06-30/
+
 [11] Reuters, Microsoft Frontier Company, Jul 2, 2026. https://www.reuters.com/business/retail-consumer/microsoft-launches-firm-help-companies-adopt-ai-with-25-billion-2026-07-02/ — $2.5B; customers keep results; framed against lab-expertise fears.
+
 [12] MacCarthy, Brookings, "What happens when AI companies compete with their customers?", Mar 12, 2026. https://www.brookings.edu/articles/what-happens-when-ai-companies-compete-with-their-customers/
+
 [13] Ramzanali & Rajan, VPA, "AI Neutrality" (report PDF). https://cdn.vanderbilt.edu/vu-URL/wp-content/uploads/sites/412/2026/01/28222934/AI-Neutrality-.pdf
+
 [14] VPA Substack, "Net Neutrality for AI", Jan 29, 2026. https://vanderbiltpolicyaccelerator.substack.com/p/net-neutrality-for-ai
+
 [15] VPA, Governing AI papers page ("After the AI Crash", Mar 26, 2026). https://www.vanderbilt.edu/vanderbilt-policy-accelerator/governing-artificial-intelligence/
+
 [16] Denain & Barber, Epoch AI, "An FAQ on Reinforcement Learning Environments", Jan 12, 2026. https://epoch.ai/gradient-updates/state-of-rl-envs
+
 [17] Kourabi & Patel, SemiAnalysis, "RL Environments and RL for Science", Jan 12, 2026. https://newsletter.semianalysis.com/p/rl-environments-and-rl-for-science
+
 [18] Mechanize, "Cheap RL tasks will waste compute". https://www.mechanize.work/blog/cheap-rl-tasks-will-waste-compute/
+
 [19] Reuters, Surge AI raise, Jul 1, 2025. https://www.reuters.com/business/scale-ais-bigger-rival-surge-ai-seeks-up-1-billion-capital-raise-sources-say-2025-07-01/
+
 [20] Business Insider, Mercor contractor spend, Oct 2025. https://www.businessinsider.com/mercor-pays-million-per-day-human-contractors-training-ai-ceo-2025-10
+
 [21] Anthropic, Claude Fable product page. https://www.anthropic.com/claude/fable — 30-day retention requirement.
+
 [22] Reuters, Microsoft limits Fable use, Jun 10, 2026. https://www.reuters.com/technology/microsoft-limits-employee-use-anthropics-claude-fable-5-over-data-retention-2026-06-10/ — 30 days; 2 years if flagged.
+
 [23] The Verge, Anthropic consumer training policy. https://www.theverge.com/anthropic/767507/anthropic-user-data-consumers-ai-models-training-privacy
+
 [24] Ouyang et al., InstructGPT, arXiv:2203.02155. https://arxiv.org/abs/2203.02155 — API-submitted prompts in the training pipeline.
+
 [25] Reuters Legal on *US v. Heppner*, Mar 24, 2026. https://www.reuters.com/legal/transactional/artificial-intelligence-tools-third-party-by-any-other-name--pracin-2026-03-24/
+
 [26] Axios, "The revolt against U.S. AI labs", Jul 2, 2026. https://www.axios.com/2026/07/02/karp-palintir-openai-anthropic-amodei
+
 [27] Business Insider, Karp critique, Jul 2026. https://www.businessinsider.com/alexander-karp-criticizes-ai-companies-token-costs-2026-7
+
 [28] Tom's Hardware on MIT NANDA GenAI Divide. https://www.tomshardware.com/tech-industry/artificial-intelligence/95-percent-of-generative-ai-implementations-in-enterprise-have-no-measurable-impact-on-p-and-l-says-mit-flawed-integration-key-reason-why-ai-projects-underperform — Primary MIT report not yet sourced.
+
 [29] Wired, "Anthropic revokes OpenAI's access to Claude". https://www.wired.com/story/anthropic-revokes-openais-access-to-claude
+
 [30] Su, Zhu, Xiao, Alur, Kang (Bridgewater AIA Labs) with Thinking Machines Lab, "Learning to Replicate Expert Judgment in Financial Tasks", Jun 30, 2026. https://thinkingmachines.ai/news/learning-to-replicate-expert-judgment-in-financial-tasks/ — Results in §8.1; coins "differentiated intelligence."
+
 [31] Yahoo Finance/Business Insider, Coinbase AI cost strategies, Jun 2026. https://finance.yahoo.com/technology/ai/articles/coinbases-ceo-outlined-5-strategies-053434539.html
+
 [32] The AI Corner, Armstrong interview summary, Jul 2026. https://www.the-ai-corner.com/p/brian-armstrong-coinbase-1200-ai-agents-operating-model-2026 — Secondary summary; verify against the primary interview before quoting.
+
 [33] TechTimes, Coinbase/Chinese-model legal risk, Jun 28, 2026. https://www.techtimes.com/articles/319248/20260628/coinbase-cuts-ai-spend-50-chinese-models-legal-risk-its-ceo-didnt-lead.htm — Congressional probe; Lindy migration; Microsoft/DeepSeek evaluation.
+
 [34] PANews, Coinbase gateway/caching detail, Jun 27, 2026. https://panewslab.com/en/articles/019f08e4-fef0-70ca-9cdc-572a6426e81b
+
 [35] BigGo Finance, Armstrong interview coverage, Jun 2026. https://finance.biggo.com/news/77dd3c6888face61 — LightLLM-derived middleware; 80%/99% projection.
+
 [36] MLQ News, Coinbase GLM/Kimi switch, Jun 2026. https://mlq.ai/news/coinbase-switches-to-chinese-ai-models-glm-and-kimi-cuts-ai-spending-by-50/ — $1.40 vs. $5 per M input tokens; SWE-bench Pro comparison.
+
 [37] Tekedia, ecosystem reactions to Armstrong, Jun 2026. https://www.tekedia.com/coinbase-ceo-brian-armstrong-urges-shift-to-cheaper-ai-models-signaling-end-of-the-tokenmaxxing-era/ — Levie, Weinberg, Gentilcore, Andreessen, Chaumond quotes.
+
 [38] TechTimes, "Microsoft CEO Issues AI Warning: Companies That Rent Models Risk Industry Hollowing", Jun 15, 2026. https://www.techtimes.com/articles/318394/20260615/microsoft-ceo-issues-ai-warning-companies-that-rent-models-risk-industry-hollowing.htm — Models absorbing professional knowledge, sold back at commodity prices.
+
 [39] The Decoder, "Microsoft CEO Satya Nadella warns of 'a small number of AI systems capturing all the economic returns'", Jun 2026. https://the-decoder.com/microsoft-ceo-satya-nadella-warns-of-a-small-number-of-ai-systems-capturing-all-the-economic-returns/ — "Token capital" framing.
+
 [40] Anthropic, "Claude Science, an AI workbench for scientists". https://www.anthropic.com/news/claude-science-ai-workbench — Launched Jun 30, 2026; companion page: https://www.anthropic.com/news/claude-for-life-sciences
+
 [41] CNBC, "Anthropic launches AI drug discovery program, Claude Science", Jun 30, 2026. https://www.cnbc.com/2026/06/30/anthropic-launches-ai-drug-discovery-program-claude-science.html — Neglected-diseases program alongside the workbench.
+
 [42] Palantir (@PalantirTech), "Our thoughts on the importance of AI sovereignty", Jul 1, 2026. https://x.com/PalantirTech/status/2072114267776491695 (unrolled: https://threadreaderapp.com/thread/2072114267776491695.html) — Nine theses; "tokenmaxxing"; "controlling your weights is controlling your fate."
+
 [43] Arnaud Bertrand (@RnaudBertrand), thread on Palantir and sovereignty, Jul 3, 2026. https://x.com/RnaudBertrand/status/2072964558302687569 (unrolled: https://threadreaderapp.com/thread/2072964558302687569.html) — Two dying assumptions; European case record; source of the embedded links in [44]–[48].
+
 [44] The Guardian, France replaces Palantir with ChapsVision at the DGSI, Jun 16, 2026. https://www.theguardian.com/world/2026/jun/16/france-ai-data-tools-palantir-chapsvision — Lecornu: no "new strategic dependencies"; "capable of turning off the tap."
+
 [45] Politico Europe, "Germany spy agency picks France AI firm over Palantir". https://www.politico.eu/article/germany-spy-agency-picks-france-ai-firm-over-palantir/ — BfV selects ChapsVision; German military dropping Palantir.
+
 [46] Anadolu Agency, "Spain tells state-backed firms to avoid new Palantir contracts amid national security concerns". https://www.aa.com.tr/en/europe/spain-tells-state-backed-firms-to-avoid-new-palantir-contracts-amid-national-security-concerns/3983804 — Telefónica, Indra, Navantia.
+
 [47] Reuters, "UK reviewing Palantir's NHS contract amid pressure to use break clause", Jun 9, 2026. https://www.reuters.com/business/healthcare-pharmaceuticals/uk-reviewing-palantirs-nhs-contract-amid-pressure-use-break-clause-2026-06-09/ — £330M contract; the Met Police block is reported via [43].
+
 [48] Jacob Helberg (Under Secretary of State), post opposing "AI sovereignty", Jun 2026. https://x.com/UnderSecE/status/2069482327387038086 — "Synchronized mediocrity" / "marching in perfect formation into the past."
+
 [49] Karina Nguyen, post on post-training economics, Jul 2, 2026. https://x.com/karinanguyen/status/2072756945166209270 — "The marginal cost of shaping intelligence is falling"; VC sentiment shift.
+
 [50] @thoughtfullab, GLM 5.2 / PostTrainBench post, Jul 2, 2026. https://x.com/thoughtfullab/status/2072755415889355015 — 5× cheaper than Opus 4.8, 11× than Fable 5, tops PostTrainBench; "millions of models" vision.
+
 [51] @scaling01, PostTrainBench critiques, Jun 20–21, 2026. https://threadreaderapp.com/thread/2068049408940556430.html and https://threadreaderapp.com/thread/2068502041106805031.html — Unrestricted internet access inflates recent-model scores; GLM-5.2 eval-probing trace analysis; judge catches only direct contamination/substitution.
+
 [52] Benjamin Horne, post on labs entering the discovery layer, Jul 3, 2026. https://x.com/benjamin_horne/status/2073119237758206278 — "Knife fight over generic workflows and UI/UX"; breakthrough economics of biotech.
+
 [53] ByteDance Seed, "EdgeBench: Scaling Laws of Environment Learning", Jul 2, 2026. https://edge-bench.org/ and https://edge-bench.org/paper.pdf — 134 tasks, 12–72h horizons; log-sigmoid law (R² = 0.998); learning speed doubling ~3 months; experience accumulation (§5.2) and long-context (§5.3) findings; 51 tasks + framework released.
+
 [54] @tikgiau (EdgeBench team), announcement thread, Jul 2, 2026. https://threadreaderapp.com/thread/2072701593829695926.html — 57.2h average expert effort; 38,000 hours of agent runs; graph-exploration theory of the law.
+
 [55] @scaling01, EdgeBench summary, Jul 2, 2026. https://threadreaderapp.com/thread/2072790212615237858.html — Opus 4.8 ahead of GPT-5.5 on current runs, GPT-5.5's ceiling possibly higher; highlights §5.2/§5.3.
+
 [56] @JongwonPar9958, reward-hacking audit / Clean Coding Index, Jul 2, 2026. https://threadreaderapp.com/thread/2072560608655143292.html and https://coding-index.posttrain.dev — Capability and hacking rise together; GPT-5.5 0% on patch-form vs. 26.5% on mission-form tasks; held-out re-scoring drops up to ~8 points; corroboration reported by Datacurve and Cursor researchers.
+
+[57] Anthropic support, "Data retention practices for Mythos-class models". https://support.claude.com/en/articles/15425996-data-retention-practices-for-mythos-class-models — Effective Jun 9, 2026; 30-day retention on every platform; ZDR revoked for covered models; controlled human-review path; Trust Center white paper referenced.
+
+[58] AWS News Blog, "Anthropic Claude Fable 5 on AWS", updated Jul 1, 2026. https://aws.amazon.com/blogs/aws/anthropic-claude-fable-5-on-aws-mythos-class-capabilities-with-built-in-safeguards-now-available/ — `provider_data_share` opt-in required to invoke Fable 5 on Bedrock; "retain and share your inference data with model providers per their requirements"; human review; access "restored" Jul 1.
+
+[59] Lushbinary, "Claude Fable 5 Data Retention: Compliance Guide", Jun 11, 2026. https://lushbinary.com/blog/claude-fable-5-enterprise-data-retention-compliance-guide/ — Secondary vendor blog; HIPAA/GDPR interaction; routing checklist.
+
+[60] explainx.ai, "Anthropic Rolls Out ID Verification for Claude", Jun–Jul 2026. https://www.explainx.ai/blog/anthropic-claude-id-verification-persona-fable-5-2026 — Persona verification (government ID + live selfie); Jul 8 privacy policy enumerating biometrics; Jun 12–30 export-control offline period, Jul 1 restore; leaked credit-gating strings. Secondary blog.
+
+[61] Thereallo, "Claude Code is steganographically marking requests", Jul 2026. https://thereallo.dev/blog/claude-code-prompt-steganography — Reverse engineering of Claude Code 2.1.196; Unicode apostrophe variants keyed to endpoint domain/keyword lists (XOR-obfuscated); CN-timezone date-separator flip.
+
+[62] Hacker News discussion of [61]. https://news.ycombinator.com/item?id=48734373 — 2,400+ points; community analysis of detection purpose and client-trust implications.
+
+[63] lhl, RealityCheck companion syntheses. https://github.com/lhl/realitycheck-data/blob/main/analysis/syntheses/palantir-sovereign-ai-frontier-lab-extraction-synthesis.md , https://github.com/lhl/realitycheck-data/blob/main/analysis/syntheses/gpt-5-6-sol-white-house-vetting-synthesis.md , https://github.com/lhl/realitycheck-data/blob/main/analysis/syntheses/anthropic-fable-mythos-export-control-synthesis.md — Author's own claim-graded analyses of the sovereignty/extraction debate, the GPT-5.6 trusted-partner access regime, and the Fable/Mythos export-control takedown.
 
 Adjacent sources from the research thread, not directly cited above: Wing VC on RL-environment market consolidation (3–5 predicted winners); Stratechery on subscription subsidies, Fable retention, and the commoditization case (paywalled; cited from memory); Dwarkesh Patel, "The next paradigm" (continual learning); Feiteng Li, commentary on the Bridgewater paper, Jul 3, 2026 (https://x.com/FeitengLi/status/2073046885896728625 — supplied during review, content not independently retrieved).
 
-**Source-quality notes:** Stanford 42% claim untraced to primary. [32] is a secondary interview summary. Stratechery arguments unverifiable against paywalled text. Bridgewater's all-in training cost unstated in [30]. PostTrainBench rankings are contested — see [51] — so §8.1 uses them as directional, not dispositive; [49], [50], and [52] are X posts (positions of practitioners, not vetted research). The circular-financing characterization (§1, §4) summarizes broad late-2025 press coverage of chip-vendor/lab co-investment structures rather than a single pinned source. [44]–[47] URLs are taken from the embedded links in [43] and not independently retrieved; verify before quoting downstream. [48] retrieved secondhand via [43]. EdgeBench findings [53]–[55] are author claims from a benchmark released three days before this revision, unreplicated; the reward-hacking audit [56] is a single group's work with reported (unverified) corroboration. Post-January-2026 claims verified against sources retrieved July 3, 2026; [38]–[43], [51], and [53]–[56] retrieved July 5, 2026; [49], [50], [52] supplied by the author July 5, 2026.
+**Source-quality notes:** Stanford 42% claim untraced to primary. [32] is a secondary interview summary. Stratechery arguments unverifiable against paywalled text. Bridgewater's all-in training cost unstated in [30]. PostTrainBench rankings are contested — see [51] — so §8.1 uses them as directional, not dispositive; [49], [50], and [52] are X posts (positions of practitioners, not vetted research). The circular-financing characterization (§1, §4) summarizes broad late-2025 press coverage of chip-vendor/lab co-investment structures rather than a single pinned source. [44]–[47] URLs are taken from the embedded links in [43] and not independently retrieved; verify before quoting downstream. [48] retrieved secondhand via [43]. EdgeBench findings [53]–[55] are author claims from a benchmark released three days before this revision, unreplicated; the reward-hacking audit [56] is a single group's work with reported (unverified) corroboration. [59] and [60] are secondary blogs — the primary Fable-channel claims rest on the vendor documents [57], [58], which were retrieved directly; the ID-verification and export-control timeline details in [60] should be re-verified against Anthropic's own pages before quoting. The steganography claims [61] are reproducible from the published code excerpts and unrebutted at this writing, but we have not independently decompiled the binary. [63] is the author's own research database (self-citation, disclosed as such). Post-January-2026 claims verified against sources retrieved July 3, 2026; [38]–[43], [51], and [53]–[62] retrieved July 5, 2026; [49], [50], [52] supplied by the author July 5, 2026.

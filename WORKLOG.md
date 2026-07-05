@@ -1610,3 +1610,24 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 **Next:**
 - Watch for independent EdgeBench replications; still to do: independently retrieve [44]–[48], Feiteng Li post, non-industry reader test.
+
+---
+
+## 2026-07-05 — AI value chain: Mythos-class data channel, steganography, ID verification; refs formatting
+
+**What:** Added the trust-boundary material to `writing/20260703-ai-value-chain.md` — the Fable/Mythos mandatory data-sharing channel, the Claude Code steganography finding, and identity-linked/state-mediated frontier access — plus GitHub MD reference formatting fix.
+
+- §9 gains three blocks after the channels table: (1) Mythos-class exception — 30-day retention + human review on every platform effective Jun 9, ZDR revoked, Bedrock access conditional on `provider_data_share` (AWS's own words: "retain and share your inference data with model providers"); framed as architecture→promise regression of the hyperscaler firewall. (2) Claude Code steganography (thereallo.dev, HN 2,400+ pts): Unicode apostrophe variants keyed to XOR-obfuscated Chinese-lab/reseller domain lists; converts "vendor clients are inside the trust boundary" to demonstrated fact. (3) Identity enters the stack: Persona ID verification (gov ID + selfie, Jul 8 privacy policy w/ biometrics), Jun 12–30 export-control offline period, GPT-5.6 government-vetted access; identity-linked retention as qualitatively different asset.
+- Channels table: new Mythos-class row; "none of them covert" qualifier retired.
+- §3.4 + §5 hyperscaler neutrality now carries the frontier-tier exception; §8.5 cross-ref.
+- §11: retention audit extended (ZDR revocation check), identity-exposure decisions, new architectural item 6 (treat vendor clients as inside the trust boundary).
+- §12: three new graded rows (behavior/purpose split on stego), open questions 12–13.
+- Refs [57]–[63] incl. lhl's three RealityCheck syntheses as disclosed self-citation companion analyses; source-quality notes distinguish vendor-primary [57][58] from secondary blogs [59][60].
+- All references now blank-line separated for GitHub MD rendering (user request).
+- Verified primary: AWS blog and support.claude.com retrieved directly; explainx/lushbinary flagged secondary.
+
+**Decisions:**
+- Wrote the Anthropic-critical material in the doc's evidence-first register: stated safety rationale acknowledged, structural regression (architectural guarantee → vendor-administered promise) as the analytical point, grades split where behavior is proven but purpose inferred.
+
+**Next:**
+- Re-verify [60]'s ID/export-control timeline against Anthropic's own pages; watch for Anthropic response to [61].
