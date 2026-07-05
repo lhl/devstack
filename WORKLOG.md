@@ -1689,3 +1689,20 @@ Append-only session log. Each entry records what was done, why, and what's next.
 **Next:**
 - GPT-5.6 Sol page is JS-gated; re-verify [68] quotes against a rendered copy or archive.
 - Watch for safeguard taxonomies beyond cyber (bio) to firm up the gating-scope claim.
+
+---
+
+## 2026-07-05 — AI value chain: GPT-5.6 launch text integrated (full [68] supplied)
+
+**What:** lhl supplied the full text of OpenAI's "Previewing GPT-5.6 Sol" post; upgraded [68] from secondary-quoted to primary and worked its specifics through the doc.
+
+- §3.1 gating block: safeguard architecture converging across labs (layered stack, real-time cyber *and biology* classifiers, paused-generation review, account-level review) but the gating line placement diverges — OpenAI preserves vulnerability research/patch development where Anthropic blocks high-uplift vuln finding; line placement framed as a competitive variable. Added 700K A100-hours automated red-teaming as "safety is a disclosed compute line item."
+- §4: within-lineup repricing — Terra "competitive performance to GPT-5.5" at half price [68].
+- §6: Brown's curve-reporting recommendation now appears in a flagship launch (GPT-5.6 evals as score-vs-token curves).
+- §9 Mythos-class channel: retention-and-review posture confirmed cross-lab (OpenAI account-level review "consistent with our terms and policies around content retention and review"; privacy-preserving detection / customer-operated controls as OpenAI's stated longer-term answer).
+- §9 state-mediated paragraph: OpenAI's own ambivalence quoted ("should not become the long-term default" vs. building "a repeatable process for future model releases" with the Administration).
+- §12 open question 15: now four signals, led by what the "repeatable process" turns into; bio-classifier note.
+- [68] ref entry expanded (pricing, tiering, quotes); source-quality note updated (full text supplied by author; page JS-gated). Closes the prior entry's "re-verify [68]" next-step.
+
+**Decisions:**
+- Did not use GPT-5.6 benchmark numbers (Terminal-Bench etc.) as capability claims — launch-post self-reporting; only used structural/priced facts and direct quotes.
