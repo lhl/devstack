@@ -7,13 +7,19 @@ intentional tracked-file write is `CODE-ANALYSIS.md`; it does not edit the code.
 Any remediation happens in a separate run after a human reviews the analysis and
 selects batches.
 
+`SKILL-` is a repository documentation convention here. This is a portable,
+pasteable harness manual, not an auto-discovered skill package with frontmatter.
+
 Before starting, provide this invocation block:
 
 ```text
 Audit scope: <repository or explicitly named repositories>
 Do not modify: <paths or "all repository files except CODE-ANALYSIS.md">
+Specifications/requirements: <paths or "discover and classify authority">
 Domain-specific correctness surfaces: <numerics, kernels, schemas, protocols, etc.>
 Required validation: <commands or "discover from repository and CI configuration">
+Prior audit/refactor reports: <paths or "none; withhold contents until Pass 5">
+Scratch ledger: <absolute path outside the repository or "choose a stable path">
 Additional constraints: <compatibility, time, environment, or "none">
 ```
 
@@ -48,8 +54,8 @@ a direct implementation over a configurable framework.
 - Read and follow every applicable repository instruction file before acting,
   including nested instructions for files within their scope.
 - Inspect the current Git status, branch, recent history, and relevant diffs.
-  Treat existing changes as user-owned. Never reset, revert, clean, or overwrite
-  them.
+  Record the starting commit and tracked-worktree fingerprint. Treat existing
+  changes as user-owned. Never reset, revert, clean, or overwrite them.
 - Every audit pass is `READ-ONLY`. The only intentional tracked-file write is
   `CODE-ANALYSIS.md` at the root of the audited repository. Do not modify source,
   tests, configuration, documentation, lockfiles, generated files, or
@@ -83,6 +89,35 @@ The lead must inspect the cited code for every retained finding, reconcile
 contradictions, and remove duplicate or unsupported reports. A subagent assigned
 the fresh-eyes pass must not see the initial findings ledger before completing
 its independent sweep.
+
+## Audit state and repeated runs
+
+Create a fresh durable scratch ledger for this run at the declared path outside
+the repository; do not seed it from a previous audit. Update it after each pass
+with the scope and exclusions, starting commit and worktree fingerprint, system
+map, commands and baseline results, coverage ledger, candidate findings with
+evidence, disproved suspicions, open questions, and next pass. Do not store
+credentials, secrets, or unnecessary source content there.
+
+After context compaction or handoff, re-read the repository instructions, scratch
+ledger, current commit, and worktree status before continuing. Do not reconstruct
+audit state from memory or a compressed conversation summary.
+
+At every pass boundary, compare the current commit and tracked files with the
+recorded state. If HEAD moves or tracked files change during the audit, identify
+the affected paths and re-verify every dependent finding and baseline result. If
+the change cannot be attributed or safely bounded, stop and record the stale
+scope instead of merging evidence from different revisions.
+
+Use one `CODE-ANALYSIS.md` per repository root. An explicitly cross-repository
+audit writes one report in each repository and cross-references shared findings;
+do not substitute one combined report unless the invocation requests it. On a
+repeat audit, do not read prior audit or refactor report contents before
+completing Pass 5. After the fresh-eyes sweep, treat those reports as untrusted
+hypotheses, preserve an ID only for the same underlying issue, and reconcile
+fixed, recurring, regressed, disproved, and new findings. Replace the prior
+tracked `CODE-ANALYSIS.md` so Git history retains earlier runs. Never overwrite
+uncommitted user changes to it.
 
 ## Evidence and calibration
 
@@ -144,7 +179,9 @@ Approach each pass with **fresh eyes**:
 If independent agents are available, reserve at least one for a fresh-eyes pass
 and withhold the initial findings from it until its sweep is complete. If one
 model performs every pass, set the ledger aside during the fresh-eyes traversal
-and compare notes only afterward.
+and compare notes only afterward. Prefer a different model family from the
+primary auditor and, when known, from the agents that built the code. Model
+diversity can expose shared blind spots; it does not relax the evidence standard.
 
 ## Multi-agent failure modes to hunt
 
@@ -153,6 +190,9 @@ Search specifically for these patterns, then verify each suspected instance:
 - Silent failure masking: broad exception handlers, swallowed rejections,
   catch-and-continue behavior, plausible-but-wrong fallbacks, and defaults that
   conceal missing configuration or partial results
+- Phantom implementations: complete-looking signatures, types, docstrings, and
+  success responses backed by placeholders, hardcoded values, no-op bodies,
+  fabricated data, or branches that never perform the claimed operation
 - Reimplemented utilities: independent parsing, normalization, path, retry,
   serialization, logging, validation, formatting, or configuration helpers
 - Copy-paste drift: similar branches or modules whose behavior, bug fixes,
@@ -174,26 +214,41 @@ Search specifically for these patterns, then verify each suspected instance:
 - Stale artifacts: unreachable branches, unused exports or dependencies, dead
   flags, orphaned files, commented-out code, obsolete TODOs, and docs or examples
   describing behavior that no longer exists
+- Aspirational documentation: README, API docs, examples, help text, or status
+  claims describing behavior that was planned but never implemented
+- Dependency drift: multiple libraries for the same job, heavy dependencies for
+  trivial local work, manifest/lock/import disagreement, unsupported or
+  hallucinated pins, and dependencies added but never used
 - Theater tests: assertion-free tests, tests that mostly exercise their mocks,
   snapshots no one interprets, always-skipped cases, and timing or sleep based
-  tests that do not establish an invariant
+  tests that do not establish an invariant, especially tests derived from the
+  implementation rather than an independent requirement or contract
 
 ## Pass 0 — Scope and system map
 
 1. Confirm the repository or repositories in scope and the commit audited.
-2. Read top-level and relevant subsystem instructions, README and architecture
-   documents, package/build configuration, CI workflows, deployment files, and
-   test configuration.
-3. Map the major components and their responsibilities. Identify:
+2. Read top-level and relevant subsystem instructions, specifications,
+   requirements, acceptance criteria, architecture and design records, README,
+   package/build configuration, CI workflows, deployment files, and test
+   configuration.
+3. Read relevant TODO, IMPLEMENTATION, roadmap, decision, and worklog artifacts.
+   Classify each statement as current requirement, known defect, intentionally
+   deferred work, abandoned plan, or superseded history. These files provide
+   intent and provenance; they do not override current external contracts by
+   themselves.
+4. Establish an authority map for conflicting requirements, specifications,
+   external interfaces, tests, docs, and implementation. Record ambiguity rather
+   than silently choosing the artifact that matches the code.
+5. Map the major components and their responsibilities. Identify:
    - executable entry points, services, jobs, command-line interfaces, and public
      APIs;
    - data and control flow across components;
    - persistent state, schemas, caches, and external integrations;
    - concurrency, process, trust, and failure boundaries;
    - public compatibility surfaces and known downstream consumers.
-4. Record generated, vendored, experimental, platform-specific, and deprecated
+6. Record generated, vendored, experimental, platform-specific, and deprecated
    areas and how each will be treated.
-5. Inspect recent history far enough to identify active migrations and the
+7. Inspect recent history far enough to identify active migrations and the
    intent behind unusual architecture. Do not assume recent code is the only
    risky code.
 
@@ -212,6 +267,14 @@ to the scope:
 - CLI help and a non-destructive representative workflow;
 - cross-repository checks when an interface between repositories is in scope.
 
+Before executing an unfamiliar suite, inspect its configuration, fixtures,
+scripts, and defaults for network calls, credential use, cloud or production
+targets, destructive filesystem/database operations, privileged actions,
+unbounded workloads, and global state mutation. Prefer sandboxed execution,
+temporary paths, disposable state, disabled credentials, and explicit local
+endpoints. Skip a command whose safety cannot be established and record the
+exact risk and missing evidence as a baseline limitation.
+
 Record each exact command, tool version when relevant, exit status, test counts,
 skips, warnings, duration when material, and concise failure output. If a check
 cannot run, record the exact environmental or permission blocker. Do not call a
@@ -225,6 +288,20 @@ unless the repository already supports a reliable coverage command.
 ## Pass 2 — Correctness audit
 
 Trace important invariants end to end. Cover each applicable area:
+
+### Requirements and authority
+
+- Compare implementation and externally observable behavior with current
+  specifications, requirements, acceptance criteria, protocols, and public
+  contracts—not only with tests and documentation.
+- Trace each material requirement through implementation and tests. Flag missing,
+  partial, contradictory, unreachable, and extra behavior.
+- Treat tests written by the implementation author or agent as corroborating
+  evidence, not an independent oracle. Check whether they encode implementation
+  drift instead of the stated requirement.
+- Distinguish intentionally deferred scope from behavior promised for the
+  audited release. Do not re-report a documented deferral as a new defect, and
+  do not let a TODO excuse violation of a current contract.
 
 ### Errors and boundaries
 
@@ -259,9 +336,9 @@ safe after each one.
 - Confirm API, CLI, environment, and configuration values propagate to the code
   that claims to use them. Look for accepted-but-ignored values and inconsistent
   defaults.
-- Compare implementation, callers, tests, docs, examples, `--help`, persistent
-  formats, protocols, and downstream use. Identify which source is authoritative
-  when they disagree.
+- Compare specifications, requirements, implementation, callers, tests, docs,
+  examples, `--help`, persistent formats, protocols, and downstream use. Apply
+  the recorded authority map when they disagree.
 - Check deprecated or misunderstood library calls against the version actually
   pinned by the project.
 
@@ -305,6 +382,11 @@ For each item, include reachability evidence, compatibility constraints, and a
 measured line count. Treat dynamic loading, reflection, plugins, generated
 references, packaging metadata, scripts, and external consumers as possible
 callers.
+
+For dependencies, reconcile imports, manifests, optional extras, and lockfiles;
+identify overlapping libraries and trace their actual consumers. Verify version
+claims against the APIs and metadata available for the pinned dependency. Do not
+call a pin hallucinated or obsolete merely because a newer version exists.
 
 Audit each module for removable concepts and indirection:
 
@@ -377,7 +459,9 @@ code. This is a new audit pass, not validation theater for the first one.
 
 Only after completing this independent sweep should you reopen the ledger.
 Record new findings, independent corroboration, contradictions, false positives,
-and coverage still missing.
+and coverage still missing. At that point, and not before, read any prior
+`CODE-ANALYSIS.md` and `CODE-REFACTOR-REPORT.md`. Compare them with the
+independent results without using them to fill uninspected areas.
 
 ## Pass 6 — Reconcile and challenge the analysis
 
@@ -416,6 +500,10 @@ Write `CODE-ANALYSIS.md` at the repository root with these sections:
 
 - scope, branch, commit, dirty-worktree summary, audit date, and excluded areas
 - invocation constraints and domain-specific correctness surfaces
+- specifications and requirements read, their authority order, and unresolved
+  conflicts
+- prior audit/refactor report paths and commits, if any, and whether the analysis
+  was replaced
 
 ### 2. Executive assessment
 
@@ -438,6 +526,10 @@ State how the fresh-eyes pass differed from the earlier passes. Record issues it
 added, corroborated, disproved, or downgraded. Coverage means inspected paths and
 boundaries, not files glanced at.
 
+When a prior analysis exists, add a reconciliation table after the pass table:
+
+`prior ID | current ID/status | fixed/recurring/regressed/disproved | evidence`
+
 ### 5. Baseline
 
 A table with:
@@ -445,7 +537,8 @@ A table with:
 `command | purpose | result | counts/warnings | notes or blocker`
 
 Separate pre-existing failures from audit discoveries. Include CI/local gaps
-and important untested areas.
+and important untested areas. List commands skipped by the safety preflight and
+the concrete risk that prevented execution.
 
 ### 6. Findings ledger
 
@@ -460,8 +553,8 @@ Follow the ledger with details for every P0-P2 finding and any non-obvious P3:
 
 - **Location:** exact `file:line` references and affected symbols
 - **Invariant/problem:** the concrete behavior or unnecessary concept
-- **Evidence:** call path, inputs, reproduction or proof, callers, history, and
-  baseline relation
+- **Evidence:** requirement or contract, call path, inputs, reproduction or
+  proof, callers, history, and baseline relation
 - **Impact:** observed and plausible impact, clearly distinguished
 - **Resolution:** smallest complete fix, obsolete code it permits deleting, and
   alternatives rejected when non-obvious

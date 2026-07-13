@@ -6,6 +6,9 @@ Use this manual only after a `READ-ONLY` audit with
 separate harness run. Production refactoring cannot begin until downstream
 behavioral coverage passes the gate below.
 
+`SKILL-` is a repository documentation convention here. This is a portable,
+pasteable harness manual, not an auto-discovered skill package with frontmatter.
+
 Before starting, provide this invocation block:
 
 ```text
@@ -16,6 +19,9 @@ Behavior allowed to change: <explicit list or "none; behavior-preserving refacto
 Known downstream repositories/consumers: <paths, packages, services, or "discover">
 Compatibility constraints: <APIs, CLIs, schemas, protocols, platforms, or "discover">
 Required validation: <commands or "discover from repository and CI configuration">
+Branch/PR convention: <branch, commit, PR rules, or "follow repository instructions">
+Completion report: <CODE-REFACTOR-REPORT.md or another explicit path>
+Scratch ledger: <absolute path outside the repository or "choose a stable path">
 Additional constraints: <time, environment, hardware, or "none">
 ```
 
@@ -96,7 +102,13 @@ or a broad snapshot to force the gate green.
   the current code, tests, consumers, and history. Do not implement a stale or
   unsupported recommendation.
 - Inspect Git status, branch, recent history, and relevant diffs. Treat existing
-  changes as user-owned. Never reset, revert, clean, or overwrite them.
+  changes as user-owned. Never use broad reset, checkout, restore, or clean
+  commands to discard them, and never overwrite changes you cannot attribute.
+  If a batch aborts, undo only your own uncommitted edits with a precise inverse
+  patch after confirming no user or concurrent work overlaps them. If ownership
+  is unclear, leave the worktree intact and report it. Do not rewrite history;
+  undo a committed batch only through a separately authorized revert or fix
+  commit.
 - Keep the selected batch boundary. If the required change expands into an
   unapproved subsystem, compatibility break, product choice, or unrelated
   cleanup, stop and report the new scope.
@@ -113,12 +125,42 @@ or a broad snapshot to force the gate green.
 - Follow the repository's verification and commit rules. Without a specific
   rule, commit test coverage separately, then commit each independent production
   batch separately with its finding IDs.
+- Follow the declared branch and pull-request convention. Do not create, push,
+  merge, or close a branch or pull request unless the invocation or repository
+  instructions authorize that external action.
 
 For a large impact surface, use subagents only when the harness supports bounded
 work with non-overlapping ownership. The lead owns the impact graph, coverage
 gate, public compatibility, cross-module checks, and final diff. A subagent may
 not refactor a component until the lead has accepted its touchpoint rows and test
 evidence.
+
+## Execution state and report lifecycle
+
+Create a fresh durable scratch ledger for this run at the declared path outside
+the repository. Update it after each pass and batch with the audited and current
+commits, worktree fingerprint, commit delta, baseline, touchpoint matrix, test
+evidence, files and hunks edited by this run, commits created, blockers, and next
+action. Do not seed it from an earlier run or store credentials, secrets, or
+unnecessary source content there.
+
+After context compaction or handoff, re-read the repository instructions,
+CODE-ANALYSIS.md, scratch ledger, current commit, and worktree status before
+continuing. Do not reconstruct execution state from memory or a compressed
+conversation summary.
+
+At pass and batch boundaries, detect HEAD moves and tracked-file changes not
+recorded as this run's work. Re-verify affected touchpoints, findings, and tests.
+If concurrent changes overlap the batch or cannot be safely bounded, stop and
+report rather than combining work from different revisions.
+
+Write one durable completion report per repository at the declared path. Replace
+the prior tracked report so Git history retains earlier runs, but never overwrite
+uncommitted user changes to it. Keep CODE-ANALYSIS.md as the immutable audit
+input; record each selected finding as `fixed`, `skipped`, `blocked`, or `stale`
+in the refactor report. An explicitly cross-repository batch writes and
+cross-references one report in each repository unless the invocation requests a
+different layout.
 
 ## What counts as a downstream touchpoint
 
@@ -150,19 +192,30 @@ contract as a touchpoint even when no caller is visible locally.
 
 ## Pass 0 — Revalidate scope and baseline
 
-1. Read the approved findings, proposed batches, and audit limitations.
-2. Re-read the cited source, all known callers, relevant tests, and history.
-3. Classify each selected item:
+1. Read the approved findings, proposed batches, audit limitations, and audited
+   commit recorded in CODE-ANALYSIS.md.
+2. Compare the audited commit with current HEAD and the tracked worktree. Map
+   changed specifications, source, callers, tests, configuration, dependencies,
+   docs, and build/deployment files to the selected findings.
+3. Re-read the cited source, all known callers, relevant tests, requirements, and
+   history. Use the commit delta to prioritize staleness checks, not to waive
+   them: an untouched cited file can still be invalidated by a changed caller,
+   contract, dependency, configuration path, or test.
+4. Classify each selected item:
    - behavior-preserving structural refactor;
    - confirmed bug fix with an intended behavior change;
    - cleanup/deletion with reachability and compatibility evidence;
    - blocked by an unresolved product, domain, or compatibility decision.
-4. Split mixed categories into separate batches. Do not hide a behavior change
+5. Split mixed categories into separate batches. Do not hide a behavior change
    inside a refactor.
-5. Discover the official build, test, lint, type, package, and integration
+6. Discover the official build, test, lint, type, package, and integration
    commands from repository docs and CI.
-6. Run the unchanged baseline and record exact commands, versions when relevant,
+7. Run the unchanged baseline and record exact commands, versions when relevant,
    exit statuses, test counts, skips, warnings, and failures.
+
+Honor the audit's execution-safety limitations. Do not run a command the audit
+skipped as unsafe unless its network, credential, data, privilege, and resource
+effects have since been bounded.
 
 Do not proceed on an unexplained baseline failure that touches the selected
 surface. Determine whether the failure is pre-existing, environmental, flaky,
@@ -269,7 +322,8 @@ For each batch:
 1. Reconfirm that every touchpoint row is protected and green.
 2. Make the smallest production change that completes the migration.
 3. Update all mapped callers. Remove obsolete code, configuration, imports,
-   tests, comments, and docs made false by the refactor.
+   comments, and docs made false by the refactor. Apply the separate test-deletion
+   rule below rather than deleting tests as incidental cleanup.
 4. Run the narrow tests while iterating.
 5. Run every affected touchpoint command before considering the batch complete.
 6. Inspect the diff for behavior change, scope creep, duplicate old/new paths,
@@ -279,9 +333,15 @@ For each batch:
 If editing reveals an unmapped caller, hidden contract, different invariant, or
 required out-of-scope change, stop the batch. Update the impact graph and coverage
 matrix, satisfy the gate again, then resume only if the original approval still
-covers the expanded scope.
+covers the expanded scope. Before another task begins, precisely undo only this
+run's attributable uncommitted batch edits. If concurrent or user changes overlap
+them, preserve the worktree and report the unresolved partial diff.
 
-Do not weaken, delete, skip, or over-mock a test to make the refactor pass. A test
+Do not weaken, skip, delete, or over-mock a test to make a production batch pass.
+Test deletion is allowed only as its own approved cleanup batch backed by the
+analysis's redundancy evidence. Prove that the remaining tests protect every
+touchpoint and run the relevant suites before and after deletion. Never remove a
+test inside the production batch whose coverage gate relied on that test. A test
 that exposes incorrect existing behavior becomes a separate finding or bug-fix
 batch.
 
@@ -311,7 +371,10 @@ touchpoint.
 Set the implementation plan aside and inspect the resulting code and diff with
 fresh eyes. If an independent agent is available, give it the diff, repository
 instructions, behavior contract, and test commands without the rationale for the
-chosen implementation.
+chosen implementation. Prefer a different model family from the primary
+implementer and, when known, from the agents that built or audited the code.
+Model diversity can expose shared blind spots; it does not replace traced
+evidence or downstream validation.
 
 Check for:
 
@@ -330,19 +393,29 @@ or behavior-changing discoveries instead of absorbing them into the refactor.
 
 ## Completion report
 
-Report:
+Write the declared completion report file; do not leave the durable result only
+in the harness's final message. Write it even when the run stops at the coverage
+gate or makes no production change. Include:
 
-1. Approved finding IDs and commits
-2. Baseline before and after, with exact commands and outcomes
-3. Final touchpoint matrix, with no unresolved row hidden or omitted
-4. Characterization and contract tests added before production changes
-5. Production changes and the behavior each preserves
-6. Public, persistent, operational, and cross-repository compatibility evidence
-7. Concepts, branches, duplicate implementations, dependencies, and measured
+1. Source CODE-ANALYSIS.md path, audited commit, starting commit, and validated
+   code commit
+2. Every approved finding ID with `fixed`, `skipped`, `blocked`, or `stale`
+   status and the responsible commits or evidence
+3. Baseline before and after, with exact commands and outcomes
+4. Final touchpoint matrix, with no unresolved row hidden or omitted
+5. Characterization and contract tests added before production changes
+6. Production changes and the behavior each preserves
+7. Public, persistent, operational, and cross-repository compatibility evidence
+8. Concepts, branches, duplicate implementations, dependencies, and measured
    lines removed or consolidated
-8. Fresh-eyes findings and how they were resolved
-9. Checks not run, exact blockers, and affected confidence
-10. Approved items left unresolved and newly discovered out-of-scope findings
+9. Fresh-eyes findings and how they were resolved
+10. Checks not run, exact blockers, and affected confidence
+11. Approved items left unresolved and newly discovered out-of-scope findings
+
+Follow repository instructions for staging and committing the report. Without a
+specific rule, commit it as the final logical unit after the code and validation
+it records. The report cannot name its own commit hash; include that hash in the
+harness's final message after committing it.
 
 Do not claim completion if a required touchpoint remains partial, unprotected,
 unverifiable, skipped, or absent from configured CI or the official full suite.

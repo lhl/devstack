@@ -1750,3 +1750,28 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 **Next:**
 - Trial both manuals on one representative codebase and revise the touchpoint matrix or report schema based on observed misses and false positives.
+
+---
+
+## 2026-07-14 — Harden code audit and refactor manuals after review
+
+**What:** Evaluated external review feedback and added the supported audit-safety, resumability, specification, and remediation-lifecycle controls.
+
+- Made specifications, requirements, acceptance criteria, and authority conflicts first-class audit inputs; added relevant TODO/IMPLEMENTATION/decision/worklog classification so deferred or superseded work is not misreported.
+- Added phantom implementations, aspirational documentation, dependency drift, and implementation-derived tests to the agent-specific failure-mode sweep.
+- Added a preflight for destructive, networked, credentialed, privileged, production-targeting, or unbounded validation commands; unsafe skips remain explicit baseline limitations.
+- Added per-run scratch ledgers outside the repository, context-compaction recovery, pass-boundary worktree fingerprints, and concurrent-change revalidation or stop rules.
+- Defined repeat-audit behavior: withhold prior audit/refactor reports until the fresh-eyes pass, keep one `CODE-ANALYSIS.md` per repo, reconcile IDs afterward, and replace only clean tracked reports.
+- Added cross-model-family preference for independent fresh-eyes passes without relaxing evidence requirements.
+- Added refactor commit-delta triage, branch/PR conventions, precise rollback of attributable uncommitted edits, a separately approved test-deletion path, and durable `CODE-REFACTOR-REPORT.md` output.
+- Clarified that the `SKILL-` files are portable pasteable manuals, not auto-discovered skill packages.
+
+**Decisions:**
+- Use commit deltas to prioritize staleness checks, never to waive current call-path and contract verification for an unchanged cited file.
+- Permit rollback only through precise inverse patches to this run's uncommitted edits; preserve and report ambiguous overlaps, and never rewrite committed history implicitly.
+- Keep `CODE-ANALYSIS.md` immutable during remediation and record fixed/skipped/blocked/stale results in a separate refactor report.
+- Preserve the harness-neutral docs format instead of converting these files into Claude- or Codex-specific packaged skills.
+
+**Next:**
+- Trial a long audit through an actual context compaction and confirm the scratch-ledger recovery and prior-report withholding rules work in practice.
+- Trial a small approved refactor and inspect whether the completion report and test-deletion gate are sufficiently precise.
