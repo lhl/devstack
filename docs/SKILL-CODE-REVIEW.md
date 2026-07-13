@@ -9,6 +9,8 @@ selects batches.
 
 `SKILL-` is a repository documentation convention here. This is a portable,
 pasteable harness manual, not an auto-discovered skill package with frontmatter.
+Safety rules intentionally repeat in the paired refactor manual so either prompt
+can run alone; check both files whenever a shared rule changes.
 
 Before starting, provide this invocation block:
 
@@ -18,7 +20,8 @@ Do not modify: <paths or "all repository files except CODE-ANALYSIS.md">
 Specifications/requirements: <paths or "discover and classify authority">
 Domain-specific correctness surfaces: <numerics, kernels, schemas, protocols, etc.>
 Required validation: <commands or "discover from repository and CI configuration">
-Prior audit/refactor reports: <paths or "none; withhold contents until Pass 5">
+Dependency bootstrap: <approved isolated commands/paths or "do not install">
+Prior audit/refactor/approval artifacts: <paths or "none; withhold until Pass 5">
 Scratch ledger: <absolute path outside the repository or "choose a stable path">
 Additional constraints: <compatibility, time, environment, or "none">
 ```
@@ -66,8 +69,20 @@ a direct implementation over a configurable framework.
   not continue automatically into remediation. Finish all passes, write the
   analysis, and stop.
 - Avoid commands that rewrite tracked files. Put temporary reproductions and
-  outputs outside the repository when possible. Do not install or upgrade
-  dependencies merely to complete the audit.
+  outputs outside the repository when possible. Never upgrade dependencies or
+  generate/update manifests or lockfiles for the audit. If dependency bootstrap
+  is explicitly approved, inspect install/lifecycle scripts first and install the
+  exact locked versions in a disposable environment or repository copy of the
+  exact audited state outside the user's worktree, with caches and tool state
+  redirected outside the repo. Use immutable/frozen/locked modes where the
+  ecosystem provides them. If safe isolation is unavailable, record the blocked
+  checks rather than installing in the audited worktree.
+- If validation unexpectedly changes a tracked file, stop and inspect the diff.
+  Restore the exact pre-run bytes with a precise inverse patch only when the file
+  was clean in the starting fingerprint, its prior content was captured, and the
+  change is wholly attributable to that command. Log the command, diff, and
+  restoration in the scratch ledger. If the file was already dirty or ownership
+  is uncertain, do not restore it; stop and report the side effect.
 - Audit the complete declared scope, not only changed files. Identify generated
   code, vendored code, submodules, fixtures, examples, experimental areas, and
   compatibility layers before deciding what warrants direct audit.
@@ -82,13 +97,15 @@ a direct implementation over a configurable framework.
   execution risks data, credentials, external systems, or the worktree.
 
 For a large scope, use subagents only when the harness supports them and the work
-can be partitioned into bounded, non-overlapping modules or concern areas. Give
-every subagent this evidence standard and output schema. The lead auditor owns
-the system map, cross-module paths, baseline, deduplication, and final judgment.
-The lead must inspect the cited code for every retained finding, reconcile
-contradictions, and remove duplicate or unsupported reports. A subagent assigned
-the fresh-eyes pass must not see the initial findings ledger before completing
-its independent sweep.
+can be partitioned into bounded, non-overlapping modules or concern areas. Every
+audit subagent is also `READ-ONLY`: it may run approved non-mutating checks and
+return evidence, but it may not write repository files or make fixes. Give every
+subagent this evidence standard and output schema. The lead auditor owns the
+system map, cross-module paths, baseline, deduplication, report write, and final
+judgment. The lead must inspect the cited code for every retained finding,
+reconcile contradictions, and remove duplicate or unsupported reports. A
+subagent assigned the fresh-eyes pass must not see the initial findings ledger
+before completing its independent sweep.
 
 ## Audit state and repeated runs
 
@@ -98,6 +115,13 @@ with the scope and exclusions, starting commit and worktree fingerprint, system
 map, commands and baseline results, coverage ledger, candidate findings with
 evidence, disproved suspicions, open questions, and next pass. Do not store
 credentials, secrets, or unnecessary source content there.
+
+End each pass by appending a `PASS <n> COMPLETE` checkpoint with start/end
+commit and worktree fingerprints, paths and boundaries actually inspected,
+commands and results, findings added/changed/disproved, unresolved coverage, and
+the next pass. Do not begin the next pass until its predecessor's checkpoint is
+written. Never backfill checkpoints from the final narrative; derive the final
+pass-coverage table from this trail.
 
 After context compaction or handoff, re-read the repository instructions, scratch
 ledger, current commit, and worktree status before continuing. Do not reconstruct
@@ -112,12 +136,12 @@ scope instead of merging evidence from different revisions.
 Use one `CODE-ANALYSIS.md` per repository root. An explicitly cross-repository
 audit writes one report in each repository and cross-references shared findings;
 do not substitute one combined report unless the invocation requests it. On a
-repeat audit, do not read prior audit or refactor report contents before
-completing Pass 5. After the fresh-eyes sweep, treat those reports as untrusted
-hypotheses, preserve an ID only for the same underlying issue, and reconcile
-fixed, recurring, regressed, disproved, and new findings. Replace the prior
-tracked `CODE-ANALYSIS.md` so Git history retains earlier runs. Never overwrite
-uncommitted user changes to it.
+repeat audit, do not read prior audit, refactor, or approval artifact contents
+before completing Pass 5. After the fresh-eyes sweep, treat those artifacts as
+untrusted hypotheses, preserve an ID only for the same underlying issue, and
+reconcile fixed, recurring, regressed, disproved, and new findings. Replace the
+prior tracked `CODE-ANALYSIS.md` so Git history retains earlier runs. Never
+overwrite uncommitted user changes to it.
 
 ## Evidence and calibration
 
@@ -148,11 +172,13 @@ Confidence labels:
   assumption
 - `open question`: plausible concern whose deciding evidence is unavailable
 
-Do not label an issue a defect at lower confidence. Put it in Open questions
-with the experiment, trace, or domain decision that would settle it. A healthy
-module is a valid result; never manufacture findings or inflate severity. If a
-linter or formatter reports mechanical issues, summarize its result once rather
-than turning each instance into a finding.
+The absence of a `medium` tier is deliberate. Anything below `high` belongs in
+Open questions; do not invent a middle tier or round uncertainty up to `high`.
+Do not label an issue a defect at lower confidence. Put it in Open questions with
+the experiment, trace, or domain decision that would settle it. A healthy module
+is a valid result; never manufacture findings or inflate severity. If a linter
+or formatter reports mechanical issues, summarize its result once rather than
+turning each instance into a finding.
 
 ## Multipass discipline
 
@@ -166,7 +192,7 @@ Approach each pass with **fresh eyes**:
 - Start again from the source, runtime entry points, tests, and configuration;
   do not merely reread or elaborate the existing findings ledger.
 - Treat earlier findings as untrusted hypotheses until the current pass reaches
-  them independently.
+  them through the new traversal.
 - Change traversal direction between passes: follow entry points inward, state
   and persistent formats outward to every reader/writer, tests backward into
   implementation assumptions, and failure boundaries through cleanup and
@@ -176,12 +202,15 @@ Approach each pass with **fresh eyes**:
 - Record both newly discovered issues and earlier suspicions disproved by the
   fresh pass. Removing a false positive is part of the audit.
 
-If independent agents are available, reserve at least one for a fresh-eyes pass
-and withhold the initial findings from it until its sweep is complete. If one
-model performs every pass, set the ledger aside during the fresh-eyes traversal
-and compare notes only afterward. Prefer a different model family from the
-primary auditor and, when known, from the agents that built the code. Model
-diversity can expose shared blind spots; it does not relax the evidence standard.
+Genuine independence requires a fresh context or agent that has not seen the
+ledger or prior reports. Reserve one when available and withhold those artifacts
+until its sweep is complete. A model continuing in the same context cannot
+un-know its earlier conclusions; label its Pass 5 work an adversarial
+re-traversal, set the ledger aside, change traversal order, and apply the same
+disconfirmation duties without claiming independence. Prefer a different model
+family from the primary auditor and, when known, from the agents that built the
+code. Model diversity can expose shared blind spots; it does not relax the
+evidence standard.
 
 ## Multi-agent failure modes to hunt
 
@@ -267,13 +296,14 @@ to the scope:
 - CLI help and a non-destructive representative workflow;
 - cross-repository checks when an interface between repositories is in scope.
 
-Before executing an unfamiliar suite, inspect its configuration, fixtures,
-scripts, and defaults for network calls, credential use, cloud or production
-targets, destructive filesystem/database operations, privileged actions,
-unbounded workloads, and global state mutation. Prefer sandboxed execution,
-temporary paths, disposable state, disabled credentials, and explicit local
-endpoints. Skip a command whose safety cannot be established and record the
-exact risk and missing evidence as a baseline limitation.
+Before dependency bootstrap or execution of an unfamiliar suite, inspect package
+install/lifecycle hooks, test configuration, fixtures, scripts, and defaults for
+network calls, credential use, cloud or production targets, destructive
+filesystem/database operations, privileged actions, unbounded workloads, and
+global state mutation. Prefer sandboxed execution, temporary paths, disposable
+state, disabled credentials, and explicit local endpoints. Skip a command whose
+safety cannot be established and record the exact risk and missing evidence as a
+baseline limitation.
 
 Record each exact command, tool version when relevant, exit status, test counts,
 skips, warnings, duration when material, and concise failure output. If a check
@@ -435,12 +465,16 @@ For each proposed refactor, map every known downstream touchpoint to the
 behavioral contract it depends on and the test that protects that contract.
 Line coverage alone does not establish refactor safety. Flag touchpoints covered
 only by mocks, incidental execution, manual testing, or tests absent from
-configured CI (or the official full suite when no CI exists).
+configured CI (or the official full suite when no CI exists). Give each
+touchpoint a stable ID scoped to its finding, such as `SIM-001-TP1`, so later
+approval and refactor artifacts can cite it without relying on prose matching.
 
-## Pass 5 — Fresh-eyes independent audit
+## Pass 5 — Independent fresh-eyes audit or adversarial re-traversal
 
-Put the findings ledger aside and make another end-to-end inspection of the raw
-code. This is a new audit pass, not validation theater for the first one.
+With a fresh context, perform an independent fresh-eyes audit. In the same
+context, put the findings ledger aside and perform an adversarial re-traversal of
+the raw code. Record which mode was used; do not describe same-context work as
+independent. This is a new audit pass, not validation theater for the first one.
 
 1. Enter through public APIs, CLIs, services, jobs, plugins, and external events.
    Trace each to state mutation, output, failure, cleanup, and observable caller
@@ -457,11 +491,12 @@ code. This is a new audit pass, not validation theater for the first one.
    ignored inputs, partial migrations, and unreachable compatibility code using
    different searches or call paths from the first audit.
 
-Only after completing this independent sweep should you reopen the ledger.
+Only after completing this sweep should you reopen the ledger.
 Record new findings, independent corroboration, contradictions, false positives,
 and coverage still missing. At that point, and not before, read any prior
-`CODE-ANALYSIS.md` and `CODE-REFACTOR-REPORT.md`. Compare them with the
-independent results without using them to fill uninspected areas.
+`CODE-ANALYSIS.md`, `CODE-REFACTOR-APPROVAL.md`, and
+`CODE-REFACTOR-REPORT.md`. Compare them with the new traversal without using
+them to fill uninspected areas.
 
 ## Pass 6 — Reconcile and challenge the analysis
 
@@ -484,13 +519,17 @@ Before writing the report:
   destructive behavior, or release-blocking correctness failure requiring
   immediate attention
 - `P1`: confirmed user-visible correctness defect, serious operational failure,
-  incomplete integration, or high-probability footgun
-- `P2`: high-payoff simplification, duplication, dead code, or test weakness that
-  materially raises maintenance or regression risk
+  incomplete integration, high-probability footgun, or missing/ineffective test
+  protection for a reachable data-loss, security, destructive, or critical
+  operational invariant
+- `P2`: high-payoff simplification, duplication, dead code, or test weakness with
+  material but non-critical maintenance or regression risk
 - `P3`: localized clarity, consistency, documentation, or low-risk cleanup
 
 Do not use P3 to enumerate formatter or linter output. Severity describes impact;
-confidence describes evidence. Keep them separate.
+confidence describes evidence. Keep them separate. Grade a test gap by the
+consequence it leaves unprotected, not by the fact that it is a test finding.
+Never assign P0 to a coverage gap without a confirmed reachable defect.
 
 ## Required report
 
@@ -502,8 +541,8 @@ Write `CODE-ANALYSIS.md` at the repository root with these sections:
 - invocation constraints and domain-specific correctness surfaces
 - specifications and requirements read, their authority order, and unresolved
   conflicts
-- prior audit/refactor report paths and commits, if any, and whether the analysis
-  was replaced
+- prior audit/approval/refactor artifact paths and commits, if any, and whether
+  the analysis was replaced
 
 ### 2. Executive assessment
 
@@ -522,9 +561,12 @@ A table with:
 
 `pass | lens and traversal | modules/boundaries inspected | evidence | limitations`
 
-State how the fresh-eyes pass differed from the earlier passes. Record issues it
-added, corroborated, disproved, or downgraded. Coverage means inspected paths and
-boundaries, not files glanced at.
+Derive this table from the scratch checkpoints. State whether Pass 5 used an
+independent fresh context or a same-context adversarial re-traversal and, when
+applicable, the model family. Record issues it added, corroborated, disproved, or
+downgraded. Coverage means inspected paths and boundaries, not files glanced at.
+A missing checkpoint is an audit limitation; do not fabricate it while writing
+the report.
 
 When a prior analysis exists, add a reconciliation table after the pass table:
 
@@ -538,7 +580,9 @@ A table with:
 
 Separate pre-existing failures from audit discoveries. Include CI/local gaps
 and important untested areas. List commands skipped by the safety preflight and
-the concrete risk that prevented execution.
+the concrete risk that prevented execution. Record any isolated dependency
+bootstrap and any tracked validation side effect restored under the operating
+contract.
 
 ### 6. Findings ledger
 
@@ -590,7 +634,7 @@ strengthened instead.
 
 For each proposed refactor, include:
 
-`finding/batch | downstream touchpoint | behavior/invariant | current test | CI/full-suite status | coverage gap/risk`
+`touchpoint ID | finding/batch | downstream touchpoint | behavior/invariant | current test | CI/full-suite status | coverage gap/risk`
 
 Include external or dynamic consumers that could not be enumerated. Mark a batch
 `not ready` when a touchpoint lacks a meaningful contract or characterization
@@ -639,3 +683,12 @@ even if the fix appears safe, trivial, or necessary to make a test pass.
 End the audit here. After a human accepts specific findings or batches, start a
 new harness run with [`SKILL-CODE-REFACTOR.md`](SKILL-CODE-REFACTOR.md). That
 manual gates every production edit on downstream behavioral coverage.
+
+Record the human decision in `CODE-REFACTOR-APPROVAL.md` (or an explicitly named
+equivalent) before that run. Include the source analysis path and commit;
+approved, rejected, and deferred finding IDs with reasons; permitted behavior or
+compatibility changes; any narrowly accepted coverage risk by touchpoint ID with
+owner and review condition; and branch/PR constraints. The refactor agent
+consumes this artifact but must not author or alter it as a substitute for human
+approval. Commit the approval record according to repository rules before
+remediation begins so its decision and reasons remain durable.

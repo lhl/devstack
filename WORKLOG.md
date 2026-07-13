@@ -1775,3 +1775,30 @@ Append-only session log. Each entry records what was done, why, and what's next.
 **Next:**
 - Trial a long audit through an actual context compaction and confirm the scratch-ledger recovery and prior-report withholding rules work in practice.
 - Trial a small approved refactor and inspect whether the completion report and test-deletion gate are sufficiently precise.
+
+---
+
+## 2026-07-14 — Close remaining long-run audit and refactor execution gaps
+
+**What:** Evaluated the reviewer's second pass and added only the execution controls not already covered by the prior hardening commit.
+
+- Added an explicitly approved, lock-respecting dependency-bootstrap path in a disposable environment or exact-state repo copy outside the user's worktree; manifests and lockfiles remain immutable.
+- Added narrow recovery for validation-created tracked side effects: restore captured pre-run bytes only for clean, wholly attributable files and log the command/diff/restoration.
+- Made audit subagents explicitly READ-ONLY and distinguished genuine fresh-context review from same-context adversarial re-traversal.
+- Required append-only pass and batch checkpoints before continuing so final coverage tables and completion reports cannot be plausibly backfilled after a collapsed run.
+- Confirmed the deliberate absence of medium confidence and made test-gap severity inherit the consequence left unprotected; critical data-loss/security/operational gaps can be P1 but not P0 without a confirmed defect.
+- Added a committed human `CODE-REFACTOR-APPROVAL.md` convention for approved/rejected/deferred findings, reasons, behavior changes, coverage exceptions, and branch/PR constraints.
+- Assigned stable audit touchpoint IDs and prohibited newly discovered refactor touchpoints from inheriting approval exceptions by similarity.
+- Defined strict performance-gate semantics: measurable guarantees need executable evidence by default; only narrow non-correctness performance risks can be human-accepted and must retain owner/review conditions.
+- Replaced quadratic full validation after every batch with affected checks per batch plus mandatory full checkpoints at high-risk boundaries, before dependent batches, and at final completion.
+
+**Decisions:**
+- Same-context review is never labeled independent, even when it changes traversal order and applies disconfirmation duties.
+- Dependency setup may support a READ-ONLY audit only when it cannot mutate the audited worktree or dependency declarations.
+- Keep shared operating rules duplicated for standalone harness portability; mark the duplication intentional and maintain the paired clauses together.
+- Require human-authored approval as a durable pipeline artifact rather than allowing the remediation agent to infer or create approval.
+- Allow performance coverage exceptions only by explicit approval; never waive correctness, security, data-integrity, destructive, or compatibility consequences.
+
+**Next:**
+- Trial isolated dependency bootstrap on one JavaScript or Rust repository and verify lockfile/side-effect handling.
+- Measure one multi-batch refactor to confirm the checkpoint cadence avoids redundant full-suite runs without weakening final validation.

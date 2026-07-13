@@ -8,17 +8,23 @@ behavioral coverage passes the gate below.
 
 `SKILL-` is a repository documentation convention here. This is a portable,
 pasteable harness manual, not an auto-discovered skill package with frontmatter.
+Safety rules intentionally repeat in the paired audit manual so either prompt can
+run alone; check both files whenever a shared rule changes.
 
 Before starting, provide this invocation block:
 
 ```text
 Repository: <repository>
 CODE-ANALYSIS.md: <path>
-Approved findings/batches: <IDs>
+Approval record: <CODE-REFACTOR-APPROVAL.md or another explicit path>
+Approved findings/batches: <IDs; must match the approval record>
+Approved coverage exceptions: <touchpoint IDs from the approval record or "none">
 Behavior allowed to change: <explicit list or "none; behavior-preserving refactor">
 Known downstream repositories/consumers: <paths, packages, services, or "discover">
 Compatibility constraints: <APIs, CLIs, schemas, protocols, platforms, or "discover">
 Required validation: <commands or "discover from repository and CI configuration">
+Dependency bootstrap: <approved isolated commands/paths or "reuse audit environment">
+Validation cadence: <per-batch/checkpoint rules or "use the rubric defaults">
 Branch/PR convention: <branch, commit, PR rules, or "follow repository instructions">
 Completion report: <CODE-REFACTOR-REPORT.md or another explicit path>
 Scratch ledger: <absolute path outside the repository or "choose a stable path">
@@ -48,13 +54,15 @@ Priorities, in order:
 
 Do not edit production code until every discoverable downstream touchpoint of
 the selected refactor is listed in a touchpoint matrix and has meaningful
-behavioral protection.
+behavioral protection, except for a narrowly scoped `accepted-risk` row
+explicitly authorized in the human approval record under the rules below.
 
 Every touchpoint must map to:
 
 - the behavior or invariant it depends on;
-- a test that exercises and asserts that behavior at the appropriate boundary;
-- the command that runs the test;
+- a test that exercises and asserts that behavior at the appropriate boundary,
+  or the exact approval-record entry for an allowed `accepted-risk` row;
+- the command that runs the test, when one exists;
 - whether the test runs in continuous integration (CI), or in the official full
   suite when the repository has no CI;
 - any environment, platform, hardware, or external-system limitation.
@@ -73,6 +81,16 @@ not infer protection from a test name or coverage hit.
 This gate makes the evidence and residual uncertainty explicit; it does not prove
 the absence of regressions. Unknown external consumers and unavailable platforms
 remain limitations and must be reported rather than converted into confidence.
+
+A measurable performance, resource, latency, or throughput guarantee is a real
+contract and requires a stable benchmark, budget assertion, or representative
+workflow that can fail the gate. If none can be run, mark it `unverifiable` and
+block by default. Only the human approval record may convert a performance row
+with no correctness, security, data-integrity, destructive, or compatibility
+consequence to `accepted-risk`; it must state the exact touchpoint, reason, owner,
+review/expiry condition, and alternative observation or monitoring. The agent
+may not grant or broaden this exception. A vague performance aspiration is not a
+contract; report it as an observation instead of inventing a blocking touchpoint.
 
 If any touchpoint is unprotected:
 
@@ -98,9 +116,13 @@ or a broad snapshot to force the gate green.
 
 - Read and follow every applicable repository instruction file, including
   nested instructions for files within their scope.
-- Read CODE-ANALYSIS.md, but independently verify each selected finding against
-  the current code, tests, consumers, and history. Do not implement a stale or
-  unsupported recommendation.
+- Read CODE-ANALYSIS.md and the human-authored approval record. Verify that the
+  analysis commit, selected IDs, permitted behavior changes, coverage exceptions,
+  and branch/PR rules match the invocation. Missing or conflicting approval
+  blocks production edits. Do not author or modify the approval record yourself.
+- Independently verify each selected finding against the current code, tests,
+  consumers, requirements, and history. Do not implement a stale or unsupported
+  recommendation.
 - Inspect Git status, branch, recent history, and relevant diffs. Treat existing
   changes as user-owned. Never use broad reset, checkout, restore, or clean
   commands to discard them, and never overwrite changes you cannot attribute.
@@ -119,6 +141,15 @@ or a broad snapshot to force the gate green.
   needs a regression test for intended behavior and its own logical commit.
 - Avoid dependency upgrades, formatter churn, framework replacement, speculative
   abstraction, broad renaming, and drive-by cleanup.
+- Reuse the audited dependency environment when possible. If bootstrap is
+  approved, inspect install/lifecycle scripts and install exact locked versions
+  only in a disposable environment or repo copy of the exact tested state outside
+  the user's worktree, with caches and tool state outside the repo. Never
+  generate or update manifests or lockfiles for the refactor.
+- If validation unexpectedly changes a tracked file outside the intended batch,
+  restore exact captured pre-run bytes with a precise inverse patch only when the
+  file was clean and the side effect is wholly attributable to that command. Log
+  the command, diff, and restoration. Otherwise stop and preserve the worktree.
 - Prefer deletion to abstraction. Introduce a shared abstraction only when one
   stable concept has multiple real consumers and the result reduces total
   concepts, branches, and code.
@@ -144,10 +175,17 @@ evidence, files and hunks edited by this run, commits created, blockers, and nex
 action. Do not seed it from an earlier run or store credentials, secrets, or
 unnecessary source content there.
 
+End each pass and batch by appending a `PASS <n> COMPLETE` or
+`BATCH <ID> COMPLETE` checkpoint with start/end commits and worktree
+fingerprints, touchpoints exercised, commands and results, edits and commits,
+exceptions, blockers, and next action. Do not start the next pass or batch until
+the checkpoint is written, and do not backfill the trail from the completion
+report.
+
 After context compaction or handoff, re-read the repository instructions,
-CODE-ANALYSIS.md, scratch ledger, current commit, and worktree status before
-continuing. Do not reconstruct execution state from memory or a compressed
-conversation summary.
+CODE-ANALYSIS.md, the approval record, scratch ledger, current commit, and
+worktree status before continuing. Do not reconstruct execution state from
+memory or a compressed conversation summary.
 
 At pass and batch boundaries, detect HEAD moves and tracked-file changes not
 recorded as this run's work. Re-verify affected touchpoints, findings, and tests.
@@ -192,8 +230,9 @@ contract as a touchpoint even when no caller is visible locally.
 
 ## Pass 0 — Revalidate scope and baseline
 
-1. Read the approved findings, proposed batches, audit limitations, and audited
-   commit recorded in CODE-ANALYSIS.md.
+1. Read the approved findings, proposed batches, coverage exceptions, audit
+   limitations, and audited commit recorded in CODE-ANALYSIS.md and the approval
+   record.
 2. Compare the audited commit with current HEAD and the tracked worktree. Map
    changed specifications, source, callers, tests, configuration, dependencies,
    docs, and build/deployment files to the selected findings.
@@ -240,7 +279,12 @@ removed or changed, not only its named symbols.
 
 Create the touchpoint matrix:
 
-`ID | touchpoint | relation | required behavior | current test | level | CI/full-suite command | status | risk/limitation`
+`ID | touchpoint/relation | required behavior | test or approval | level/command | cadence | status | risk`
+
+Preserve touchpoint IDs from CODE-ANALYSIS.md. Assign new IDs to newly discovered
+touchpoints; a new row cannot inherit an approval exception by similarity. It
+remains blocking unless the human approval record is explicitly amended outside
+this run.
 
 Protection status is one of:
 
@@ -248,7 +292,9 @@ Protection status is one of:
 - `partial`: a test covers only part of the contract or bypasses the changed
   boundary;
 - `unprotected`: no meaningful automated test exists;
-- `unverifiable`: the consumer or required environment is unavailable.
+- `unverifiable`: the consumer or required environment is unavailable;
+- `accepted-risk`: the human approval record grants the narrow performance-only
+  exception defined above.
 
 Do not proceed while any row is `partial`, `unprotected`, or `unverifiable`.
 Resolve it with coverage, narrow the refactor to exclude it, or report the
@@ -307,7 +353,8 @@ For each gate-ready batch, state:
 - the canonical implementation and why it is correct;
 - every caller and consumer to migrate;
 - public and persistent compatibility constraints;
-- exact targeted and full validation commands;
+- exact targeted and full validation commands plus the declared checkpoint
+  cadence;
 - expected concept, branch, dependency, and measured line-count reduction.
 
 Prefer a migration that removes the old mechanism in the same batch. Retain a
@@ -319,7 +366,8 @@ consolidate two small blocks whose invariants differ.
 
 For each batch:
 
-1. Reconfirm that every touchpoint row is protected and green.
+1. Reconfirm that every touchpoint row is protected and green or is an unchanged,
+   explicitly authorized `accepted-risk` row.
 2. Make the smallest production change that completes the migration.
 3. Update all mapped callers. Remove obsolete code, configuration, imports,
    comments, and docs made false by the refactor. Apply the separate test-deletion
@@ -345,36 +393,59 @@ test inside the production batch whose coverage gate relied on that test. A test
 that exposes incorrect existing behavior becomes a separate finding or bug-fix
 batch.
 
-## Pass 5 — Validate every downstream touchpoint
+## Pass 5 — Validate at batch and integration checkpoints
 
-After each batch and again after all selected batches:
+Use the declared validation cadence; repository rules that require more frequent
+full runs take precedence. At minimum:
 
-1. Run every command in the touchpoint matrix.
-2. Run all affected package, integration, contract, CLI, persistence,
-   cross-repository, build, lint, type, and static-analysis checks.
-3. Run the full baseline from CODE-ANALYSIS.md and compare exact outcomes,
+After every batch, before its commit:
+
+1. Run all affected touchpoint commands and affected package, integration,
+   contract, CLI, persistence, cross-repository, build, lint, type, and static
+   checks.
+2. Run the repository's fast global checks when defined.
+3. Record any expensive full-matrix commands deferred to the next declared
+   checkpoint; never silently omit them.
+
+Run a full integration checkpoint after a batch that changes a public or shared
+interface, persistent or wire format, configuration semantics, dependency,
+canonical implementation used across modules, concurrency/lifecycle behavior,
+or another surface the repository classifies as high risk. Also run one before a
+dependent batch relies on earlier behavior and after all selected batches.
+
+At every full integration checkpoint:
+
+1. Run every executable command in the touchpoint matrix.
+2. Run the full baseline from CODE-ANALYSIS.md and compare exact outcomes,
    including counts, skips, warnings, and failures.
-4. Confirm configured CI invokes the tests used to pass the gate. If no CI
+3. Confirm configured CI invokes the tests used to pass the gate. If no CI
    exists, confirm the official full-suite command invokes them.
-5. Compare public signatures, exports, CLI help/output, configuration defaults,
+4. Compare public signatures, exports, CLI help/output, configuration defaults,
    schemas, serialized fixtures, protocol behavior, and package artifacts where
    applicable.
-6. Exercise representative success and failure workflows at their real boundary.
-7. Confirm no selected consumer still uses the obsolete path.
+5. Exercise representative success and failure workflows at their real boundary.
+6. Confirm no selected consumer still uses the obsolete path.
+
+A batch committed after targeted checks remains provisional until its next full
+checkpoint passes. Do not merge, ship, or call it validated before then. If a
+checkpoint fails, identify the first responsible batch and fix it or invoke the
+explicit rollback protocol; do not weaken the cadence.
 
 Environmental inability to run a required downstream check is a failed gate, not
 a pass. Record the exact blocker and do not claim the refactor safe for that
 touchpoint.
 
-## Pass 6 — Fresh-eyes post-refactor audit
+## Pass 6 — Independent post-refactor audit or adversarial re-traversal
 
-Set the implementation plan aside and inspect the resulting code and diff with
-fresh eyes. If an independent agent is available, give it the diff, repository
-instructions, behavior contract, and test commands without the rationale for the
-chosen implementation. Prefer a different model family from the primary
-implementer and, when known, from the agents that built or audited the code.
-Model diversity can expose shared blind spots; it does not replace traced
-evidence or downstream validation.
+Genuine independence requires a fresh context or agent that has not seen the
+implementation plan. Give it the diff, repository instructions, behavior
+contract, and test commands without the rationale for the chosen implementation.
+If the same model continues in the same context, set the plan aside and label the
+pass an adversarial re-traversal; it cannot un-know its own design. Record which
+mode was used. Prefer a different model family from the primary implementer and,
+when known, from the agents that built or audited the code. Model diversity can
+expose shared blind spots; it does not replace traced evidence or downstream
+validation.
 
 Check for:
 
@@ -397,20 +468,22 @@ Write the declared completion report file; do not leave the durable result only
 in the harness's final message. Write it even when the run stops at the coverage
 gate or makes no production change. Include:
 
-1. Source CODE-ANALYSIS.md path, audited commit, starting commit, and validated
-   code commit
+1. Source CODE-ANALYSIS.md and approval-record paths/commits, audited commit,
+   starting commit, and validated code commit
 2. Every approved finding ID with `fixed`, `skipped`, `blocked`, or `stale`
    status and the responsible commits or evidence
 3. Baseline before and after, with exact commands and outcomes
-4. Final touchpoint matrix, with no unresolved row hidden or omitted
-5. Characterization and contract tests added before production changes
-6. Production changes and the behavior each preserves
-7. Public, persistent, operational, and cross-repository compatibility evidence
-8. Concepts, branches, duplicate implementations, dependencies, and measured
+4. Final touchpoint matrix, including every `accepted-risk` approval, with no
+   unresolved row hidden or omitted
+5. Validation cadence and checkpoint outcomes, including any provisional batch
+6. Characterization and contract tests added before production changes
+7. Production changes and the behavior each preserves
+8. Public, persistent, operational, and cross-repository compatibility evidence
+9. Concepts, branches, duplicate implementations, dependencies, and measured
    lines removed or consolidated
-9. Fresh-eyes findings and how they were resolved
-10. Checks not run, exact blockers, and affected confidence
-11. Approved items left unresolved and newly discovered out-of-scope findings
+10. Independent-audit or adversarial-re-traversal mode, findings, and resolutions
+11. Checks not run, exact blockers, and affected confidence
+12. Approved items left unresolved and newly discovered out-of-scope findings
 
 Follow repository instructions for staging and committing the report. Without a
 specific rule, commit it as the final logical unit after the code and validation
@@ -419,6 +492,6 @@ harness's final message after committing it.
 
 Do not claim completion if a required touchpoint remains partial, unprotected,
 unverifiable, skipped, or absent from configured CI or the official full suite.
-A smaller completed scope with complete evidence is preferable to a broad
-refactor with inferred safety.
+Do not describe an `accepted-risk` row as verified. A smaller completed scope
+with complete evidence is preferable to a broad refactor with inferred safety.
 ```
