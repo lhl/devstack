@@ -1729,3 +1729,24 @@ Append-only session log. Each entry records what was done, why, and what's next.
 **Next:**
 - Retrieve the FT article (or CNBC follow-up) directly to confirm/upgrade [71].
 - Watch for the administration's safety standard and the "repeatable process" — open question 15.
+
+---
+
+## 2026-07-13 — Multipass code audit and coverage-gated refactor manuals
+
+**What:** Added reusable coding-harness manuals for auditing agent-written code and safely applying approved refactors.
+
+- Added `docs/SKILL-CODE-REVIEW.md`: a mandatory READ-ONLY, multipass audit rubric that writes `CODE-ANALYSIS.md` and stops before implementation.
+- Required a distinct fresh-eyes pass that re-enters the raw code with a different traversal, withholds the first ledger from an independent reviewer when available, and records disproved findings as well as new ones.
+- Added evidence-calibrated correctness, duplication, dead-code, simplification, test, tooling, and downstream-consumer passes plus a structured findings and remediation schema.
+- Added `docs/SKILL-CODE-REFACTOR.md`: a separate implementation manual gated on a downstream touchpoint matrix and meaningful behavioral or contract coverage.
+- Required missing characterization tests to land as a test-only logical unit before production edits; line coverage, mock-only execution, and green aggregate suites do not satisfy the gate.
+- Covered direct and transitive callers, public APIs, CLIs, configuration, persisted formats, protocols, plugins, lifecycle behavior, CI, packaging, and visible cross-repository consumers.
+
+**Decisions:**
+- Kept diagnosis and mutation in separate harness runs so an audit cannot drift into opportunistic edits.
+- Defined refactor readiness by protected downstream behavior rather than a numeric coverage target.
+- Blocked production changes when a known touchpoint remains partial, unprotected, or unverifiable; the allowed outcomes are adding coverage, narrowing scope, or requesting a decision.
+
+**Next:**
+- Trial both manuals on one representative codebase and revise the touchpoint matrix or report schema based on observed misses and false positives.
