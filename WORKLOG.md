@@ -1844,3 +1844,21 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 **Next:**
 - None.
+
+---
+
+## 2026-07-18 — Remove redundant pi-multicodex submodule
+
+**What:** Removed the duplicate `projects/pi-multicodex` submodule while preserving installation and development paths backed by `lhl/pi-multicodex`.
+
+- Deinitialized and removed the `projects/pi-multicodex` gitlink from devstack.
+- Removed its `.gitmodules` entry and local `.git/modules/projects/pi-multicodex` metadata.
+- Confirmed `pi-packages.json` still installs `https://github.com/lhl/pi-multicodex` and the active Pi-managed checkout remains at `~/.pi/agent/git/github.com/lhl/pi-multicodex`.
+- Confirmed the standalone development checkout at `~/github/lhl/pi-multicodex` remains intact.
+
+**Decisions:**
+- Use the standalone repository for development and the Pi-managed Git clone for installation; devstack does not need a third checkout.
+- Keep the canonical GitHub package source and existing README/wiki usage documentation unchanged because installation never depended on the submodule.
+
+**Next:**
+- None.
