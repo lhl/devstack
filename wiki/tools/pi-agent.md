@@ -54,7 +54,6 @@ Use this to reconcile a stale machine before trusting its extension list:
 | Extension | Install source | Purpose | Status |
 |---|---|---|---|
 | ~~pi-context-prune~~ | `npm:pi-context-prune` ([source](https://github.com/championswimmer/pi-context-prune)) | Summarized completed tool-call batches and exposed retrieval for pruned originals | ❌ Removed (2026-07-18) — frequent runtime errors outweighed the context-saving benefit; canonical sync removes it |
-| ~~pi-rtk-optimizer~~ | `npm:pi-rtk-optimizer` | Token optimization via RTK command rewriting + output compaction | ❌ Removed (2026-05-10) — see [[tools/pruning-and-compaction]] |
 | **pi-schedule-prompt** | `npm:pi-schedule-prompt` | Natural language scheduling, cron, per-task model | ✅ Canonical |
 | **pi-tasks** | `https://github.com/lhl/pi-tasks` ([fork](https://github.com/lhl/pi-tasks)) | Claude Code-style task tracking with prompt-queued execution, batch task creation, dependencies, and a persistent widget | ✅ Canonical (lhl fork, switched 2026-05-11) |
 | **pi-goal** | `git:github.com/lhl/pi-goal` ([fork](https://github.com/lhl/pi-goal)) | Goal/punchlist workflow that interacts with `pi-tasks` `TaskList` | ✅ Canonical (lhl fork, added 2026-05-15) |
@@ -88,10 +87,6 @@ Use this to reconcile a stale machine before trusting its extension list:
 ```
 
 ## Installed Extension Usage
-
-### pi-rtk-optimizer (Removed 2026-05-10)
-
-We ran `pi-rtk-optimizer` (rtk auto-rewrite + output compaction) from install through 2026-05-10 and removed it after auditing rtk-binary failure modes (piped/redirected output corruption, schema-collapse of `curl` JSON, dropped `gh ... --comments`, Playwright locator stripping, double-aggregation of test output via the extension's own `aggregateTestOutput`). Full analysis, including what pi-rtk-optimizer sidestepped vs propagated, alternatives surveyed (lean-ctx, snip, caveman, headroom, pi-dynamic-context-pruning), and the lossless-vs-lossy transform framework, is in [[tools/pruning-and-compaction]].
 
 ### pi-schedule-prompt
 
@@ -414,8 +409,6 @@ When this happens, pi-core throws `"Compaction cancelled"` and the session canno
 Or remove `"npm:pi-continue"` from `~/.pi/agent/settings.json` packages array. Pi's built-in compaction then takes over and works fine.
 
 ## Compaction Landscape
-
-> See also [[tools/pruning-and-compaction]] for the broader token-management framework (per-command output summarizers vs context-level dedup/pruning, lossless-vs-lossy transform table, the rtk audit). This section focuses specifically on session-level / `/compact`-time strategies.
 
 Pi has built-in auto-compaction (enabled by default, triggers at `contextWindow - reserveTokens`). Several extensions modify or replace this behavior:
 
@@ -926,13 +919,9 @@ Full docs in the repo at `packages/coding-agent/docs/`:
 
 ### Token / Context Optimization
 
-Full landscape analysis lives at [[tools/pruning-and-compaction]] — architectural framework (per-command output summarizers vs context-level dedup/pruning), lossless-vs-lossy transform table, rtk failure-mode audit, alternatives surveyed (lean-ctx, snip, caveman, headroom, pi-dynamic-context-pruning), and the dated decisions to try and later retire `pi-context-prune`.
-
-Quick decision summary:
+Current decision summary:
 - **Installed:** `@sting8k/pi-vcc` (session-level compaction) and `pi-boomerang` (subagent-level summarization).
 - **Removed (2026-07-18):** `pi-context-prune`; frequent runtime errors outweighed its context-saving benefit.
-- **Removed (2026-05-10):** `pi-rtk-optimizer` and the per-command rtk auto-rewrite path — see [[tools/pruning-and-compaction]] for the failure-mode catalog.
-- **Surveyed, not installed:** `lean-ctx`, `snip`, `caveman`, `headroom`, `pi-dynamic-context-pruning`, `sherif-fanous/pi-rtk`, `mcowger/pi-rtk`, `pi-context-pruning`. Comparison details in the same wiki page.
 
 ---
 

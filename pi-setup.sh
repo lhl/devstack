@@ -3,16 +3,6 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Install rtk (token-optimizing CLI proxy). We no longer install pi-rtk-optimizer
-# (the auto-rewrite pi extension) — see wiki/tools/pruning-and-compaction.md for
-# the failure-mode analysis. The rtk binary itself is kept around so commands
-# like `rtk proxy <cmd>` and `rtk gain` remain available for explicit use.
-# Comment out this block if you want to fully remove rtk.
-install_rtk() {
-  echo "Installing rtk..."
-  curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh
-}
-
 # Install pi-coding-agent
 install_pi() {
   if command -v npm &>/dev/null; then
@@ -28,12 +18,6 @@ install_pi() {
     rm -rf "$tmp_dir"
   fi
 }
-
-# Ensure rtk is available
-if ! command -v rtk &>/dev/null; then
-  install_rtk
-fi
-rtk --version
 
 # Ensure pi is available
 if ! command -v pi &>/dev/null; then

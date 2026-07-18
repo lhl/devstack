@@ -61,7 +61,7 @@ links:                            # external URLs (repos, docs, sites)
 ## Tools
 
 - [[tools/pi-agent]] — Pi coding agent: minimal extensible terminal coding harness (pi.dev)
-- [[tools/rtk]] — RTK (Rust Token Killer): high-performance CLI proxy for 60-90% token reduction
+- [[tools/realitycheck]] — Reality Check: claim, source, and prediction tracking
 
 ## Concepts
 

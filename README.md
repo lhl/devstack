@@ -203,7 +203,7 @@ devstack/
 │   ├── index.md           # Page catalog (agent-maintained)
 │   ├── log.md             # Chronological operations log
 │   ├── concepts/          # Ideas, patterns, comparisons
-│   ├── tools/             # qmd, RTK, Claude Code, Codex, etc.
+│   ├── tools/             # qmd, Claude Code, Codex, etc.
 │   ├── practices/         # Workflows, playbooks, how-tos
 │   └── projects/          # Pi Agent, devstack, etc.
 ├── writing/               # Your authored content — writeups, talks, slides

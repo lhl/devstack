@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-07-18] update | devstack — removed RTK completely
+- Source: user decision that RTK is unused, plus local setup and installation audit.
+- Removed the RTK binary installer and version check from `pi-setup.sh`; added the retired Pi optimizer package to manifest legacy removals so stale machines also converge without `--prune`.
+- Removed current RTK references from repo guidance and Pi documentation, deleted the dedicated `wiki/tools/rtk.md` page, and rewrote `wiki/tools/pruning-and-compaction.md` around the remaining conversation-pruning decision; append-only historical records remain unchanged.
+- Updated pages: `wiki/tools/pi-agent.md`, `wiki/tools/pruning-and-compaction.md`, `wiki/practices/ml-workflow-tips.md`, `wiki/index.md`.
+- Updated repo docs/config: `AGENTS.md`, `README.md`, `docs/WIKI.md`, `pi-setup.sh`, `pi-packages.json`.
+
 ## [2026-07-18] update | pi-agent — retired pi-context-prune
 - Source: user operational report of frequent extension errors plus local canonical-stack inspection.
 - Removed `npm:pi-context-prune` from the canonical package list and added it to legacy removals so package sync uninstalls it even without a full `--prune` reconciliation.

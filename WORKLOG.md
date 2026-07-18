@@ -1822,3 +1822,25 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 **Next:**
 - Reload or restart the current Pi session so the already-loaded extension and its tools disappear from the running process.
+
+---
+
+## 2026-07-18 — Remove RTK completely
+
+**What:** Removed the unused RTK command-output optimizer from devstack setup, documentation, sync safeguards, and the live local environment.
+
+- Deleted the RTK install function, availability check, and version invocation from `pi-setup.sh`.
+- Added `npm:pi-rtk-optimizer` to `pi-packages.json` legacy removals so stale installations converge even when sync runs without `--prune`.
+- Removed RTK from `AGENTS.md`, `README.md`, `docs/WIKI.md`, `wiki/tools/pi-agent.md`, `wiki/practices/ml-workflow-tips.md`, and `wiki/index.md`.
+- Deleted the dedicated `wiki/tools/rtk.md` page and rewrote `wiki/tools/pruning-and-compaction.md` to retain only the still-relevant conversation-pruning and current-compaction material.
+- Ran RTK's global integration uninstaller, then removed the binary, config, saved data, Claude wrapper/instruction artifacts, stale Pi optimizer config, and the active `token-savings` skill symlink that could reinstall RTK.
+- Verified shell syntax, manifest JSON, legacy sync removal, current-doc cleanup, local command/path absence, wiki links, and `git diff --check`.
+
+**Decisions:**
+- Do not retain the binary for hypothetical `proxy` or analytics use; it was not being used and keeping an installer for it made the setup misleading.
+- Keep raw command output and the existing session/subagent compaction tools rather than replacing RTK.
+- Preserve append-only `WORKLOG.md`, `wiki/log.md`, immutable sources, and external cache/history records; these are historical evidence, not active integration.
+- Leave the source of the removed `token-savings` symlink in its separate `CLAUDE-MD` repository untouched because it is outside devstack and no longer active locally.
+
+**Next:**
+- None.

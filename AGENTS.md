@@ -32,7 +32,7 @@ This repo has two distinct layers:
 
 **Knowledge base** — the LLM Wiki pattern (Karpathy). Sources go into `sources/`, the agent compiles synthesized pages into `wiki/`, and `inbox/` is the staging area for unprocessed material. The agent owns `wiki/`; humans own `sources/` and `inbox/`.
 
-**Software and tools** — pi-agent, RTK configs, scripts, and other software live in `projects/` and `tools/`. These follow normal development workflows, not wiki operations.
+**Software and tools** — pi-agent, scripts, and other software live in `projects/` and `tools/`. These follow normal development workflows, not wiki operations.
 
 ## Key Files
 
@@ -102,7 +102,7 @@ Whenever the installed pi plugin stack changes (install, remove, pin a version, 
 - `README.md` — update the relevant section (Web Access, Automation & Workflow, Context Management, UX, etc.) with a one-line description and link
 - `wiki/tools/pi-agent.md` — update the evaluated/installed status table and any per-extension section when the decision changes
 
-Treat this as part of the same logical unit as the install itself — commit together. The same rule applies to other toolchain changes tracked by `pi-setup.sh` (rtk, camoufox, etc.).
+Treat this as part of the same logical unit as the install itself — commit together. The same rule applies to other toolchain changes tracked by `pi-setup.sh` (camoufox, etc.).
 
 **Submodule convention** (for `projects/`):
 - Prefer submodules over vendored snapshots — keeps the repo lean

@@ -2,7 +2,7 @@
 title: ML Workflow Tips
 tags: [workflow, python, tooling, shell, dev-environment]
 sources: [sources/articles/ml-workflow-tips.md, https://llm-tracker.info/howto/ML-Workflow-Tips]
-links: [[tools/rtk]]
+links: []
 ---
 
 # ML Workflow Tips

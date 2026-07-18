@@ -85,6 +85,10 @@
   ],
   "legacyPackages": [
     {
+      "source": "npm:pi-rtk-optimizer",
+      "reason": "Retired 2026-05-10; the unused RTK binary and remaining integration were fully removed 2026-07-18."
+    },
+    {
       "source": "npm:pi-context-prune",
       "reason": "Retired 2026-07-18: frequent runtime errors outweighed its context-saving benefit."
     },
