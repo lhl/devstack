@@ -23,19 +23,21 @@ links:
 
 # Token Reduction — Pruning and Compaction Landscape
 
-A working analysis of the agentic-coding token-reduction landscape and the specific reasoning behind our current setup. Captures the architectural framework, the rtk audit (and why we removed `pi-rtk-optimizer` on 2026-05-10), the alternatives surveyed, and the operational details of the chosen replacement (`pi-context-prune`).
+A dated analysis of the agentic-coding token-reduction landscape and the decisions it informed. It captures the architectural framework, the rtk audit (and why we removed `pi-rtk-optimizer` on 2026-05-10), the alternatives surveyed, why we tried `pi-context-prune`, and why we retired it on 2026-07-18.
 
 This page is opinionated and dated. Verdicts here reflect our environment (pi as harness, mixed Anthropic/OpenAI usage, autoloop-heavy workflows). Re-evaluate when major version bumps land.
 
 ## TL;DR
 
-**Decision (2026-05-10):** Removed `pi-rtk-optimizer`. Installed `pi-context-prune`. Kept the `rtk` binary on PATH for explicit `rtk proxy` / `rtk gain` use only.
+**Decision (2026-07-18):** Removed `pi-context-prune` from the canonical stack because frequent runtime errors outweighed its context-saving benefit. Canonical sync now removes the extension, setup no longer creates its config, and the stale local config was retired. We did not install a replacement.
 
-**Why:** `rtk`-class tools are *per-command output summarizers* — they hook the bash tool and replace e.g. `git log` output with a compact summary. Their failure mode is structural: any time you semantically summarize, you can destroy the bytes that mattered (a Playwright locator, a JSON identifier, the precise grep match positions piped to `wc -l`). The independent bug tracker for `rtk` documents real, repeatable instances of this. `pi-rtk-optimizer` is a thin wrapper around `rtk rewrite` and propagates those bugs; on top, it adds its own secondary summarizer (`aggregateTestOutput`, 12K-char hard truncate) that has the same failure shape.
+**Earlier decision (2026-05-10):** Removed `pi-rtk-optimizer`, installed `pi-context-prune`, and kept the `rtk` binary on PATH for explicit `rtk proxy` / `rtk gain` use only.
 
-`pi-context-prune` solves a different problem — *context-level redundancy*. As a session ages, the same file gets read multiple times, the same `ls` runs repeatedly, error tool-results accumulate after the underlying issue is fixed. The extension summarizes completed tool-call batches into a compact note and prunes the originals from future LLM-call context, while keeping the originals retrievable on demand via a `context_tree_query` tool. The transform is *recoverable*, not lossy. It also lives at the right layer for prompt-prefix caching: with `pruneOn: "agent-message"` the cache is busted once per work batch, not once per tool turn.
+**Why we originally changed course:** `rtk`-class tools are *per-command output summarizers* — they hook the bash tool and replace e.g. `git log` output with a compact summary. Their failure mode is structural: any time you semantically summarize, you can destroy the bytes that mattered (a Playwright locator, a JSON identifier, the precise grep match positions piped to `wc -l`). The independent bug tracker for `rtk` documents real, repeatable instances of this. `pi-rtk-optimizer` is a thin wrapper around `rtk rewrite` and propagates those bugs; on top, it adds its own secondary summarizer (`aggregateTestOutput`, 12K-char hard truncate) that has the same failure shape.
 
-The two architectures are orthogonal. You can in principle run both. We chose to run only the recoverable one.
+`pi-context-prune` targeted a different problem — *context-level redundancy*. As a session ages, the same file gets read multiple times, the same `ls` runs repeatedly, and error tool-results accumulate after the underlying issue is fixed. The extension summarized completed tool-call batches into a compact note and pruned the originals from future LLM-call context, while keeping the originals retrievable on demand via a `context_tree_query` tool. That recoverable design was why we tried it. In practice, its frequent runtime errors made the operational cost greater than the value, so the architectural appeal did not justify keeping it installed.
+
+The two architectures are orthogonal and can in principle run together. Devstack currently runs neither automatic per-command rewriting nor automatic tool-batch pruning.
 
 ## Architectural Framework
 
@@ -60,7 +62,7 @@ Don't touch any individual command's output. Instead, look at the *running conve
 
 | Tool | Type | Architecture | Notes |
 |---|---|---|---|
-| **pi-context-prune** ([championswimmer](https://github.com/championswimmer/pi-context-prune)) | pi extension, 83⭐ | Summarizes completed tool-call batches; exposes `context_tree_query` to recover any original output on demand | Architecturally the cleanest match for "clip repetition without regressions". Originals preserved and queryable. **What we run.** |
+| **pi-context-prune** ([championswimmer](https://github.com/championswimmer/pi-context-prune)) | pi extension, 83⭐ at review time | Summarizes completed tool-call batches; exposes `context_tree_query` to recover any original output on demand | Architecturally appealing and recoverable, but **removed 2026-07-18** because frequent runtime errors outweighed the benefit. |
 | **pi-dynamic-context-pruning** ([complexthings](https://github.com/complexthings/pi-dynamic-context-pruning)) | pi extension | Dedup duplicate tool outputs, superseded-write removal, error purging, recency protection, plus an LLM-callable `compress` tool | More features, larger blast radius. [Open issue #5](https://github.com/complexthings/pi-dynamic-context-pruning/issues/5) notes compression blocks accumulate without bound and don't integrate with pi's built-in compaction. Multiple maintained forks (PSU3D0/pi-dcp, zenobi-us/pi-dcp, edmundmiller, wassname). |
 | **pi-context-pruning** ([JSPM listing](https://jspm-packages.deno.dev/package/pi-context-pruning@1.0.2)) | pi extension | Port of OpenCode's proactive pruning algorithm | Less sophisticated; just prunes old tool outputs after each turn. |
 | **headroom** ([chopratejas](https://github.com/chopratejas/headroom)) | Standalone proxy / SDK, 1.7k⭐ | Sits between agent and provider. Reversible compression with retrieval. | Provider-agnostic (Claude/Codex/Cursor/Cline). 102 open issues at audit time. Codex auth breakage ([#71](https://github.com/chopratejas/headroom/issues/71)), Anthropic compression result discarded (#296), various dashboard/encoding bugs. The proxy architecture means it works with anything but adds another moving piece in the data path. |
@@ -151,9 +153,9 @@ Suggest mode is a real configuration: **none of the rtk-binary failure modes app
 
 Setting `enabled: false` short-circuits every functional handler in `src/index.ts` (each one starts with `if (!config.enabled) return {};`). The only thing that keeps running is `before_agent_start → ensureRuntimeStatusFresh()`, which spawns `rtk --version` periodically because it's gated by `guardWhenRtkMissing` rather than `enabled`. To stop that too, set `guardWhenRtkMissing: false`. To unload the extension code entirely: `pi remove npm:pi-rtk-optimizer` (what we did).
 
-## Why pi-context-prune
+## Why We Tried pi-context-prune
 
-Architecturally clean fit for what we actually want:
+It appeared to be an architecturally clean fit for what we wanted:
 
 1. **Recoverable, not lossy.** The originals stay in the session index. `context_tree_query` is an LLM-callable tool the agent can use to fetch back any pruned output by id. If a summary turns out to have dropped detail, the agent can retrieve.
 
@@ -175,9 +177,11 @@ Architecturally clean fit for what we actually want:
 | `agent-message` | When agent sends final text-only response or loop ends | Good — one bust per work batch | **Default.** Best balance for normal coding workflows. |
 | `agentic-auto` | Model decides via `context_prune` tool | Variable — depends on model judgment | Long autonomous runs after prompt-tuning. |
 
-We run `agent-message`.
+We ran `agent-message`.
 
-### Operational details
+### Historical operational details
+
+The following records the retired setup; these commands and settings are no longer part of devstack.
 
 **Install:**
 ```bash
@@ -197,7 +201,7 @@ pi install npm:pi-context-prune
 }
 ```
 
-Default `enabled` ships as `false` — the install does not auto-activate. Our `pi-setup.sh` writes this file with `enabled: true` if it doesn't exist, preserving any existing user config.
+Default `enabled` shipped as `false`, so the old `pi-setup.sh` wrote this file with `enabled: true` when absent. That bootstrap was removed on 2026-07-18.
 
 **Slash commands:**
 - `/pruner` — interactive settings modal (mode, summarizer model, thinking level, etc.)
@@ -210,15 +214,14 @@ Default `enabled` ships as `false` — the install does not auto-activate. Our `
 
 **Ephemeral nudge:** when `remindUnprunedCount: true` and `pruneOn: "agentic-auto"`, the extension injects a small `<pruner-note>` reminder before each LLM call telling the model how many unpruned tool-call results have piled up. No-op in other modes.
 
-## Layered Stack — How This Composes
+## Current Context-Management Stack
 
-We run three context-management extensions, each at a different layer:
+After retiring tool-batch pruning, devstack keeps two context-management extensions at different layers:
 
-1. **`pi-context-prune`** — *tool-call batch level.* Per work batch, summarize the originals and prune from future context. Originals retrievable via `context_tree_query`. New today.
-2. **`pi-boomerang`** — *subagent level.* When you launch an autonomous task via `/boomerang`, only its summarized result returns to the parent context. The subagent's full transcript stays in its own session.
-3. **`@sting8k/pi-vcc`** — *session level.* When the running session approaches `contextWindow - reserveTokens`, pi-vcc replaces pi's default summarization (which can 400 on long spans) with a deterministic algorithmic extraction (goal / files / commits / outstanding / preferences + rolling transcript). Older history stays searchable via `vcc_recall`. Documented at [[tools/pi-agent#compaction-landscape]].
+1. **`pi-boomerang`** — *subagent level.* When you launch an autonomous task via `/boomerang`, only its summarized result returns to the parent context. The subagent's full transcript stays in its own session.
+2. **`@sting8k/pi-vcc`** — *session level.* When the running session approaches `contextWindow - reserveTokens`, pi-vcc replaces pi's default summarization (which can 400 on long spans) with a deterministic algorithmic extraction (goal / files / commits / outstanding / preferences + rolling transcript). Older history stays searchable via `vcc_recall`. Documented at [[tools/pi-agent#compaction-landscape]].
 
-These are orthogonal and stack without conflict. None touches the bash data path; all of them operate on the conversation history.
+Neither touches the bash data path. There is intentionally no automatic per-command output rewriting or tool-batch pruning layer.
 
 ## Sanity Check — Are Output-Side Optimizations Even The Right Layer?
 
@@ -232,8 +235,8 @@ This validates the architectural choice: input/context-side dedup is where the t
 
 | Tool | Why not |
 |---|---|
-| `pi-rtk-optimizer` (re-installed in suggest mode) | Real fallback if we miss the JS-side compactions. Not currently needed because pi-context-prune covers the high-volume case (batch-level pruning). Re-evaluate if specific commands (lots of repetitive `git status` in a single batch) start dominating in-flight context before pruning kicks in. |
-| `pi-dynamic-context-pruning` | More feature surface (dedup + compress tool + error purging) but [issue #5](https://github.com/complexthings/pi-dynamic-context-pruning/issues/5) on unbounded compression-block growth is unresolved at audit time. Could revisit one of the maintained forks (PSU3D0, zenobi-us, edmundmiller, wassname) if pi-context-prune's batch-level approach turns out to miss things. |
+| `pi-rtk-optimizer` (re-installed in suggest mode) | Still inherits JS-side compaction risks and adds operational surface. We prefer raw tool output over replacing one troublesome optimizer with another. |
+| `pi-dynamic-context-pruning` | More feature surface (dedup + compress tool + error purging) but [issue #5](https://github.com/complexthings/pi-dynamic-context-pruning/issues/5) on unbounded compression-block growth was unresolved at audit time. We did not replace the retired pruner with another automatic pruning extension. |
 | `lean-ctx` | Same architectural class as rtk. Better engineered surface area, slightly more honest changelog (their own 'fix inflated savings' release), but the architectural ceiling is the same. Not worth replacing rtk with another instance of the same category. |
 | `snip` | Same architectural class as rtk, smaller user base. Filter-DSL inspectability is a real plus if we ever wanted to engineer per-command filters carefully — but we'd rather not be in that business. |
 | `caveman` | Output-side compression. ~1–3% of bill at honest measurement. Has correctness regressions in its own validator (issue #112). Skip. |
@@ -244,9 +247,8 @@ This validates the architectural choice: input/context-side dedup is where the t
 ## Open Questions / What to Watch
 
 - **Does `rtk` 0.38's `exclude_commands` actually work?** Critical for anyone keeping the binary around. Verify with `rtk rewrite curl <something>` after adding `curl` to `[hooks] exclude_commands`. Should return the original command and exit 1. If it does — the documented escape hatch is real and `rtk proxy` becomes a usable manual tool. If it doesn't — the binary is genuinely only useful for explicit `rtk gain` and `rtk proxy <cmd>` invocations.
-- **Does `pi-context-prune` summarization quality drop on long autonomous runs?** Need to compare summaries against `context_tree_query` retrievals on real autoloop sessions. If summaries miss critical state, raise `summarizerThinking` or change `summarizerModel` to a larger model.
-- **Do we ever need the bash-side savings back?** If batch-level pruning leaves too much in-flight context (e.g., a single batch with 100 `git status` calls and a `cargo test`), reinstall `pi-rtk-optimizer` in suggest mode with `aggregateTestOutput: false` and the 12K truncate disabled. That gives ANSI strip + safe git/search/lint grouping without `rtk rewrite` in the path.
-- **Cross-extension interactions during compaction.** `pi-context-prune` rewrites future-request context; `pi-vcc` overrides pi's `/compact` and auto-threshold compaction. They operate on different events but rewrite related data. If we see weird state loss after a `/compact`, this is the first place to look.
+- **Do we ever need the bash-side savings back?** Only revisit output compaction if raw tool output becomes a demonstrated bottleneck. Any candidate needs correctness and operational-reliability evidence before entering the canonical stack.
+- **Do we need a tool-batch pruning replacement?** Not currently. Prefer the simpler stack unless a measurable context problem justifies evaluating a replacement.
 
 ## Provenance
 

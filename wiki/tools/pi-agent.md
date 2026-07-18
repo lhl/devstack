@@ -53,7 +53,7 @@ Use this to reconcile a stale machine before trusting its extension list:
 
 | Extension | Install source | Purpose | Status |
 |---|---|---|---|
-| **pi-context-prune** | `npm:pi-context-prune` ([source](https://github.com/championswimmer/pi-context-prune)) | Summarizes completed tool-call batches; prunes originals from future LLM context with `context_tree_query` recovery | ✅ Canonical (replaced pi-rtk-optimizer 2026-05-10) |
+| ~~pi-context-prune~~ | `npm:pi-context-prune` ([source](https://github.com/championswimmer/pi-context-prune)) | Summarized completed tool-call batches and exposed retrieval for pruned originals | ❌ Removed (2026-07-18) — frequent runtime errors outweighed the context-saving benefit; canonical sync removes it |
 | ~~pi-rtk-optimizer~~ | `npm:pi-rtk-optimizer` | Token optimization via RTK command rewriting + output compaction | ❌ Removed (2026-05-10) — see [[tools/pruning-and-compaction]] |
 | **pi-schedule-prompt** | `npm:pi-schedule-prompt` | Natural language scheduling, cron, per-task model | ✅ Canonical |
 | **pi-tasks** | `https://github.com/lhl/pi-tasks` ([fork](https://github.com/lhl/pi-tasks)) | Claude Code-style task tracking with prompt-queued execution, batch task creation, dependencies, and a persistent widget | ✅ Canonical (lhl fork, switched 2026-05-11) |
@@ -88,33 +88,6 @@ Use this to reconcile a stale machine before trusting its extension list:
 ```
 
 ## Installed Extension Usage
-
-### pi-context-prune
-
-```
-/pruner           # Open interactive settings modal (pruneOn mode, summarizer, etc.)
-/pruner now       # Force-flush pending batches and summarize/prune immediately
-/pruner show      # Show pending batches and last prune stats
-```
-
-LLM-callable tools added by the extension:
-- `context_tree_query` — retrieve the full original output of any pruned tool call by id, so the agent can recover detail it later realizes it needs.
-- `context_prune` — only registered when `pruneOn === "agentic-auto"`; lets the model trigger pruning when it judges the context has grown large.
-
-Config: `~/.pi/agent/context-prune/settings.json`
-```json
-{
-  "enabled": true,
-  "pruneOn": "agent-message",
-  "summarizerModel": "default",
-  "summarizerThinking": "default",
-  "remindUnprunedCount": true,
-  "showPruneStatusLine": true,
-  "batchingMode": "turn"
-}
-```
-
-`pruneOn: "agent-message"` is the recommended default. It batches all tool-calling turns inside a single user→final-agent-reply span and prunes once at the end, which preserves prompt-prefix caching far better than `every-turn` (which busts cache on every tool round). See [[tools/pruning-and-compaction]] for the full analysis of why we picked this over rtk-class bash-output compressors.
 
 ### pi-rtk-optimizer (Removed 2026-05-10)
 
@@ -244,7 +217,7 @@ Key differentiators:
 
 `pi-monitor` is not infrastructure-ready for devstack, but its passive filtered-stream design is worth stealing later if we need ambient low-significance process context instead of active wakes.
 
-Testing note: local npm has `before` set to 2026-06-07, so `@vanillagreen/pi-background-tasks@1.6.1` is currently blocked by the age gate. The canonical manifest pins the tested `@1.6.0`. Operational caveat: Haiku 4.5 handled the tool/wake flow cleanly, while the current default epyc/Qwen model showed poor tool-loop behavior after wake injection; prefer reliable tool-calling models for autonomous background-task workflows. Remaining validation: interactive dashboard behavior, cross-restart missed-exit replay, noisy long-running wake-budget behavior, and wake batching/prompt-cache impact with `pi-context-prune` during real multi-hour sessions.
+Testing note: local npm has `before` set to 2026-06-07, so `@vanillagreen/pi-background-tasks@1.6.1` is currently blocked by the age gate. The canonical manifest pins the tested `@1.6.0`. Operational caveat: Haiku 4.5 handled the tool/wake flow cleanly, while the current default epyc/Qwen model showed poor tool-loop behavior after wake injection; prefer reliable tool-calling models for autonomous background-task workflows. Remaining validation: interactive dashboard behavior, cross-restart missed-exit replay, and noisy long-running wake-budget behavior.
 
 ---
 
@@ -953,11 +926,11 @@ Full docs in the repo at `packages/coding-agent/docs/`:
 
 ### Token / Context Optimization
 
-Full landscape analysis lives at [[tools/pruning-and-compaction]] — architectural framework (per-command output summarizers vs context-level dedup/pruning), lossless-vs-lossy transform table, rtk failure-mode audit, alternatives surveyed (lean-ctx, snip, caveman, headroom, pi-dynamic-context-pruning), and our reasoning for landing on **pi-context-prune** as the only context/token-management extension installed by default.
+Full landscape analysis lives at [[tools/pruning-and-compaction]] — architectural framework (per-command output summarizers vs context-level dedup/pruning), lossless-vs-lossy transform table, rtk failure-mode audit, alternatives surveyed (lean-ctx, snip, caveman, headroom, pi-dynamic-context-pruning), and the dated decisions to try and later retire `pi-context-prune`.
 
 Quick decision summary:
-- **Installed:** `pi-context-prune` (conversation-level: summarize tool-call batches + retrievable originals).
-- **Installed and complementary, different layer:** `@sting8k/pi-vcc` (session-level compaction), `pi-boomerang` (subagent-level summarization).
+- **Installed:** `@sting8k/pi-vcc` (session-level compaction) and `pi-boomerang` (subagent-level summarization).
+- **Removed (2026-07-18):** `pi-context-prune`; frequent runtime errors outweighed its context-saving benefit.
 - **Removed (2026-05-10):** `pi-rtk-optimizer` and the per-command rtk auto-rewrite path — see [[tools/pruning-and-compaction]] for the failure-mode catalog.
 - **Surveyed, not installed:** `lean-ctx`, `snip`, `caveman`, `headroom`, `pi-dynamic-context-pruning`, `sherif-fanous/pi-rtk`, `mcowger/pi-rtk`, `pi-context-pruning`. Comparison details in the same wiki page.
 

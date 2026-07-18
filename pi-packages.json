@@ -3,11 +3,6 @@
   "description": "Canonical pi extension stack for lhl/devstack. tools/pi-sync.sh installs these sources; --prune removes any other user/project package entries.",
   "packages": [
     {
-      "source": "npm:pi-context-prune",
-      "category": "context-management",
-      "note": "Recoverable conversation pruning with context_tree_query."
-    },
-    {
       "source": "npm:pi-schedule-prompt",
       "category": "automation",
       "note": "Cron/one-shot prompt scheduling."
@@ -89,6 +84,10 @@
     }
   ],
   "legacyPackages": [
+    {
+      "source": "npm:pi-context-prune",
+      "reason": "Retired 2026-07-18: frequent runtime errors outweighed its context-saving benefit."
+    },
     {
       "source": "npm:pi-web-access",
       "reason": "Disabled 2026-06-29: pi-web-access 0.13.0 imports @earendil-works/pi-ai/compat, which Pi 0.79.7 no longer exports; it breaks Pi startup until the extension or Pi compatibility layer is updated."

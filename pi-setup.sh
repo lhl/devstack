@@ -54,29 +54,6 @@ pi --version
 # its openai-codex override when a usable managed/imported account exists.
 "$SCRIPT_DIR/tools/pi-sync.sh" --prune
 
-# pi-context-prune: enable the extension and use the recommended `agent-message`
-# prune trigger (batches one prune per user→final-agent-message span, much
-# friendlier to provider prompt caching than per-turn pruning). Default is
-# enabled=false on first install, so we bootstrap an opt-in config.
-mkdir -p "$HOME/.pi/agent/context-prune"
-PI_CONTEXT_PRUNE_CONFIG="$HOME/.pi/agent/context-prune/settings.json"
-if [ ! -f "$PI_CONTEXT_PRUNE_CONFIG" ]; then
-  cat > "$PI_CONTEXT_PRUNE_CONFIG" <<'JSON'
-{
-  "enabled": true,
-  "showPruneStatusLine": true,
-  "summarizerModel": "default",
-  "summarizerThinking": "default",
-  "pruneOn": "agent-message",
-  "remindUnprunedCount": true,
-  "batchingMode": "turn"
-}
-JSON
-  echo "Wrote $PI_CONTEXT_PRUNE_CONFIG with enabled=true, pruneOn=agent-message"
-else
-  echo "Preserving existing $PI_CONTEXT_PRUNE_CONFIG (edit manually or via /pruner)"
-fi
-
 # pi-vcc: make it handle /compact and auto-threshold compactions (not just /pi-vcc).
 # Default is false, which only runs pi-vcc on the explicit /pi-vcc command.
 # We override because pi's built-in single-pass summarizer can 400 on large spans.

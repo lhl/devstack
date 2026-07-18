@@ -1,5 +1,13 @@
 # Wiki Log
 
+## [2026-07-18] update | pi-agent — retired pi-context-prune
+- Source: user operational report of frequent extension errors plus local canonical-stack inspection.
+- Removed `npm:pi-context-prune` from the canonical package list and added it to legacy removals so package sync uninstalls it even without a full `--prune` reconciliation.
+- Reason: frequent runtime errors outweighed the context-saving benefit; no replacement pruning extension was installed.
+- Removed the setup-time config bootstrap and current-stack references from `README.md`, `docs/TODO.md`, and the Pi/background-task wiki guidance while preserving dated research and append-only history.
+- Pages updated: `wiki/tools/pi-agent.md`, `wiki/tools/pi-background-task-plugins.md`, `wiki/tools/pruning-and-compaction.md`, `wiki/index.md`.
+- Repo docs/config updated: `README.md`, `docs/TODO.md`, `pi-setup.sh`, `pi-packages.json`.
+
 ## [2026-07-03] update | pi-agent — restored pi-multicodex with conditional provider registration
 - Restored `https://github.com/lhl/pi-multicodex` to the canonical `pi-packages.json` stack after pushing `lhl/pi-multicodex` commit `6b12d92`.
 - Fix: MultiCodex now loads commands but only registers its `openai-codex` provider override when a usable managed/imported Codex account exists; stale `needsReauth` accounts no longer break Pi startup.

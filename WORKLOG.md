@@ -1802,3 +1802,23 @@ Append-only session log. Each entry records what was done, why, and what's next.
 **Next:**
 - Trial isolated dependency bootstrap on one JavaScript or Rust repository and verify lockfile/side-effect handling.
 - Measure one multi-batch refactor to confirm the checkpoint cadence avoids redundant full-suite runs without weakening final validation.
+
+---
+
+## 2026-07-18 — Retire pi-context-prune from devstack
+
+**What:** Removed the error-prone context-pruning extension from the canonical Pi stack and the live local installation.
+
+- Removed `npm:pi-context-prune` from `pi-packages.json` canonical packages and added an explicit legacy removal so sync retires it with or without `--prune`.
+- Removed the context-prune config bootstrap from `pi-setup.sh` and all pruner references from `README.md` and `docs/TODO.md`.
+- Updated `wiki/tools/pi-agent.md`, `wiki/tools/pi-background-task-plugins.md`, `wiki/tools/pruning-and-compaction.md`, `wiki/index.md`, and `wiki/log.md` so current-state guidance reflects the removal while dated analysis remains available.
+- Ran `pi remove npm:pi-context-prune` and deleted `~/.pi/agent/context-prune`; confirmed the package, installed directory, and config are absent.
+- Verified shell syntax, manifest JSON and legacy-removal behavior, touched-page wikilinks, active-doc reference cleanup, and `git diff --check`.
+
+**Decisions:**
+- Do not replace the pruner now; its frequent runtime errors outweighed the context savings, and the simpler stack is preferable without a demonstrated replacement need.
+- Preserve append-only `WORKLOG.md`, `wiki/log.md`, immutable `sources/`, and the dated pruning research rather than erasing historical evaluation records.
+- Remove only the pruner locally instead of applying the full canonical sync, because the dry run also identified unrelated missing canonical packages.
+
+**Next:**
+- Reload or restart the current Pi session so the already-loaded extension and its tools disappear from the running process.

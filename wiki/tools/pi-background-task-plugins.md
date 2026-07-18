@@ -44,7 +44,7 @@ Why:
 - It has durable missed exit wake replay across Pi reloads/session restarts and PID reuse checks.
 - It is MIT-licensed and zero-dependency in the package tarball, so a local fork remains feasible if vstack monorepo coupling becomes a problem.
 
-**Test result:** pass for extension load, slash-command registration, `/bg:run`, completion exit wake event delivery, `/bg:list`, `/bg log`, and `/bg:clear` in an isolated temp Pi harness. Pass in the full devstack stack with Haiku 4.5 for LLM `bg_task` invocation, `notifyOnOutput` / `notifyPattern` output wake, completion exit wake, and LLM `bash` auto-backgrounding of `tail -f`. Still not covered: interactive TUI dashboard behavior, cross-restart durable replay, and long noisy wake streams with `pi-context-prune` over real sessions.
+**Test result:** pass for extension load, slash-command registration, `/bg:run`, completion exit wake event delivery, `/bg:list`, `/bg log`, and `/bg:clear` in an isolated temp Pi harness. Pass in the full devstack stack with Haiku 4.5 for LLM `bg_task` invocation, `notifyOnOutput` / `notifyPattern` output wake, completion exit wake, and LLM `bash` auto-backgrounding of `tail -f`. Still not covered: interactive TUI dashboard behavior, cross-restart durable replay, and long noisy wake streams over real sessions.
 
 **Alternative candidate:** `@richardgill/pi-tmux-bash` if we want to replace the bash execution substrate instead of adding a parallel `bg_task` tool.
 
@@ -67,7 +67,6 @@ The devstack stack already has these adjacent primitives:
 - `pi-multiloop` for explicit long-running optimization/research loops.
 - `pi-schedule-prompt` for cron/interval/one-shot prompts.
 - `lhl/pi-tasks` for structured task tracking and prompt-queued task execution.
-- `pi-context-prune` with `pruneOn: "agent-message"`, where frequent short wake turns could hurt batching and prompt-cache locality.
 
 The missing primitive is **non-blocking shell/process execution that can wake the agent when the work is done or when a meaningful line appears**.
 
@@ -177,7 +176,6 @@ Still not covered yet:
 - Interactive TUI dashboard behavior.
 - Cross-restart durable missed-exit replay.
 - Long-running noisy-output budget behavior over many wakes.
-- Prompt-cache / `pi-context-prune` quality over real multi-hour sessions.
 
 ### Promotion checklist
 
@@ -199,7 +197,6 @@ Checks:
 - ✅ `notifyPattern` output wake works for `READY` with Haiku 4.5.
 - ✅ Auto-backgrounding catches a `tail -f` monitor command through the LLM `bash` tool path.
 - ⚠️ Operational model policy: default epyc/Qwen had poor tool-loop behavior even though the plugin worked; prefer stronger tool-calling models for autonomous background-task workflows.
-- ⏳ Confirm wake messages stay small enough not to defeat `pi-context-prune` batching in real long sessions.
 - ✅ Promoted to `pi-packages.json`, documented in `README.md`, noted in `pi-setup.sh`, and updated in [[tools/pi-agent]] on 2026-06-14.
 
 ## Promotion status

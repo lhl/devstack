@@ -34,8 +34,7 @@ The earlier gob/`pi-backtask` plan is superseded for now by evaluating maintaine
 6. ✅ Verify auto-backgrounding for an obvious monitor command through the LLM `bash` tool path; `tail -f` was auto-backgrounded as a follow-mode log command.
 7. ⚠️ Record model guidance: the current default `epyc/shisa-ai/Qwen3.6-35B-A3B-PARO-packed` spawned the task and received wakes but then produced repeated literal `<tool_call>` text, bad `bg_task log` calls, and duplicate spawns; prefer stronger tool-calling models for autonomous background-task workflows.
 8. ⏳ Test interactive dashboard behavior and shortcut ergonomics.
-9. ⏳ Watch interaction with `pi-context-prune` batching in long sessions: wake streams should not fragment batches or harm prompt-cache locality.
-10. ✅ Promoted into `pi-packages.json`, `README.md`, `pi-setup.sh`, `wiki/tools/pi-agent.md`, and `wiki/tools/pi-background-task-plugins.md` in the same logical unit.
+9. ✅ Promoted into `pi-packages.json`, `README.md`, `pi-setup.sh`, `wiki/tools/pi-agent.md`, and `wiki/tools/pi-background-task-plugins.md` in the same logical unit.
 
 ### Parked historical plan
 
