@@ -1882,3 +1882,24 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 **Next:**
 - Add future examples to the same page when their exact source text and provenance can be preserved.
+
+---
+
+## 2026-07-28 — Document cross-model planner–executor workflows
+
+**What:** Turned a community “ChatGPT as brain, Codex as hands” workflow into a source-backed practice for manual and harness-driven model handoffs.
+
+- Archived the Reddit post and comments at `sources/articles/reddit-chatgpt-codex-second-brain-1v80xhn.html` with SHA-256 `832590bc4676e0b6c5465e284af809cba9f6b84f06cbf037286e59bb5cce54cc`.
+- Created `wiki/practices/cross-model-planner-executor-workflows.md` covering planner/executor role separation, handoff media, a concise handoff contract, manual execution steps, bounded scratchpad/planner/specialist/reviewer/computer-use patterns, failure modes, and an evaluation design.
+- Checked the Reddit claims against OpenAI's GitHub app, shared-link, and ChatGPT app documentation.
+- Distinguished community claims from verified product behavior: the built-in GitHub connector is documented as read-only, while write actions depend on a specific app and permission configuration; shared links are visible to anyone with the URL and have no expiry.
+- Updated `wiki/concepts/autonomous-loops.md`, `wiki/index.md`, and `wiki/log.md` with the new practice and cross-link.
+
+**Decisions:**
+- Use a dedicated practices page rather than a misc note because the reusable unit is a workflow with explicit role, context, permission, and handoff boundaries.
+- Prefer a short revision-pinned Markdown/issue handoff over passing a full chat transcript as authoritative context.
+- Treat quota separation as an opportunistic benefit, not a stable architectural assumption.
+- Default planning/scratchpad roles to read-only access and require confirmation/audit for external write actions.
+
+**Next:**
+- Trial executor-only versus planner→executor versus planner→executor→reviewer on representative tasks and compare acceptance pass rate, rework, wall time, total usage, and handoff drift.

@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-07-28] ingest | Cross-model planner–executor workflows
+- Source: `sources/articles/reddit-chatgpt-codex-second-brain-1v80xhn.html`, archived from https://www.reddit.com/r/ChatGPT/comments/1v80xhn/am_i_the_last_person_to_realize_chatgpt_can/ (SHA-256 `832590bc4676e0b6c5465e284af809cba9f6b84f06cbf037286e59bb5cce54cc`).
+- Pages created: `wiki/practices/cross-model-planner-executor-workflows.md`.
+- Pages updated: `wiki/concepts/autonomous-loops.md`, `wiki/index.md`.
+- Summary: generalized the post's ChatGPT-planner/Codex-executor pattern into manual and harness-driven workflows for read-only planning, scratchpads, specialists, independent portfolios, adversarial review, computer use, and durable issue/Markdown/PR handoffs.
+- Verification note: official OpenAI documentation confirms repository search and shared-link behavior but documents the built-in ChatGPT GitHub app as read-only; the Reddit author's issue-writing feature, separate quotas, model labels, and results remain attributed community reports. The practice page adds state-pinning, least-privilege, prompt-injection, privacy, and mechanical-verification guardrails.
+
 ## [2026-07-28] ingest | Prompting examples — GPT 5.6 Sol Ultra proof-search prompt
 - Source: `sources/papers/openai-2026-cycle-double-cover-prompt.pdf`, archived from https://cdn.openai.com/pdf/04d1d1e4-bc75-476a-97cf-49055cd98d31/cdc_prompt.pdf (SHA-256 `0e48deee28caba82ee5b4191d4c5c6ec4d62e5d27890fa7f0d2c8868f8b758f3`).
 - Pages created: `wiki/practices/prompting-examples.md`.

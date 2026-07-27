@@ -162,6 +162,9 @@ Dependency-aware parallel execution across worktrees. Best for: independent task
 **6. Self-Review** (pi-review-loop)
 Review own work until no issues remain. Best for: quality gate before commit.
 
+**7. Cross-Model Planner–Executor Handoff**
+Use a read-only planner, scratchpad, specialist, or reviewer model around a stateful coding executor, with a small revision-pinned artifact between them. Best for: separating open-ended analysis from tool-heavy implementation or preserving independent review. See [[practices/cross-model-planner-executor-workflows]].
+
 ## Convergence Detection Methods
 
 | Method | Used by | How it works |

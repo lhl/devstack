@@ -13,6 +13,7 @@
 ## Practices
 
 - [[practices/arch-aur-safety]] — Arch User Repository safety guide: AUR threat model, June 2026 malicious package incident checks, review checklist, build isolation, npm/Bun guardrails, and response baseline
+- [[practices/cross-model-planner-executor-workflows]] — Cross-model “brain and hands” workflows: planner/scratchpad/reviewer roles, durable handoff contracts, GitHub and shared-link boundaries, harness patterns, security guardrails, and evaluation
 - [[practices/llm-prose-techniques]] — Getting better prose out of LLMs: base models, logit bias, prefill, named-writer anchoring, decompose/tic-hunt, voice corpus, sampling; companion to the deslop checklist
 - [[practices/ml-workflow-tips]] — ML dev environment setup: mamba + uv, nvm.fish, Starship, byobu/tmux, Atuin
 - [[practices/prompting-examples]] — Source-backed prompt examples with exact extracts, reusable patterns, and caveats; includes OpenAI's GPT 5.6 Sol Ultra multi-agent Cycle Double Cover proof-search prompt
