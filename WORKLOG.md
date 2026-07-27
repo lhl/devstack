@@ -1862,3 +1862,23 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 **Next:**
 - None.
+
+---
+
+## 2026-07-28 — Add prompting examples wiki entry
+
+**What:** Archived and extracted OpenAI's GPT 5.6 Sol Ultra Cycle Double Cover proof-search prompt as the first source-backed prompting example.
+
+- Archived the two-page OpenAI PDF at `sources/papers/openai-2026-cycle-double-cover-prompt.pdf` with SHA-256 `0e48deee28caba82ee5b4191d4c5c6ec4d62e5d27890fa7f0d2c8868f8b758f3`.
+- Created `wiki/practices/prompting-examples.md` with the complete prompt, normalizing only line wrapping and PDF page furniture.
+- Extracted reusable patterns for multi-agent portfolio management, blocked-route handling, adversarial auditing, coordinator synthesis, and explicit acceptance/stopping rules.
+- Added caveats around the forced-success premise, restricted reality checking, high concurrency, runtime floor, and unverified proof claim.
+- Updated `wiki/index.md` and prepended the ingest record to `wiki/log.md`.
+- Verified the fenced prompt matches `pdftotext` output after whitespace/page-furniture normalization, confirmed the archived PDF hash, and ran `git diff --check`.
+
+**Decisions:**
+- Use one extensible `wiki/practices/prompting-examples.md` page rather than a paper-specific analysis page because the primary value is the exact prompt and its reusable structure.
+- Attribute the GPT 5.6 Sol Ultra label and claimed proof outcome to the PDF without treating either as independently verified.
+
+**Next:**
+- Add future examples to the same page when their exact source text and provenance can be preserved.

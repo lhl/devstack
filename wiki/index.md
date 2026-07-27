@@ -15,6 +15,7 @@
 - [[practices/arch-aur-safety]] — Arch User Repository safety guide: AUR threat model, June 2026 malicious package incident checks, review checklist, build isolation, npm/Bun guardrails, and response baseline
 - [[practices/llm-prose-techniques]] — Getting better prose out of LLMs: base models, logit bias, prefill, named-writer anchoring, decompose/tic-hunt, voice corpus, sampling; companion to the deslop checklist
 - [[practices/ml-workflow-tips]] — ML dev environment setup: mamba + uv, nvm.fish, Starship, byobu/tmux, Atuin
+- [[practices/prompting-examples]] — Source-backed prompt examples with exact extracts, reusable patterns, and caveats; includes OpenAI's GPT 5.6 Sol Ultra multi-agent Cycle Double Cover proof-search prompt
 - [[practices/supply-chain-security]] — Package supply-chain security playbook: config-file rolling min-release-age gates (npm/pnpm/uv/pip via `pkg-security-setup.sh`), per-ecosystem unit gotchas, wheels-only Python wrappers, frozen installs, lifecycle-script blocking, GitHub Actions hardening, Arch AUR, and Mini Shai-Hulud/TanStack incident notes
 
 ## Tools

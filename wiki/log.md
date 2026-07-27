@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-07-28] ingest | Prompting examples — GPT 5.6 Sol Ultra proof-search prompt
+- Source: `sources/papers/openai-2026-cycle-double-cover-prompt.pdf`, archived from https://cdn.openai.com/pdf/04d1d1e4-bc75-476a-97cf-49055cd98d31/cdc_prompt.pdf (SHA-256 `0e48deee28caba82ee5b4191d4c5c6ec4d62e5d27890fa7f0d2c8868f8b758f3`).
+- Pages created: `wiki/practices/prompting-examples.md`.
+- Pages updated: `wiki/index.md`.
+- Summary: extracted the full prompt with only PDF line wrapping/page furniture normalized, then recorded its reusable multi-agent patterns: exact acceptance boundaries, explicit non-solutions, independent approach portfolios, family registry and blocking policy, concrete worker artifacts, domain-specific adversarial audits, root-agent synthesis, and stopping rules.
+- Verification note: the model label and claimed proof outcome are attributed to the OpenAI PDF and were not independently verified; the page flags the forced-success premise, restricted reality checking, runtime floor, and high concurrency as non-portable or risk-bearing instructions.
+
 ## [2026-07-18] update | devstack — removed RTK completely
 - Source: user decision that RTK is unused, plus local setup and installation audit.
 - Removed the RTK binary installer and version check from `pi-setup.sh`; added the retired Pi optimizer package to manifest legacy removals so stale machines also converge without `--prune`.
