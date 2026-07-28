@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-07-29] update | Codex TRACE-log suppression workaround
+- Source: local inspection and mitigation of `~/.codex/logs_2.sqlite`, with upstream context from https://github.com/openai/codex/issues/29674.
+- Pages created: `wiki/tools/codex.md`.
+- Pages updated: `wiki/index.md`.
+- Summary: recorded the local `codex-cli 0.144.0` database measurements, the pre-change backup, and installation of a `codex_suppress_trace_logs` SQLite trigger that ignores only `TRACE` inserts while preserving higher-level diagnostics.
+- Verification: a rolled-back transaction confirmed a TRACE test insert was ignored, an INFO insert was accepted, and no test rows remained; the page includes inspection and removal commands plus migration and diagnostics caveats.
+
 ## [2026-07-28] ingest | Cross-model planner–executor workflows
 - Source: `sources/articles/reddit-chatgpt-codex-second-brain-1v80xhn.html`, archived from https://www.reddit.com/r/ChatGPT/comments/1v80xhn/am_i_the_last_person_to_realize_chatgpt_can/ (SHA-256 `832590bc4676e0b6c5465e284af809cba9f6b84f06cbf037286e59bb5cce54cc`).
 - Pages created: `wiki/practices/cross-model-planner-executor-workflows.md`.

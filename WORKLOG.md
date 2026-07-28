@@ -1903,3 +1903,24 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 **Next:**
 - Trial executor-only versus planner→executor versus planner→executor→reviewer on representative tasks and compare acceptance pass rate, rework, wall time, total usage, and handoff drift.
+
+---
+
+## 2026-07-29 — Suppress Codex TRACE persistence locally
+
+**What:** Applied and documented the upstream-reported TRACE-only SQLite workaround for Codex's excessive persisted logging.
+
+- Confirmed no Codex application or CLI process was running and no process held `~/.codex/logs_2.sqlite`, its WAL, or its shared-memory file.
+- Measured a 63.0 MiB database with a 4.3 MiB WAL, 2,000 retained rows, 1,517 TRACE rows, 95% free pages, and a `logs` ID high-water mark of 159,707,075.
+- Created `~/.codex/backups/logs_2-before-trace-trigger-20260729-053839.sqlite` before modifying the database.
+- Installed `codex_suppress_trace_logs`, a conditional `BEFORE INSERT` trigger that ignores only `TRACE` rows.
+- Verified in a rolled-back transaction that TRACE inserts are ignored, INFO inserts remain accepted, and no verification rows persist.
+- Created `wiki/tools/codex.md` and updated `wiki/index.md` and `wiki/log.md` with the measurements, SQL, reversal command, and caveats.
+
+**Decisions:**
+- Preserve DEBUG, INFO, WARN, and ERROR events instead of using the more destructive unconditional all-log trigger.
+- Treat the trigger as a temporary unsupported workaround; remove it when upstream provides and verifies a product-level fix or when full diagnostic traces are needed.
+- Keep the pre-change database backup outside the repository because it is machine-local runtime state.
+
+**Next:**
+- After the next Codex session, verify that TRACE rows remain suppressed and compare WAL/process write activity with the pre-change behavior.
