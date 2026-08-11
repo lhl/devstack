@@ -74,7 +74,17 @@ else
   echo "Preserving existing $PI_CONTINUE_AFTER_COMPACTION_CONFIG (edit manually if needed)"
 fi
 
-# install camoufox
+# install camoufox browser binary (Node side)
+# camoufox-pi (tff-fetch_url / tff-search_web) runs on the Node camoufox-js port,
+# which reads ~/.cache/camoufox/version.json and expects the browser extracted flat
+# at the cache root. Do NOT install the Python `camoufox` pip package or run its
+# `camoufox fetch` here: it writes the 0.5.x "multiversion" layout
+# (browsers/official/<ver>-<sha8>/ + config.json, no version.json) that the Node
+# tools cannot read, breaking tff-fetch_url / tff-search_web with "Version
+# information not found at ~/.cache/camoufox/version.json". See wiki/tools/camoufox.md.
+# The extension lazy-downloads the browser on first tff use; for a deterministic
+# setup-time fetch use the Node CLI instead:
+#   npx camoufox fetch && chmod -R 755 ~/.cache/camoufox/
 # camoufox-js depends on better-sqlite3 (native addon). Prebuilt binaries may
 # not exist for the current Node ABI; rebuild from source so "bindings" can
 # locate build/Release/better_sqlite3.node at runtime.
@@ -86,7 +96,5 @@ echo "Rebuilding native deps for camoufox-pi (better-sqlite3)..."
     break
   fi
 done)
-PIP_REQUIRE_HASHES=0 pip install -U camoufox[geoip]
-camoufox fetch
 
 echo "Done. Run 'pi' to start."

@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-08-11] update | camoufox — Python vs Node cache-layout conflict fixed and documented
+- Source: local investigation and repair of the `tff-search_web` / `tff-fetch_url` `browser_launch_failed` error; upstream context from https://github.com/daijro/camoufox, https://github.com/apify/camoufox-js, https://github.com/MonsieurBarti/camoufox-pi.
+- Pages created: `wiki/tools/camoufox.md`.
+- Pages updated: `wiki/index.md`, `wiki/tools/pi-agent.md` (camoufox-pi row cross-links the new page).
+- Summary: diagnosed the root cause — `pi-setup.sh` installs the **Python** `camoufox` pip package and fetches via the Python CLI, which writes the 0.5.x **multiversion** layout (`browsers/official/<ver>-<sha8>/` + `config.json`, no top-level `version.json`) into `~/.cache/camoufox`; the `camoufox-pi` tff tools run on the **Node** `camoufox-js` port, which requires the **flat** layout + `version.json`, and throws `Version information not found at ~/.cache/camoufox/version.json` when it is absent. Fixed by reusing the already-downloaded `152.0.4-beta.28` browser (moved to flat layout, wrote `version.json`, chmod 755), removed Python metadata + redundant `browsers/` tree (~1.3 GB freed), uninstalled the pip package and its 66 MB orphaned mmdb, then verified a Node launch through the exact extension path (`Example Domain`).
+- Verification: Node reports `installed version: 152.0.4-beta.28`; smoke test via `camoufox-js launchOptions` + `playwright-core firefox.launch` fetched `https://example.com` successfully. Page records all four fix options and the prevention/detection commands.
+
 ## [2026-07-29] update | Codex TRACE-log suppression workaround
 - Source: local inspection and mitigation of `~/.codex/logs_2.sqlite`, with upstream context from https://github.com/openai/codex/issues/29674.
 - Pages created: `wiki/tools/codex.md`.
