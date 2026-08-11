@@ -85,16 +85,42 @@ fi
 # The extension lazy-downloads the browser on first tff use; for a deterministic
 # setup-time fetch use the Node CLI instead:
 #   npx camoufox fetch && chmod -R 755 ~/.cache/camoufox/
-# camoufox-js depends on better-sqlite3 (native addon). Prebuilt binaries may
-# not exist for the current Node ABI; rebuild from source so "bindings" can
-# locate build/Release/better_sqlite3.node at runtime.
-echo "Rebuilding native deps for camoufox-pi (better-sqlite3)..."
-(npm root -g | while read -r root; do
-  bsdir="$root/@the-forge-flow/camoufox-pi/node_modules/better-sqlite3"
-  if [ -d "$bsdir" ]; then
-    (cd "$bsdir" && npm run build-release)
-    break
-  fi
-done)
+# camoufox-js depends on better-sqlite3 (native addon). With npm
+# ignore-scripts=true, its install hook is intentionally skipped. Resolve the
+# actual dependency from Pi's user package tree (normally ~/.pi/agent/npm), not
+# npm's unrelated global root; npm may hoist better-sqlite3 outside camoufox-pi.
+PI_AGENT_DIR="${PI_CODING_AGENT_DIR:-$HOME/.pi/agent}"
+CAMOUFOX_JS_PACKAGE="$PI_AGENT_DIR/npm/node_modules/camoufox-js/package.json"
+if [ ! -f "$CAMOUFOX_JS_PACKAGE" ]; then
+  echo "error: camoufox-js was not installed at $CAMOUFOX_JS_PACKAGE" >&2
+  exit 1
+fi
+
+check_camoufox_sqlite() {
+  node - "$CAMOUFOX_JS_PACKAGE" <<'NODE'
+const { createRequire } = require("node:module");
+const requireFromCamoufox = createRequire(process.argv[2]);
+const Database = requireFromCamoufox("better-sqlite3");
+const db = new Database(":memory:");
+const row = db.prepare("SELECT 1 AS ok").get();
+db.close();
+if (row.ok !== 1) process.exit(1);
+NODE
+}
+
+if check_camoufox_sqlite >/dev/null 2>&1; then
+  echo "Camoufox native dependency is usable (better-sqlite3)."
+else
+  BETTER_SQLITE3_DIR="$(node - "$CAMOUFOX_JS_PACKAGE" <<'NODE'
+const path = require("node:path");
+const { createRequire } = require("node:module");
+const requireFromCamoufox = createRequire(process.argv[2]);
+process.stdout.write(path.dirname(requireFromCamoufox.resolve("better-sqlite3/package.json")));
+NODE
+)"
+  echo "Rebuilding Camoufox native dependency at $BETTER_SQLITE3_DIR ..."
+  (cd "$BETTER_SQLITE3_DIR" && npm run build-release)
+  check_camoufox_sqlite
+fi
 
 echo "Done. Run 'pi' to start."
