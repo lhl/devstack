@@ -63,7 +63,7 @@ Use this to reconcile a stale machine before trusting its extension list:
 | **pi-code-previews** | `npm:pi-code-previews` ([source](https://github.com/mattleong/pi-code-previews)) | Shiki syntax-highlighted tool output rendering in TUI | ✅ Canonical |
 | ~~pi-web-access~~ | `npm:pi-web-access` | Web search, content extraction, video/YT understanding, GitHub cloning, PDF | ❌ Disabled 2026-06-29 — v0.13.0 imports `@earendil-works/pi-ai/compat`, which Pi 0.79.7 no longer exports |
 | **pi-smart-fetch** | `npm:pi-smart-fetch` | Browser-like TLS fingerprints + Defuddle extraction for bot-defended pages | ✅ Canonical |
-| **camoufox-pi** | `npm:@the-forge-flow/camoufox-pi@0.2.1` | Stealth web access via Camoufox (C++-level anti-fingerprinting Firefox fork) — see [[tools/camoufox]] for the Python-vs-Node cache conflict and fixes | ✅ Canonical (pinned v0.2.1) |
+| **camoufox-pi** | `npm:@the-forge-flow/camoufox-pi@0.2.1` | Stealth web access via Camoufox (C++-level anti-fingerprinting Firefox fork) — see [[tools/camoufox]] for cache-layout and native-binding failures/fixes | ✅ Canonical (pinned v0.2.1) |
 | **pi-zentui** | `https://github.com/lhl/pi-zentui` | Starship-inspired status line + Opencode-style TUI (footer with git/runtime, bordered editor, accent rail) | ✅ Canonical (lhl fork) |
 | **pi-codex-status** | `npm:pi-codex-status` ([source](https://github.com/lhl/pi-codex-status)) | ChatGPT Codex quota/status CLI + `/status` extension (5h, weekly, credits, JSON/statusline export) | ✅ Canonical |
 | **pi-multicodex** | `https://github.com/lhl/pi-multicodex` | Automatic ChatGPT Codex OAuth account rotation on quota/rate limits | ✅ Canonical again 2026-07-03 — conditional `openai-codex` registration avoids stale-auth startup failures |
@@ -83,6 +83,7 @@ Use this to reconcile a stale machine before trusting its extension list:
 
 # camoufox-pi also needs its ~500MB browser binary (one-time):
 # npx camoufox fetch && chmod -R 755 ~/.cache/camoufox/
+# pi-setup.sh probes/rebuilds its better-sqlite3 binding when install scripts are disabled.
 # Then /reload inside pi before first use.
 ```
 
@@ -1171,7 +1172,9 @@ Status: disabled from `pi-packages.json` as of 2026-06-29. The older evaluation 
 npx camoufox fetch
 chmod -R 755 ~/.cache/camoufox/  # fix execute permissions if prompted
 ```
-Then run `/reload` inside pi — the extension caches launch state at load time, so a reload after binary install is required. Without this, `tff-fetch_url` and `tff-search_web` will fail with `browser_launch_failed`.
+`camoufox-js` also requires the native `better-sqlite3` addon during launch-option generation. If npm lifecycle scripts are disabled (`ignore-scripts=true`) or Node's Application Binary Interface (ABI) changed, run `./pi-setup.sh`: it resolves the addon from Pi's user package tree, probes it with an in-memory database, and explicitly rebuilds it only when needed. Do not use the old `npm root -g` path; Pi user packages live under `~/.pi/agent/npm/`, and npm may hoist the addon.
+
+Then run `/reload` inside pi — the extension caches launch state at load time, so a reload after browser or native-addon repair is required. Without this, `tff-fetch_url` and `tff-search_web` will continue returning the cached `browser_launch_failed` result. See [[tools/camoufox]] for both failure signatures and repair details.
 
 ---
 

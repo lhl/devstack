@@ -1924,3 +1924,24 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 **Next:**
 - After the next Codex session, verify that TRACE rows remain suppressed and compare WAL/process write activity with the pre-change behavior.
+
+---
+
+## 2026-08-11 — Repair Camoufox native dependency
+
+**What:** Fixed the remaining Camoufox launch failure after the browser cache-layout repair.
+
+- Reproduced `tff-fetch_url` failing with `Could not locate the bindings file` for `better-sqlite3`.
+- Confirmed npm `ignore-scripts=true` had skipped the native addon build and that the old `pi-setup.sh` repair searched the wrong global/nested path instead of Pi's hoisted user-package dependency.
+- Rebuilt `better-sqlite3@12.10.1` locally for Node `24.16.0` and verified an in-memory SQLite query.
+- Updated `pi-setup.sh` to resolve `better-sqlite3` from the installed `camoufox-js` package, probe it, rebuild only on failure, and verify the result.
+- Updated `README.md`, `wiki/tools/camoufox.md`, `wiki/tools/pi-agent.md`, `wiki/index.md`, and `wiki/log.md` with the second failure mode, repair, and reload requirement.
+- Verified a fresh `camoufox-pi@0.2.1` client fetched `https://example.com` with HTTP 200 and `Example Domain`; its active health probe passed and reported browser `135.0.1-beta.24`.
+
+**Decisions:**
+- Keep npm lifecycle scripts disabled globally; explicitly rebuild only this required native dependency instead of weakening the supply-chain policy.
+- Resolve from Pi's package tree with Node's module resolver rather than assuming npm's hoisting layout.
+- Preserve the earlier recorded browser version and flag the current version difference as unexplained rather than silently rewriting history.
+
+**Next:**
+- Run `/reload` in the current Pi session, then smoke-test `tff-fetch_url` once more through the reloaded tool instance.

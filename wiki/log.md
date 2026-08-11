@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-08-11] update | camoufox — Pi-managed `better-sqlite3` binding repair
+- Source: local reproduction and repair of the remaining `tff-fetch_url` / `tff-search_web` `browser_launch_failed` error after the browser cache-layout fix; inspected installed `camoufox-pi@0.2.1`, `camoufox-js@0.9.3`, `better-sqlite3@12.10.1`, Pi package layout, and npm configuration.
+- Pages updated: `wiki/tools/camoufox.md`, `wiki/tools/pi-agent.md`, `wiki/index.md`.
+- Summary: npm `ignore-scripts=true` left `better-sqlite3` without its native binding; the old setup repair silently searched npm's unrelated global root and assumed a nested dependency, while Pi installed packages under `~/.pi/agent/npm/` and npm hoisted the addon. Updated the setup to resolve the addon from `camoufox-js` with `createRequire()`, probe an in-memory database, rebuild only on failure, and verify again.
+- Verification: built successfully for Node `24.16.0`; a fresh `camoufox-pi` client fetched `https://example.com` with HTTP 200 and `Example Domain`; `checkHealth({ probe: true })` reported ready/connected with a successful round trip. The loaded Pi extension still needs `/reload` because it caches the earlier failed launch. Current browser metadata is `135.0.1-beta.24`; the difference from the earlier operation's recorded `152.0.4-beta.28` remains unexplained.
+
 ## [2026-08-11] update | camoufox — Python vs Node cache-layout conflict fixed and documented
 - Source: local investigation and repair of the `tff-search_web` / `tff-fetch_url` `browser_launch_failed` error; upstream context from https://github.com/daijro/camoufox, https://github.com/apify/camoufox-js, https://github.com/MonsieurBarti/camoufox-pi.
 - Pages created: `wiki/tools/camoufox.md`.
