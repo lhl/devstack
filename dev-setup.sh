@@ -86,6 +86,26 @@ install_atuin() {
 [ -f "$HOME/.bash-preexec.sh" ] && . "$HOME/.bash-preexec.sh"
 command -v atuin >/dev/null && eval "$(atuin init bash)"
 EOF
+  # Install our preferred atuin config.toml (idempotent overwrite).
+  install_atuin_config
+}
+
+# Write the canonical atuin config.toml with our preferred settings.
+# Overwrites any existing file so re-runs converge to this exact config.
+install_atuin_config() {
+  mkdir -p "$HOME/.config/atuin"
+  cat > "$HOME/.config/atuin/config.toml" <<'EOF'
+search_mode = "fuzzy"
+
+dialect = "us"
+filter_mode = "global"
+filter_mode_shell_up_key_binding = "session"
+style="full"
+inline_height="16"
+show_preview = true
+enter_accept = false
+EOF
+  echo "  wrote ~/.config/atuin/config.toml"
 }
 
 # ---------------------------------------------------------------------------
