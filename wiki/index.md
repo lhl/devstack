@@ -21,7 +21,7 @@
 
 ## Tools
 
-- [[tools/camoufox]] — Camoufox stealth Firefox (backing `tff-fetch_url` / `tff-search_web` via `camoufox-pi`): Python-vs-Node cache-layout conflicts, missing `better-sqlite3` native bindings under npm `ignore-scripts`, failure signatures, repairs, and health checks
+- [[tools/camoufox]] — Camoufox stealth Firefox (backing `tff-fetch_url` / `tff-search_web` via `camoufox-pi`): Python-vs-Node cache-layout conflicts, missing `better-sqlite3` native bindings under npm `ignore-scripts`, `playwright-core` pin to `<1.61.0` (isMobile viewport protocol mismatch), failure signatures, repairs, and health checks
 - [[tools/codex]] — OpenAI Codex CLI/App: local state, excessive SQLite TRACE-log write-pressure workaround, verification, and reversal
 - [[tools/pi-agent]] — Pi coding agent: minimal extensible terminal coding harness (pi.dev), canonical `pi-packages.json` package sync workflow, pi-zentui customization log, codex-pool model config, conditional MultiCodex personal-account rotation, Codex quota status, pi-tasks/pi-goal forks, web-access extension compatibility notes, GitHub-sourced compaction watchdog, optional Codex fast mode
 - [[tools/pi-background-task-plugins]] — Pi background task plugin evaluation: @vanillagreen/pi-background-tasks vs tmux-bash, pi-loop, pi-monitor, gob, and minimal alternatives

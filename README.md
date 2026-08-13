@@ -85,8 +85,10 @@ Oftentimes there are multiple options for a feature; these are the ones I've pic
 This is probably the biggest feature you're going to need. `pi-smart-fetch` and `camoufox-pi` are the current canonical pair; `pi-web-access` is otherwise the most full-featured plugin, but it is temporarily disabled in this stack until its Pi 0.79.7 compatibility issue is fixed.
 
 - [Thinkscape/agent-smart-fetch](https://github.com/Thinkscape/agent-smart-fetch) (pi-smart-fetch) - browser-like TLS fingerprints + Defuddle site extractors
-- [MonsieurBarti/camoufox-pi](https://github.com/MonsieurBarti/camoufox-pi) - stealth web access via Camoufox anti-fingerprinting Firefox fork (requires the Node-side `npx camoufox fetch`; `pi-setup.sh` repairs its native `better-sqlite3` binding when npm install scripts are disabled; run `/reload` after either repair)
+- [MonsieurBarti/camoufox-pi](https://github.com/MonsieurBarti/camoufox-pi) - stealth web access via Camoufox anti-fingerprinting Firefox fork (requires the Node-side `npx camoufox fetch`; `pi-setup.sh` repairs its native `better-sqlite3` binding when npm install scripts are disabled and pins `playwright-core` to 1.60.0 — see note below; run `/reload` after any repair)
   - [Camoufox](https://github.com/daijro/camoufox) - there are a few different builds, but basically, it's a Firefox fork designed for AI agents
+
+> **playwright-core pin (camoufox):** `camoufox-pi` / `camoufox-js` require `playwright-core < 1.61.0`. Playwright ≥1.61 adds an `isMobile` field to the viewport in `Browser.setDefaultViewport` that the Camoufox Juggler protocol does not recognize, so a too-new `playwright-core` fails at context creation with `Found property ".viewport.isMobile" … not described in this scheme`. `pi-setup.sh` pins `playwright-core@1.60.0` as a **direct dependency** of the Pi user `package.json` (an npm `overrides` entry does not work — it nests the package under `camoufox-pi` only and breaks `camoufox-js` resolution). See [[tools/camoufox]].
 - [nicobailon/pi-web-access](https://github.com/nicobailon/pi-web-access) - disabled as of 2026-06-29: v0.13.0 imports `@earendil-works/pi-ai/compat`, which Pi 0.79.7 no longer exports, causing extension load failure at startup
 
 ### Automation & Workflow

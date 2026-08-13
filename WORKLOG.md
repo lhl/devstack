@@ -4,6 +4,23 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-08-12 — Fixed camoufox `playwright-core` mismatch; updated setup/docs
+
+**What:** Resolved the `tff-fetch_url` / `tff-search_web` launch failure caused by a too-new `playwright-core` and codified the fix in the devstack setup + docs.
+
+- Diagnosed the root cause: the Pi user package tree (`~/.pi/agent/npm/`) had resolved `playwright-core@1.62.1`. Playwright ≥1.61 adds an `isMobile` field to the viewport in `Browser.setDefaultViewport`; the Camoufox Juggler protocol only knows `viewportSize`/`deviceScaleFactor`, so launch fails with `Found property ".viewport.isMobile" - false which is not described in this scheme`. `camoufox-js` declares `playwright-core: <1.61.0` as its peer constraint (upstream: daijro/camoufox#653).
+- Pinned `playwright-core@1.60.0` as a **direct dependency** of `~/.pi/agent/npm/package.json` and ran `npm install --legacy-peer-deps`. (An npm `overrides` entry does not work — it nests the package under `camoufox-pi` only and breaks `camoufox-js` resolution with `ERR_MODULE_NOT_FOUND`.)
+- Verified: `npm ls playwright-core` shows a single hoisted `1.60.0` `deduped` under both `camoufox-js` and `camoufox-pi`; a real launch through `camoufox-js launchOptions` + `firefox.launch`/`newContext`/`newPage` succeeded on Camoufox `152.0.4-beta.28`.
+- Updated `pi-setup.sh` to pin + reinstall `playwright-core@1.60.0` automatically and verify the resolved version via `createRequire` from the installed `camoufox-js`.
+- Updated `README.md` (Web Access), `pi-packages.json` (camoufox-pi note), `wiki/tools/camoufox.md` (new Gotcha 3 + fix F), `wiki/tools/pi-agent.md`, `wiki/index.md`, `wiki/log.md`.
+
+**Decisions:**
+- Keep `camoufox-pi@0.2.1` (latest) and pin `playwright-core@1.60.0` rather than upgrading to the Python stack or a different extension.
+- Encode the pin in `pi-setup.sh` (not just docs) so a fresh or updated setup stays compatible.
+
+**Next:**
+- Run `/reload` in pi so the loaded `camoufox-pi` extension picks up the fixed dependency; confirm `tff-fetch_url` / `tff-search_web` succeed in a live call.
+
 ## 2026-07-03 — Restored pi-multicodex with conditional provider registration
 
 **What:** Re-enabled personal MultiCodex accounts while keeping codex-pool as the default Pi route.

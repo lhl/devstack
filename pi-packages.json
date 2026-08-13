@@ -25,7 +25,7 @@
     {
       "source": "npm:@the-forge-flow/camoufox-pi@0.2.1",
       "category": "web-access",
-      "note": "Pinned stealth Firefox/Camoufox web tools."
+      "note": "Pinned stealth Firefox/Camoufox web tools. Requires playwright-core < 1.61.0 (camoufox-js peer constraint); pi-setup.sh pins playwright-core@1.60.0 as a direct dependency of the Pi user package.json (not an overrides entry). See wiki/tools/camoufox.md."
     },
     {
       "source": "npm:pi-code-previews",

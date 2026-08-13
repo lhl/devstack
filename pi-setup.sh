@@ -96,6 +96,55 @@ if [ ! -f "$CAMOUFOX_JS_PACKAGE" ]; then
   exit 1
 fi
 
+# Pin playwright-core to <1.61.0 for camoufox compatibility.
+#
+# camoufox-pi (via camoufox-js) requires playwright-core < 1.61.0. Starting in
+# Playwright 1.61, the client adds an `isMobile` field to the viewport sent in
+# Browser.setDefaultViewport; the Camoufox Juggler protocol's Viewport schema only
+# knows viewportSize/deviceScaleFactor, so a too-new playwright-core fails with:
+#   browser_launch_failed: ... "Found property \".viewport.isMobile\" - false
+#   which is not described in this scheme"
+# Pin it as a DIRECT dependency of the Pi user package.json so npm hoists a single
+# shared playwright-core@1.60.0 that BOTH camoufox-js and camoufox-pi resolve.
+# (An npm `overrides` entry does NOT work here: it nests playwright-core under
+# camoufox-pi only, leaving camoufox-js without a resolvable peer and breaking the
+# launch with ERR_MODULE_NOT_FOUND.)
+PI_USER_PKG="$PI_AGENT_DIR/npm/package.json"
+ensure_playwright_pin() {
+  if [ ! -f "$PI_USER_PKG" ]; then
+    echo "error: Pi user package manifest not found at $PI_USER_PKG" >&2
+    exit 1
+  fi
+  node - "$PI_USER_PKG" <<'NODE'
+const fs = require('fs');
+const path = process.argv[2];
+const pkg = JSON.parse(fs.readFileSync(path, 'utf8'));
+pkg.dependencies = pkg.dependencies || {};
+const prev = pkg.dependencies['playwright-core'];
+pkg.dependencies['playwright-core'] = '1.60.0';
+fs.writeFileSync(path, JSON.stringify(pkg, null, 2) + '\n');
+if (prev !== '1.60.0') {
+  console.log('Pinned playwright-core in ' + path + ': ' + (prev || '(absent)') + ' -> 1.60.0');
+}
+NODE
+  (cd "$PI_AGENT_DIR/npm" && npm install --legacy-peer-deps >/dev/null 2>&1 || npm install --legacy-peer-deps)
+}
+ensure_playwright_pin
+
+check_playwright_version() {
+  node - "$CAMOUFOX_JS_PACKAGE" <<'NODE'
+const { createRequire } = require('node:module');
+const requireFromCamoufox = createRequire(process.argv[2]);
+const v = requireFromCamoufox('playwright-core/package.json').version;
+console.log('camoufox-js resolves playwright-core ' + v);
+if (!(v.startsWith('1.60.') || v < '1.61.0')) {
+  console.error('error: camoufox-js resolves playwright-core ' + v + ' but needs <1.61.0');
+  process.exit(1);
+}
+NODE
+}
+check_playwright_version
+
 check_camoufox_sqlite() {
   node - "$CAMOUFOX_JS_PACKAGE" <<'NODE'
 const { createRequire } = require("node:module");

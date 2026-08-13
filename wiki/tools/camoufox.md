@@ -62,6 +62,46 @@ That path was wrong twice: Pi user npm packages live under `~/.pi/agent/npm/`, n
 
 The corrected setup resolves `better-sqlite3/package.json` with `createRequire()` from Pi's installed `camoufox-js/package.json`, builds only when an in-memory SQLite probe fails, and probes again after the build. This survives npm hoisting and respects `PI_CODING_AGENT_DIR`.
 
+## Gotcha 3: `playwright-core` must be pinned `< 1.61.0`
+
+Even with the browser cache and native binding correct, the tff tools can fail at **context creation** with a protocol-schema error:
+
+```
+browser_launch_failed: {"type":"browser_launch_failed",
+  "stderr":"browser.newContext: Protocol error (Browser.setDefaultViewport): ERROR: …
+  Found property \"<root>.viewport.isMobile\" - false which is not described in this scheme"}
+```
+
+**Root cause:** `camoufox-pi`/`camoufox-js` require `playwright-core < 1.61.0`. Starting in Playwright **1.61**, the client adds an `isMobile` field to the viewport object sent in `Browser.setDefaultViewport`, but the Camoufox Juggler protocol's `pageTypes.Viewport` schema only knows `viewportSize`/`deviceScaleFactor`. When the Pi user package tree resolves a too-new `playwright-core` (e.g. `1.62.1`), the launch call is rejected. This is an upstream incompatibility (see [daijro/camoufox#653](https://github.com/daijro/camoufox/issues/653)); the current `camoufox-js` declares `playwright-core: <1.61.0` as its peer constraint.
+
+**Fix (what we did):** pin `playwright-core@1.60.0` as a **direct dependency** of the Pi user manifest and reinstall:
+
+```bash
+PI_NPM=~/.pi/agent/npm
+node - "$PI_NPM/package.json" <<'NODE'
+const fs = require('fs');
+const p = process.argv[2];
+const pkg = JSON.parse(fs.readFileSync(p, 'utf8'));
+pkg.dependencies = pkg.dependencies || {};
+pkg.dependencies['playwright-core'] = '1.60.0';
+fs.writeFileSync(p, JSON.stringify(pkg, null, 2) + '\n');
+NODE
+(cd "$PI_NPM" && npm install --legacy-peer-deps)
+```
+
+This must be a **direct dependency**, not an npm `overrides` entry. `overrides` nests `playwright-core@1.60.0` under `camoufox-pi` only and removes the top-level package, leaving `camoufox-js` (a sibling dependency) without a resolvable peer and breaking the launch with `ERR_MODULE_NOT_FOUND: Cannot find package 'playwright-core' imported from camoufox-js/dist/server.js`. A hoisted direct dependency makes one shared `playwright-core@1.60.0` resolve from **both** `camoufox-js` and `camoufox-pi` (`npm ls playwright-core` shows `deduped` under both). `pi-setup.sh` now performs this pin and reinstall automatically and verifies the resolved version with `createRequire` from the installed `camoufox-js`.
+
+**Detection:**
+```bash
+# from the installed camoufox-js package — must be 1.60.x / <1.61.0
+node - ~/.pi/agent/npm/node_modules/camoufox-js/package.json <<'NODE'
+const { createRequire } = require('node:module');
+const r = createRequire(process.argv[2]);
+console.log(r('playwright-core/package.json').version);
+NODE
+npm ls playwright-core --prefix ~/.pi/agent/npm
+```
+
 ## Former cache-layout root cause in this repo
 
 Before commit `cd9a9ab`, `pi-setup.sh` installed the **Python** package and fetched with the **Python** CLI:
@@ -96,6 +136,10 @@ Both failure layers are now repaired. The browser-cache repair **reused** the al
 
 The already-loaded extension instance still retains its earlier failed-launch state. Run `/reload` before using the tff tools in this session.
 
+## What we did (2026-08-12) — playwright-core pin
+
+A third failure layer surfaced after the cache + native-binding repairs: `tff-*` failed at **context creation** with the Gotcha 3 `isMobile … not described in this scheme` error because the Pi user package tree had resolved `playwright-core@1.62.1`. Fixed by pinning `playwright-core@1.60.0` as a **direct dependency** of `~/.pi/agent/npm/package.json` and running `npm install --legacy-peer-deps`. Verified `npm ls playwright-core` shows a single hoisted `1.60.0` `deduped` under both `camoufox-js` and `camoufox-pi`, and a real launch through `camoufox-js launchOptions` + `firefox.launch`/`newContext`/`newPage` succeeded on Camoufox `152.0.4-beta.28`. `pi-setup.sh` now performs this pin + reinstall and verifies the resolved version automatically.
+
 ## Ways to fix (reference)
 
 - **A — Reuse existing browser (what we did).** Relocate `browsers/official/<ver>-<sha8>/*` to the cache root, write `version.json`, chmod, uninstall pip. No re-download. Only works if the installed build is within the Node-supported range `[beta.19, 1)`.
@@ -103,6 +147,7 @@ The already-loaded extension instance still retains its earlier failed-launch st
 - **C — Let the Node lazy download run.** `rm -rf ~/.cache/camoufox`, then the next `tff-*` call triggers the package's built-in "lazy binary download on first use". Same ~660 MB download.
 - **D — Long-term browser fix (applied in `cd9a9ab`).** Drop the `pip install -U camoufox[geoip]` + `camoufox fetch` lines (they fetch in the wrong layout). The extension itself already handles the browser via Node; if a setup-time fetch is wanted it must be the **Node** one (`npx camoufox fetch`).
 - **E — Native binding fix (applied in `6b7cfdf`).** Resolve `better-sqlite3` from Pi's installed `camoufox-js` package, not `npm root -g`; run its explicit `npm run build-release` when a live in-memory probe fails. This is required when npm lifecycle scripts are disabled or after a Node Application Binary Interface (ABI) change invalidates an older build.
+- **F — playwright-core pin (applied 2026-08-12).** Pin `playwright-core@1.60.0` as a **direct dependency** of `~/.pi/agent/npm/package.json`, then `npm install --legacy-peer-deps`. Do **not** use an npm `overrides` entry (nests under `camoufox-pi` only, breaks `camoufox-js` resolution). Required while `camoufox-js`/`camoufox-pi` target `playwright-core < 1.61.0`; see Gotcha 3.
 
 ## Prevention / detection
 
@@ -113,6 +158,7 @@ The already-loaded extension instance still retains its earlier failed-launch st
   node -e "import('/home/lhl/.pi/agent/npm/node_modules/camoufox-js/dist/pkgman.js').then(m => console.log(m.installedVerStr()))"
   ```
 - Native dependency health check: run `./pi-setup.sh`; it opens an in-memory `better-sqlite3` database and rebuilds the binding only if that probe fails.
+- playwright-core version check: run `./pi-setup.sh` (pins/verifies automatically) or `npm ls playwright-core --prefix ~/.pi/agent/npm` — must resolve `< 1.61.0` from both `camoufox-js` and `camoufox-pi`.
 - After a fresh `camoufox fetch`: `chmod -R 755 ~/.cache/camoufox/` (binary-permissions prompt issue, see prior 2026-05-03 wiki log entry).
 - After repairing either the browser cache or native binding, run `/reload`; `camoufox-pi` caches failed launch state for the lifetime of the loaded extension instance.
 

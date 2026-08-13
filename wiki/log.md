@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-08-12] update | camoufox — `playwright-core` pinned to `<1.61.0`
+- Source: local reproduction and repair of `tff-fetch_url` / `tff-search_web` failing at context creation with `Browser.setDefaultViewport` protocol error `Found property ".viewport.isMobile" - false which is not described in this scheme`; upstream context from https://github.com/daijro/camoufox/issues/653 and the `camoufox-js` peer constraint (`playwright-core <1.61.0`).
+- Pages updated: `wiki/tools/camoufox.md` (new Gotcha 3 + fix option F + 2026-08-12 repair section + detection), `wiki/tools/pi-agent.md`, `wiki/index.md`, `README.md`, `pi-setup.sh`.
+- Summary: Pi user package tree had resolved `playwright-core@1.62.1`, but Playwright ≥1.61 adds an `isMobile` field to the viewport in `Browser.setDefaultViewport` that the Camoufox Juggler schema doesn't recognize. Pinned `playwright-core@1.60.0` as a **direct dependency** of `~/.pi/agent/npm/package.json` (not an npm `overrides` entry, which nests it under `camoufox-pi` only and breaks `camoufox-js` resolution), then `npm install --legacy-peer-deps`. `pi-setup.sh` now pins + verifies automatically.
+- Verification: `npm ls playwright-core` shows a single hoisted `1.60.0` `deduped` under both `camoufox-js` and `camoufox-pi`; real launch through `camoufox-js launchOptions` + `firefox.launch`/`newContext`/`newPage` succeeded on Camoufox `152.0.4-beta.28`.
+
 ## [2026-08-11] update | camoufox — Pi-managed `better-sqlite3` binding repair
 - Source: local reproduction and repair of the remaining `tff-fetch_url` / `tff-search_web` `browser_launch_failed` error after the browser cache-layout fix; inspected installed `camoufox-pi@0.2.1`, `camoufox-js@0.9.3`, `better-sqlite3@12.10.1`, Pi package layout, and npm configuration.
 - Pages updated: `wiki/tools/camoufox.md`, `wiki/tools/pi-agent.md`, `wiki/index.md`.
