@@ -63,8 +63,8 @@ Use this to reconcile a stale machine before trusting its extension list:
 | **pi-code-previews** | `npm:pi-code-previews` ([source](https://github.com/mattleong/pi-code-previews)) | Shiki syntax-highlighted tool output rendering in TUI | ✅ Canonical |
 | ~~pi-web-access~~ | `npm:pi-web-access` | Web search, content extraction, video/YT understanding, GitHub cloning, PDF | ❌ Disabled 2026-06-29 — v0.13.0 imports `@earendil-works/pi-ai/compat`, which Pi 0.79.7 no longer exports |
 | **pi-smart-fetch** | `npm:pi-smart-fetch` | Browser-like TLS fingerprints + Defuddle extraction for bot-defended pages | ✅ Canonical |
-| **camoufox-pi** | `npm:@the-forge-flow/camoufox-pi@0.2.1` | Stealth web access via Camoufox (C++-level anti-fingerprinting Firefox fork) — see [[tools/camoufox]] for cache-layout, native-binding, and playwright-core-pin failures/fixes | ✅ Canonical (pinned v0.2.1) |
-| **pi-zentui** | `https://github.com/lhl/pi-zentui` | Starship-inspired status line + Opencode-style TUI (footer with git/runtime, bordered editor, accent rail) | ✅ Canonical (lhl fork) |
+| **camoufox-pi** | `npm:@the-forge-flow/camoufox-pi@0.2.1` | Stealth web access via Camoufox (C++-level anti-fingerprinting Firefox fork) — see [[tools/camoufox]] for cache-layout, native-binding, Playwright-protocol, and Linux-runtime failures/fixes | ✅ Canonical (pinned v0.2.1) |
+| **pi-zentui** | `https://github.com/lhl/pi-zentui` | Starship-inspired status line + Opencode-style TUI; see [[tools/pi-zentui]] for mode/session lifecycle behavior | ✅ Canonical (lhl fork, lifecycle fix `a4d6a36`) |
 | **pi-codex-status** | `npm:pi-codex-status` ([source](https://github.com/lhl/pi-codex-status)) | ChatGPT Codex quota/status CLI + `/status` extension (5h, weekly, credits, JSON/statusline export) | ✅ Canonical |
 | **pi-multicodex** | `https://github.com/lhl/pi-multicodex` | Automatic ChatGPT Codex OAuth account rotation on quota/rate limits | ✅ Canonical again 2026-07-03 — conditional `openai-codex` registration avoids stale-auth startup failures |
 | **pi-skill-dollar** | `npm:pi-skill-dollar` ([source](https://github.com/lhl/pi-skill-dollar)) | `$` autocomplete shortcut for skill suggestions in the input area | ✅ Canonical |
@@ -83,6 +83,8 @@ Use this to reconcile a stale machine before trusting its extension list:
 
 # camoufox-pi also needs its ~500MB browser binary (one-time):
 # npx camoufox fetch && chmod -R 755 ~/.cache/camoufox/
+# Ubuntu 24.04: sudo apt-get install --no-install-recommends \
+#   libgtk-3-0t64 libx11-xcb1 libasound2t64
 # pi-setup.sh probes/rebuilds its better-sqlite3 binding when install scripts are disabled.
 # Then /reload inside pi before first use.
 ```
@@ -779,7 +781,8 @@ The extension source was originally modified locally to fix crashes and tailor t
 | File | Change |
 |---|---|
 | `ui.ts` | Fixed `theme.fg()` hex crash → `colorize()`; rail `█` → `▌` (U+258C left half block); extracted `RAIL` constant so editor and user message rail are consistent; removed extra editor line spacing |
-| `index.ts` | Fixed `setWidget` factory API crash; rewrote meta widget (right-aligned, provider dim, model/`(thinking)` muted teal via `syntaxType` theme token, org prefix stripped); replaces dollar cost with Codex quota remaining (`5h:82% · 7d:41% ↺2d4h`) for `openai-codex`/`multicodex`, using `pi-multicodex` footer status first and `pi-codex-status` cache as fallback |
+| `index.ts` | Fixed `setWidget` factory API crash; rewrote meta widget (right-aligned, provider dim, model/`(thinking)` muted teal via `syntaxType` theme token, org prefix stripped); replaces dollar cost with Codex quota remaining (`5h:82% · 7d:41% ↺2d4h`) for `openai-codex`/`multicodex`, using `pi-multicodex` footer status first and `pi-codex-status` cache as fallback; guards print/JSON/RPC modes and stops refresh work during `session_shutdown` |
+| `project-refresh.ts` | Coalesces asynchronous git/runtime probes using plain `cwd` strings rather than captured Pi contexts; drops pending reruns and render callbacks after shutdown |
 
 **User config (color preferences):**
 
@@ -796,6 +799,10 @@ The extension source was originally modified locally to fix crashes and tailor t
 | `config.ts` | Default config + `colorize()` helper. Read-only — no changes needed. |
 
 **Config location:** `~/.pi/agent/zentui.json` (user config)
+
+### 2026-08-14 lifecycle repair
+
+A print-mode model smoke previously returned `OK` and then exited 1 because Zentui recursively reused a captured `ExtensionContext` after Pi invalidated it during shutdown. Commit [`a4d6a36`](https://github.com/lhl/pi-zentui/commit/a4d6a362ea6182390657024c548f77babae6af85) added TUI-only mode guards, a shutdown-aware project-refresh scheduler, plain-value `cwd` capture, and `session_shutdown` cleanup. The red lifecycle suite failed five assertions plus a missing scheduler seam; after implementation all 17 project tests and both isolated/full-stack Pi smokes passed. See [[tools/pi-zentui]] for the failure timeline, verification, and permanent follow-ups.
 
 ### Status Bar Alternatives Evaluated
 
@@ -1171,12 +1178,16 @@ Status: disabled from `pi-packages.json` as of 2026-06-29. The older evaluation 
 ```bash
 npx camoufox fetch
 chmod -R 755 ~/.cache/camoufox/  # fix execute permissions if prompted
+
+# Ubuntu 24.04 host libraries (headless Firefox still loads GTK/X11/ALSA):
+sudo apt-get install -y --no-install-recommends \
+  libgtk-3-0t64 libx11-xcb1 libasound2t64
 ```
 `camoufox-js` also requires the native `better-sqlite3` addon during launch-option generation. If npm lifecycle scripts are disabled (`ignore-scripts=true`) or Node's Application Binary Interface (ABI) changed, run `./pi-setup.sh`: it resolves the addon from Pi's user package tree, probes it with an in-memory database, and explicitly rebuilds it only when needed. Do not use the old `npm root -g` path; Pi user packages live under `~/.pi/agent/npm/`, and npm may hoist the addon.
 
-**playwright-core must be `< 1.61.0`.** Playwright ≥1.61 adds an `isMobile` field to the viewport sent in `Browser.setDefaultViewport`; the Camoufox Juggler protocol only knows `viewportSize`/`deviceScaleFactor`, so a too-new `playwright-core` fails at context creation with `browser_launch_failed: … "Found property \".viewport.isMobile\" - false which is not described in this scheme"`. `pi-setup.sh` pins `playwright-core@1.60.0` as a **direct dependency** of the Pi user `package.json` (`~/.pi/agent/npm/package.json`) and reinstalls so a single hoisted `playwright-core@1.60.0` is shared by both `camoufox-js` and `camoufox-pi`. This must be a direct dependency, not an npm `overrides` entry — `overrides` nests it under `camoufox-pi` only and leaves `camoufox-js` without a resolvable peer (`ERR_MODULE_NOT_FOUND`).
+**playwright-core must be `< 1.61.0`.** Playwright ≥1.61 adds an `isMobile` field to the viewport sent in `Browser.setDefaultViewport`; the Camoufox Juggler protocol only knows `viewportSize`/`deviceScaleFactor`, so a too-new `playwright-core` fails at context creation with `browser_launch_failed: … "Found property \".viewport.isMobile\" - false which is not described in this scheme"`. The installed `camoufox-pi@0.2.1` range (`^1.59.1`) and `camoufox-js@0.9.3` peer (`*`) do not prevent that resolution. `pi-setup.sh` therefore pins `playwright-core@1.60.0` as a **direct dependency** of the Pi user `package.json` (`~/.pi/agent/npm/package.json`) and reinstalls so a single hoisted `playwright-core@1.60.0` is shared by both packages. This must be a direct dependency, not an npm `overrides` entry — `overrides` nests it under `camoufox-pi` only and leaves `camoufox-js` without a resolvable peer (`ERR_MODULE_NOT_FOUND`).
 
-Then run `/reload` inside pi — the extension caches launch state at load time, so a reload after browser or native-addon repair is required. Without this, `tff-fetch_url` and `tff-search_web` will continue returning the cached `browser_launch_failed` result. See [[tools/camoufox]] for both failure signatures and repair details.
+Then run `/reload` inside pi — the extension caches launch state at load time, so a reload after browser, host-library, package, or native-addon repair is required. Without this, `tff-fetch_url` and `tff-search_web` will continue returning the cached `browser_launch_failed` result. See [[tools/camoufox]] for all failure signatures, repairs, and permanent follow-ups.
 
 ---
 

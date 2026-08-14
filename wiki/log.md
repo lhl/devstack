@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-08-14] update | Pi extensions — Camoufox host dependencies and Zentui lifecycle repair
+- Source: local reproduction and repair on `stg04`; Camoufox upstream issues https://github.com/daijro/camoufox/issues/44 and https://github.com/daijro/camoufox/issues/653; `lhl/pi-zentui` fix commit https://github.com/lhl/pi-zentui/commit/a4d6a362ea6182390657024c548f77babae6af85.
+- Pages created: `wiki/tools/pi-zentui.md`.
+- Pages updated: `wiki/tools/camoufox.md`, `wiki/tools/pi-agent.md`, `wiki/index.md`; setup-facing notes updated in `README.md`, `pi-packages.json`, and `pi-setup.sh`.
+- Summary: documented Ubuntu 24.04's required Camoufox GTK3/X11-XCB/ALSA packages and corrected the Node dependency claim (`camoufox-pi@0.2.1` uses `^1.59.1`; `camoufox-js@0.9.3` peers `*`, so neither prevents Playwright 1.61+). Recorded the direct `playwright-core@1.60.0` workaround, full-stack verification, and permanent upstream/setup follow-ups. Documented Zentui's post-response stale-context crash, its TUI-mode/session-shutdown fix, and rules for asynchronous extension work.
+- Verification: Camoufox direct fetch returned HTTP 200/`Example Domain`; isolated and full installed-extension Pi smokes returned `OK` and exited 0 with no leaked browser process. Zentui's focused regression tests went red then green; full lint/typecheck/17-test suite and package dry run passed.
+
 ## [2026-08-12] update | camoufox — `playwright-core` pinned to `<1.61.0`
 - Source: local reproduction and repair of `tff-fetch_url` / `tff-search_web` failing at context creation with `Browser.setDefaultViewport` protocol error `Found property ".viewport.isMobile" - false which is not described in this scheme`; upstream context from https://github.com/daijro/camoufox/issues/653 and the `camoufox-js` peer constraint (`playwright-core <1.61.0`).
 - Pages updated: `wiki/tools/camoufox.md` (new Gotcha 3 + fix option F + 2026-08-12 repair section + detection), `wiki/tools/pi-agent.md`, `wiki/index.md`, `README.md`, `pi-setup.sh`.

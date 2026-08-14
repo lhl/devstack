@@ -7,6 +7,8 @@ links:
   - https://github.com/apify/camoufox-js
   - https://github.com/MonsieurBarti/camoufox-pi
   - https://github.com/daijro/camoufox/releases
+  - https://github.com/daijro/camoufox/issues/44
+  - https://github.com/daijro/camoufox/issues/653
 ---
 
 # Camoufox
@@ -72,7 +74,7 @@ browser_launch_failed: {"type":"browser_launch_failed",
   Found property \"<root>.viewport.isMobile\" - false which is not described in this scheme"}
 ```
 
-**Root cause:** `camoufox-pi`/`camoufox-js` require `playwright-core < 1.61.0`. Starting in Playwright **1.61**, the client adds an `isMobile` field to the viewport object sent in `Browser.setDefaultViewport`, but the Camoufox Juggler protocol's `pageTypes.Viewport` schema only knows `viewportSize`/`deviceScaleFactor`. When the Pi user package tree resolves a too-new `playwright-core` (e.g. `1.62.1`), the launch call is rejected. This is an upstream incompatibility (see [daijro/camoufox#653](https://github.com/daijro/camoufox/issues/653)); the current `camoufox-js` declares `playwright-core: <1.61.0` as its peer constraint.
+**Root cause:** the current Camoufox browser/Juggler build requires `playwright-core < 1.61.0`. Starting in Playwright **1.61**, the client adds an `isMobile` field to the viewport object sent in `Browser.setDefaultViewport`, but the Camoufox Juggler protocol's `pageTypes.Viewport` schema only knows `viewportSize`/`deviceScaleFactor`. When the Pi user package tree resolves a too-new `playwright-core` (e.g. `1.61.1` or `1.62.1`), the launch call is rejected. This is an upstream incompatibility (see [daijro/camoufox#653](https://github.com/daijro/camoufox/issues/653)). The installed `camoufox-pi@0.2.1` uses the permissive range `^1.59.1`, while its installed `camoufox-js@0.9.3` dependency declares the peer as `*`; neither prevents a fresh npm resolution from selecting 1.61+. The Python wrapper has since capped Playwright below 1.61, but this Node package tree still needs the direct local pin described below.
 
 **Fix (what we did):** pin `playwright-core@1.60.0` as a **direct dependency** of the Pi user manifest and reinstall:
 
@@ -102,6 +104,35 @@ NODE
 npm ls playwright-core --prefix ~/.pi/agent/npm
 ```
 
+## Gotcha 4: Linux needs GTK/X11/ALSA runtime libraries
+
+Camoufox is headless, but its Firefox build still dynamically loads GTK and related desktop libraries. A browser download can therefore succeed while launch fails immediately:
+
+```text
+XPCOMGlueLoad error for file ~/.cache/camoufox/libmozgtk.so:
+libgtk-3.so.0: cannot open shared object file: No such file or directory
+Couldn't load XPCOM.
+```
+
+On Ubuntu 24.04 (Noble), install the three top-level runtime packages; GTK pulls the remaining Cairo/Pango/X11 dependencies:
+
+```bash
+sudo apt-get install -y --no-install-recommends \
+  libgtk-3-0t64 libx11-xcb1 libasound2t64
+```
+
+Older Ubuntu/Debian releases use the non-`t64` names (`libgtk-3-0`, `libasound2`). Other distributions need their GTK3, X11-XCB, and ALSA runtime equivalents. This requirement and exact failure are also recorded in [daijro/camoufox#44](https://github.com/daijro/camoufox/issues/44).
+
+Detection on Linux:
+
+```bash
+~/.cache/camoufox/camoufox --version
+LD_LIBRARY_PATH="$HOME/.cache/camoufox" \
+  ldd ~/.cache/camoufox/libxul.so | grep 'not found'
+```
+
+The second command should produce no output. The browser process must be restarted after installing libraries; an already-loaded `camoufox-pi` instance caches launch failure until `/reload`.
+
 ## Former cache-layout root cause in this repo
 
 Before commit `cd9a9ab`, `pi-setup.sh` installed the **Python** package and fetched with the **Python** CLI:
@@ -115,7 +146,7 @@ but the extension runs on the **Node** port, which needs the flat layout. (The R
 
 ## What we did (2026-08-11) — current state
 
-Both failure layers are now repaired. The browser-cache repair **reused** the already-downloaded browser instead of re-downloading ~660 MB (disk was 97% full):
+The first two failure layers (browser layout and native binding) were repaired. The browser-cache repair **reused** the already-downloaded browser instead of re-downloading ~660 MB (disk was 97% full):
 
 1. Migrated the browser to the Node flat layout:
    ```bash
@@ -140,6 +171,12 @@ The already-loaded extension instance still retains its earlier failed-launch st
 
 A third failure layer surfaced after the cache + native-binding repairs: `tff-*` failed at **context creation** with the Gotcha 3 `isMobile … not described in this scheme` error because the Pi user package tree had resolved `playwright-core@1.62.1`. Fixed by pinning `playwright-core@1.60.0` as a **direct dependency** of `~/.pi/agent/npm/package.json` and running `npm install --legacy-peer-deps`. Verified `npm ls playwright-core` shows a single hoisted `1.60.0` `deduped` under both `camoufox-js` and `camoufox-pi`, and a real launch through `camoufox-js launchOptions` + `firefox.launch`/`newContext`/`newPage` succeeded on Camoufox `152.0.4-beta.28`. `pi-setup.sh` now performs this pin + reinstall and verifies the resolved version automatically.
 
+## What we did (2026-08-14) — Linux runtime repair and full-stack retest
+
+On the Ubuntu 24.04 `stg04` host, direct browser execution reproduced Gotcha 4 because GTK was absent. Installed `libgtk-3-0t64`, `libx11-xcb1`, and `libasound2t64`; `libxul.so` then had no unresolved runtime libraries and `camoufox --version` reported Firefox `135.0.1-beta.24`.
+
+That repair exposed Gotcha 3 on this machine: Pi's managed npm tree had again resolved `playwright-core@1.61.1`. Reapplied the existing devstack direct-dependency pin to `1.60.0` with `npm install --legacy-peer-deps`, then rebuilt the `better-sqlite3` native binding after an intermediate `npm ci --ignore-scripts` removed it. Verification through a fresh `camoufox-pi` client fetched `https://example.com` with HTTP 200 and `Example Domain`. An isolated Camoufox Pi run and the complete installed-extension stack both returned `OK`, exited 0, and left no browser processes behind.
+
 ## Ways to fix (reference)
 
 - **A — Reuse existing browser (what we did).** Relocate `browsers/official/<ver>-<sha8>/*` to the cache root, write `version.json`, chmod, uninstall pip. No re-download. Only works if the installed build is within the Node-supported range `[beta.19, 1)`.
@@ -147,7 +184,8 @@ A third failure layer surfaced after the cache + native-binding repairs: `tff-*`
 - **C — Let the Node lazy download run.** `rm -rf ~/.cache/camoufox`, then the next `tff-*` call triggers the package's built-in "lazy binary download on first use". Same ~660 MB download.
 - **D — Long-term browser fix (applied in `cd9a9ab`).** Drop the `pip install -U camoufox[geoip]` + `camoufox fetch` lines (they fetch in the wrong layout). The extension itself already handles the browser via Node; if a setup-time fetch is wanted it must be the **Node** one (`npx camoufox fetch`).
 - **E — Native binding fix (applied in `6b7cfdf`).** Resolve `better-sqlite3` from Pi's installed `camoufox-js` package, not `npm root -g`; run its explicit `npm run build-release` when a live in-memory probe fails. This is required when npm lifecycle scripts are disabled or after a Node Application Binary Interface (ABI) change invalidates an older build.
-- **F — playwright-core pin (applied 2026-08-12).** Pin `playwright-core@1.60.0` as a **direct dependency** of `~/.pi/agent/npm/package.json`, then `npm install --legacy-peer-deps`. Do **not** use an npm `overrides` entry (nests under `camoufox-pi` only, breaks `camoufox-js` resolution). Required while `camoufox-js`/`camoufox-pi` target `playwright-core < 1.61.0`; see Gotcha 3.
+- **F — playwright-core pin (applied 2026-08-12).** Pin `playwright-core@1.60.0` as a **direct dependency** of `~/.pi/agent/npm/package.json`, then `npm install --legacy-peer-deps`. Do **not** use an npm `overrides` entry (nests under `camoufox-pi` only, breaks `camoufox-js` resolution). Required while the current browser/Juggler build is incompatible with Playwright 1.61+; see Gotcha 3.
+- **G — Linux runtime libraries (applied on stg04 2026-08-14).** Install the host GTK3, X11-XCB, and ALSA runtime packages. Ubuntu 24.04 uses `libgtk-3-0t64 libx11-xcb1 libasound2t64`; see Gotcha 4.
 
 ## Prevention / detection
 
@@ -159,8 +197,17 @@ A third failure layer surfaced after the cache + native-binding repairs: `tff-*`
   ```
 - Native dependency health check: run `./pi-setup.sh`; it opens an in-memory `better-sqlite3` database and rebuilds the binding only if that probe fails.
 - playwright-core version check: run `./pi-setup.sh` (pins/verifies automatically) or `npm ls playwright-core --prefix ~/.pi/agent/npm` — must resolve `< 1.61.0` from both `camoufox-js` and `camoufox-pi`.
+- Linux library check: `LD_LIBRARY_PATH="$HOME/.cache/camoufox" ldd ~/.cache/camoufox/libxul.so | grep 'not found'` should print nothing.
 - After a fresh `camoufox fetch`: `chmod -R 755 ~/.cache/camoufox/` (binary-permissions prompt issue, see prior 2026-05-03 wiki log entry).
-- After repairing either the browser cache or native binding, run `/reload`; `camoufox-pi` caches failed launch state for the lifetime of the loaded extension instance.
+- After repairing any browser, system-library, dependency, or native-binding launch failure, run `/reload`; `camoufox-pi` caches failed launch state for the lifetime of the loaded extension instance.
+
+## Permanent follow-ups
+
+- Add Linux runtime dependencies and distro-specific commands to `camoufox-pi`'s published requirements. A launcher preflight should report missing shared libraries directly instead of surfacing a long Playwright process log.
+- Change `camoufox-pi`'s `playwright-core` dependency from the permissive `^1.59.1` range to a tested upper-bounded range (currently `<1.61`) until its browser/Juggler build supports `viewport.isMobile`.
+- Stop eagerly launching Firefox from the library factory. Start it from `session_start` or first tool use, and close the browser if launch succeeds but default-context creation fails; the current partial-launch failure can leave a browser alive until the parent process exits.
+- Add a distro-aware system-library preflight or optional installer to `pi-setup.sh`. The script currently documents the Ubuntu 24.04 command but does not run privileged package-manager operations automatically.
+- Retest and remove the local Playwright pin when a released `camoufox-js`/Camoufox browser pair explicitly supports Playwright 1.61+.
 
 ## Related
 

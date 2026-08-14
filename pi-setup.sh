@@ -85,6 +85,12 @@ fi
 # The extension lazy-downloads the browser on first tff use; for a deterministic
 # setup-time fetch use the Node CLI instead:
 #   npx camoufox fetch && chmod -R 755 ~/.cache/camoufox/
+# Headless Firefox still loads GTK/X11/ALSA runtime libraries. Ubuntu 24.04:
+#   sudo apt-get install -y --no-install-recommends \
+#     libgtk-3-0t64 libx11-xcb1 libasound2t64
+# Older Debian/Ubuntu releases use libgtk-3-0 and libasound2. This script does
+# not run privileged distro-specific package-manager commands automatically;
+# see wiki/tools/camoufox.md for detection and permanent follow-up work.
 # camoufox-js depends on better-sqlite3 (native addon). With npm
 # ignore-scripts=true, its install hook is intentionally skipped. Resolve the
 # actual dependency from Pi's user package tree (normally ~/.pi/agent/npm), not

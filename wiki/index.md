@@ -21,12 +21,13 @@
 
 ## Tools
 
-- [[tools/camoufox]] — Camoufox stealth Firefox (backing `tff-fetch_url` / `tff-search_web` via `camoufox-pi`): Python-vs-Node cache-layout conflicts, missing `better-sqlite3` native bindings under npm `ignore-scripts`, `playwright-core` pin to `<1.61.0` (isMobile viewport protocol mismatch), failure signatures, repairs, and health checks
+- [[tools/camoufox]] — Camoufox stealth Firefox (backing `tff-fetch_url` / `tff-search_web` via `camoufox-pi`): cache-layout conflicts, native bindings, Playwright/Juggler compatibility, Linux GTK/X11/ALSA dependencies, repairs, health checks, and upstream follow-ups
 - [[tools/codex]] — OpenAI Codex CLI/App: local state, excessive SQLite TRACE-log write-pressure workaround, verification, and reversal
 - [[tools/pi-agent]] — Pi coding agent: minimal extensible terminal coding harness (pi.dev), canonical `pi-packages.json` package sync workflow, pi-zentui customization log, codex-pool model config, conditional MultiCodex personal-account rotation, Codex quota status, pi-tasks/pi-goal forks, web-access extension compatibility notes, GitHub-sourced compaction watchdog, optional Codex fast mode
 - [[tools/pi-background-task-plugins]] — Pi background task plugin evaluation: @vanillagreen/pi-background-tasks vs tmux-bash, pi-loop, pi-monitor, gob, and minimal alternatives
 - [[tools/pi-model-selection]] — Pi model selection & customization: how the model catalog loads (static models.generated.js + models.json merge), favorites, scoping, sticky models, extensions
 - [[tools/pi-statusline]] — Pi status line / powerline footer: colorful segments, presets, themeable TUI bar
+- [[tools/pi-zentui]] — Canonical Pi footer/editor extension: stale-context shutdown failure, lifecycle-safe async refresh fix, verification, operations, and permanent follow-ups
 - [[tools/pruning-and-compaction]] — Conversation-level pruning landscape, why devstack retired pi-context-prune, and the current simpler compaction stack
 - [[tools/outline-edit]] — CLI for Outline knowledge base with local markdown cache
 - [[tools/realitycheck]] — Framework for rigorous claim/source/prediction tracking with vector search

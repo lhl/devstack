@@ -1962,3 +1962,26 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 **Next:**
 - Run `/reload` in the current Pi session, then smoke-test `tff-fetch_url` once more through the reloaded tool instance.
+
+---
+
+## 2026-08-14 — Document Camoufox and Zentui repairs
+
+**What:** Recorded the two Pi extension failures repaired on `stg04` and preserved the remaining permanent follow-up work.
+
+- Installed Ubuntu 24.04's Camoufox runtime packages: `libgtk-3-0t64`, `libx11-xcb1`, and `libasound2t64`.
+- Confirmed the host-library repair, then reapplied the existing direct `playwright-core@1.60.0` compatibility pin because the Pi npm tree had resolved incompatible 1.61.1.
+- Verified a fresh `camoufox-pi` client fetched `https://example.com` with HTTP 200 and that isolated/full-stack Pi runs exited cleanly with no leftover browser process.
+- Fixed and pushed `lhl/pi-zentui` commit `a4d6a36`: non-TUI mode guards, plain-`cwd` asynchronous refreshes, a shutdown-aware coalescing scheduler, and `session_shutdown` cleanup.
+- Added red/green lifecycle coverage; the full Zentui lint/typecheck/17-test suite, package dry run, isolated smoke, and full installed-extension smoke passed.
+- Created `wiki/tools/pi-zentui.md`; expanded `wiki/tools/camoufox.md`; updated `wiki/tools/pi-agent.md`, `wiki/index.md`, `wiki/log.md`, `README.md`, `pi-packages.json`, and setup comments.
+
+**Decisions:**
+- Keep `playwright-core@1.60.0` as a direct Pi user dependency until a released Camoufox/Juggler build supports Playwright 1.61+; npm `overrides` is unsuitable because it breaks sibling `camoufox-js` resolution.
+- Document the privileged Ubuntu package command in `pi-setup.sh` without automatically invoking a distro-specific package manager.
+- Treat Pi's stale-context exception as a correct guard. Extensions must copy durable values before async work and stop session-scoped callbacks during `session_shutdown`.
+
+**Next:**
+- Add a distro-aware Camoufox shared-library preflight or optional installer to `pi-setup.sh`.
+- Upstream Camoufox dependency/runtime documentation, a bounded Playwright range, lazy launch, and partial-launch browser cleanup.
+- Update `pi-zentui` to current `@earendil-works/*` development types, add abortable subprocess probes and live TUI replacement tests, and upstream the generic lifecycle fixes if the original project remains maintained.

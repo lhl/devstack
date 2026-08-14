@@ -85,10 +85,12 @@ Oftentimes there are multiple options for a feature; these are the ones I've pic
 This is probably the biggest feature you're going to need. `pi-smart-fetch` and `camoufox-pi` are the current canonical pair; `pi-web-access` is otherwise the most full-featured plugin, but it is temporarily disabled in this stack until its Pi 0.79.7 compatibility issue is fixed.
 
 - [Thinkscape/agent-smart-fetch](https://github.com/Thinkscape/agent-smart-fetch) (pi-smart-fetch) - browser-like TLS fingerprints + Defuddle site extractors
-- [MonsieurBarti/camoufox-pi](https://github.com/MonsieurBarti/camoufox-pi) - stealth web access via Camoufox anti-fingerprinting Firefox fork (requires the Node-side `npx camoufox fetch`; `pi-setup.sh` repairs its native `better-sqlite3` binding when npm install scripts are disabled and pins `playwright-core` to 1.60.0 — see note below; run `/reload` after any repair)
+- [MonsieurBarti/camoufox-pi](https://github.com/MonsieurBarti/camoufox-pi) - stealth web access via Camoufox anti-fingerprinting Firefox fork (requires the Node-side `npx camoufox fetch`; `pi-setup.sh` repairs its native `better-sqlite3` binding when npm install scripts are disabled and pins `playwright-core` to 1.60.0 — see notes below; run `/reload` after any repair)
   - [Camoufox](https://github.com/daijro/camoufox) - there are a few different builds, but basically, it's a Firefox fork designed for AI agents
 
-> **playwright-core pin (camoufox):** `camoufox-pi` / `camoufox-js` require `playwright-core < 1.61.0`. Playwright ≥1.61 adds an `isMobile` field to the viewport in `Browser.setDefaultViewport` that the Camoufox Juggler protocol does not recognize, so a too-new `playwright-core` fails at context creation with `Found property ".viewport.isMobile" … not described in this scheme`. `pi-setup.sh` pins `playwright-core@1.60.0` as a **direct dependency** of the Pi user `package.json` (an npm `overrides` entry does not work — it nests the package under `camoufox-pi` only and breaks `camoufox-js` resolution). See [[tools/camoufox]].
+> **Linux runtime libraries (camoufox):** Headless Camoufox still loads GTK/X11/ALSA. On Ubuntu 24.04 install `libgtk-3-0t64 libx11-xcb1 libasound2t64`; otherwise launch fails at `libmozgtk.so` with missing `libgtk-3.so.0`. `pi-setup.sh` documents but does not automatically run this privileged distro-specific install.
+>
+> **playwright-core pin (camoufox):** The current Camoufox browser/Juggler build requires `playwright-core < 1.61.0`. Playwright ≥1.61 adds an `isMobile` field to the viewport in `Browser.setDefaultViewport` that Juggler does not recognize, so a too-new `playwright-core` fails at context creation with `Found property ".viewport.isMobile" … not described in this scheme`. `pi-setup.sh` pins `playwright-core@1.60.0` as a **direct dependency** of the Pi user `package.json` (an npm `overrides` entry does not work — it nests the package under `camoufox-pi` only and breaks `camoufox-js` resolution). See [[tools/camoufox]].
 - [nicobailon/pi-web-access](https://github.com/nicobailon/pi-web-access) - disabled as of 2026-06-29: v0.13.0 imports `@earendil-works/pi-ai/compat`, which Pi 0.79.7 no longer exports, causing extension load failure at startup
 
 ### Automation & Workflow
@@ -122,7 +124,7 @@ For saving tokens.
 ### UX
 
 - [lhl/pi-skill-dollar](https://github.com/lhl/pi-skill-dollar) - `$` autocomplete shortcut that triggers skill suggestions in the input area
-- [lhl/pi-zentui](https://github.com/lhl/pi-zentui) - my personal fork of a status-line that fits my preferences
+- [lhl/pi-zentui](https://github.com/lhl/pi-zentui) - my personal fork of a status-line that fits my preferences; commit `a4d6a36` guards non-TUI modes and cleans up asynchronous project refreshes before Pi invalidates the session context (see [`wiki/tools/pi-zentui.md`](wiki/tools/pi-zentui.md))
 - [mattleong/pi-code-previews](https://github.com/mattleong/pi-code-previews) - for better syntax-highlighting from tool calls
 
 ### Skills

@@ -25,7 +25,7 @@
     {
       "source": "npm:@the-forge-flow/camoufox-pi@0.2.1",
       "category": "web-access",
-      "note": "Pinned stealth Firefox/Camoufox web tools. Requires playwright-core < 1.61.0 (camoufox-js peer constraint); pi-setup.sh pins playwright-core@1.60.0 as a direct dependency of the Pi user package.json (not an overrides entry). See wiki/tools/camoufox.md."
+      "note": "Pinned stealth Firefox/Camoufox web tools. Current browser/Juggler needs playwright-core <1.61; pi-setup.sh pins 1.60.0 directly. Linux also needs GTK3/X11-XCB/ALSA runtime libraries. See wiki/tools/camoufox.md."
     },
     {
       "source": "npm:pi-code-previews",
@@ -80,7 +80,7 @@
     {
       "source": "https://github.com/lhl/pi-zentui",
       "category": "ux",
-      "note": "lhl UI/TUI customization."
+      "note": "lhl UI/TUI customization; a4d6a36 adds non-TUI guards and shutdown-safe asynchronous project refreshes. See wiki/tools/pi-zentui.md."
     }
   ],
   "legacyPackages": [
